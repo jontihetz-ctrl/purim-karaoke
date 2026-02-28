@@ -594,14 +594,14 @@ function songRow(s) {
   const imgEl = img ? `<img class="song-row-img" src="${esc(img)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
   const ph = `<div class="song-row-placeholder" ${img?'style="display:none"':''}>🎵</div>`;
   const badge = s.source==='jkaraoke' ? `<span class="badge badge-jk">✡️</span>` : (s.duo?`<span class="badge badge-duo">Duet</span>`:`<span class="badge badge-kf">KF</span>`);
-  const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(s.title+' '+s.artist)}`;
+  const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(s.title+' '+s.artist+' karaoke')}`;
   return `<div class="song-row ${selectedSong&&selectedSong.id==s.id&&selectedSong.source==s.source?'selected':''}" onclick='selectSong(${JSON.stringify(s)})'>
     ${imgEl}${ph}
     <div class="song-row-info">
       <div class="song-row-title">${esc(s.title)}</div>
       <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
         <div class="song-row-artist" style="flex:1">${esc(s.artist)}${s.year?' · '+s.year:''}</div>
-        <a href="${spotifyUrl}" target="_blank" onclick="event.stopPropagation()" style="color:#1db954;font-size:0.7rem;text-decoration:none;flex-shrink:0" title="Listen on Spotify">▶ Spotify</a>
+        <a href="${ytUrl}" target="_blank" onclick="event.stopPropagation()" style="color:#ff4444;font-size:0.7rem;text-decoration:none;flex-shrink:0;font-weight:700">▶ Preview</a>
       </div>
     </div>
     ${badge}
