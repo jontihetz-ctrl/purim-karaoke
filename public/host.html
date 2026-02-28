@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎭 Aish JHB Purim Karaoke – Host</title>
+<style>
+:root {
+  --gold: #f5c518;
+  --gold2: #e6a817;
+  --purple: #5b1fa8;
+  --purple2: #7c3aed;
+  --deep: #120820;
+  --card: #1e0d3a;
+  --card2: #2d1555;
+  --text: #fff;
+  --muted: #a89ec9;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--deep);
+  color: var(--text);
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    radial-gradient(circle, #f5c51810 1px, transparent 1px),
+    radial-gradient(circle, #7c3aed10 1px, transparent 1px);
+  background-size: 40px 40px, 60px 60px;
+  background-position: 0 0, 20px 20px;
+  pointer-events: none; z-index: 0;
+}
+
+/* Header */
+header {
+  background: linear-gradient(135deg, #3b0d82 0%, #5b1fa8 40%, #7c3aed 100%);
+  border-bottom: 3px solid var(--gold);
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: relative; z-index: 10;
+  box-shadow: 0 4px 30px rgba(91,31,168,0.7);
+  flex-shrink: 0;
+}
+.header-left h1 {
+  font-size: 1.1rem; font-weight: 900; color: var(--gold);
+  text-shadow: 0 0 20px rgba(245,197,24,0.5);
+}
+.header-left p { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 1px; }
+.header-right { display: flex; align-items: center; gap: 12px; font-size: 1.4rem; }
+.header-stat { text-align: center; }
+.header-stat .num { font-size: 1.5rem; font-weight: 900; color: var(--gold); line-height: 1; }
+.header-stat .lbl { font-size: 0.65rem; color: var(--muted); }
+
+/* Layout */
+.main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  position: relative; z-index: 1;
+}
+
+/* Now Playing Panel */
+.now-panel {
+  width: 320px; flex-shrink: 0;
+  background: var(--card);
+  border-right: 2px solid #2d1555;
+  display: flex; flex-direction: column;
+  padding: 18px;
+  gap: 14px;
+  overflow-y: auto;
+}
+.panel-label {
+  font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--gold); font-weight: 800;
+}
+
+.now-card {
+  background: linear-gradient(135deg, #2d1555, #1a0a2e);
+  border: 2px solid var(--gold);
+  border-radius: 16px;
+  padding: 20px;
+  flex: 1;
+  display: flex; flex-direction: column; justify-content: center;
+  box-shadow: 0 0 30px rgba(245,197,24,0.15), inset 0 0 30px rgba(91,31,168,0.3);
+  min-height: 200px;
+}
+.now-masks { font-size: 2rem; margin-bottom: 10px; }
+.now-singer {
+  font-size: 2rem; font-weight: 900;
+  color: var(--gold);
+  text-shadow: 0 0 20px rgba(245,197,24,0.5);
+  margin-bottom: 6px; word-break: break-word;
+}
+.now-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 3px; word-break: break-word; }
+.now-artist { font-size: 0.9rem; color: var(--muted); margin-bottom: 10px; }
+.now-source {
+  display: inline-block; font-size: 0.75rem; padding: 3px 10px;
+  border-radius: 6px; font-weight: 700;
+}
+.src-jk { background: #3d1f7a; color: #c4a0ff; }
+.src-kf { background: #1a3060; color: #7aafff; }
+.empty-now { text-align: center; color: #4a3a6a; }
+.empty-now .big { font-size: 3.5rem; margin-bottom: 10px; }
+.empty-now p { font-size: 0.9rem; }
+
+.btn {
+  border: none; border-radius: 10px;
+  cursor: pointer; font-weight: 800;
+  padding: 12px 18px; font-size: 0.9rem;
+  transition: opacity 0.15s, transform 0.1s;
+  width: 100%;
+}
+.btn:active { transform: scale(0.97); }
+.btn:disabled { opacity: 0.3; cursor: default; }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #1a0a2e;
+  box-shadow: 0 4px 14px rgba(245,197,24,0.4);
+}
+.btn-done { background: #22c55e; color: #000; }
+.btn-skip { background: #374151; color: #fff; }
+
+/* Queue panel */
+.queue-panel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+}
+.queue-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.queue-title { font-size: 1.1rem; font-weight: 800; }
+.queue-badge {
+  background: var(--gold); color: #1a0a2e;
+  font-size: 0.75rem; font-weight: 900;
+  padding: 4px 12px; border-radius: 20px;
+}
+
+.queue-item {
+  background: var(--card);
+  border: 1px solid #2d1555;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 12px;
+  transition: background 0.15s;
+}
+.queue-item:hover { background: var(--card2); }
+.queue-pos {
+  font-size: 1.4rem; font-weight: 900;
+  color: #3d1f7a; width: 30px; text-align: center; flex-shrink: 0;
+}
+.queue-info { flex: 1; min-width: 0; }
+.queue-singer { font-size: 0.95rem; font-weight: 700; }
+.queue-song { font-size: 0.82rem; color: var(--muted); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.queue-artist { font-size: 0.72rem; color: #4a3a6a; }
+.source-badge {
+  font-size: 0.65rem; padding: 2px 7px;
+  border-radius: 4px; font-weight: 700; flex-shrink: 0;
+}
+.queue-actions { display: flex; gap: 5px; }
+.q-btn {
+  border: none; border-radius: 7px; cursor: pointer;
+  padding: 5px 8px; font-size: 0.75rem; font-weight: 700;
+  transition: opacity 0.15s;
+}
+.q-btn:hover { opacity: 0.8; }
+.btn-up { background: #2d1555; color: var(--gold); }
+.btn-down { background: #1e0d3a; color: #6b5a8a; }
+.btn-remove { background: #4a0a0a; color: #fca5a5; }
+
+.empty-queue { text-align: center; color: #4a3a6a; padding: 60px 20px; }
+.empty-queue .big { font-size: 3rem; margin-bottom: 12px; }
+
+/* QR bar */
+.qr-bar {
+  background: var(--card);
+  border-top: 2px solid #2d1555;
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 16px;
+  flex-shrink: 0;
+  position: relative; z-index: 1;
+}
+.qr-bar p { color: var(--muted); font-size: 0.8rem; }
+.qr-bar strong { color: var(--gold); font-size: 0.95rem; display: block; }
+#qrcode img { border-radius: 6px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>👑 AISH HATORAH JHB · PURIM 2026 🎭</h1>
+    <p>Karaoke Host Dashboard</p>
+  </div>
+  <div class="header-right">
+    <div class="header-stat">
+      <div class="num" id="queueNum">0</div>
+      <div class="lbl">in queue</div>
+    </div>
+    <span>🎉🎊</span>
+  </div>
+</header>
+
+<div class="main">
+  <!-- Now Playing -->
+  <div class="now-panel">
+    <div class="panel-label">🎙️ Now Singing</div>
+
+    <div class="now-card" id="nowCard">
+      <div class="empty-now">
+        <div class="big">🎭</div>
+        <p>Ready to start!<br>Press Next Song below</p>
+      </div>
+    </div>
+
+    <button class="btn btn-gold" id="nextBtn" onclick="nextSong()">▶ Start Next Song</button>
+    <button class="btn btn-done" id="doneBtn" onclick="doneSong()" style="display:none">✅ Done — Next Singer!</button>
+    <button class="btn btn-skip" id="skipBtn" onclick="doneSong()" style="display:none">⏭ Skip</button>
+  </div>
+
+  <!-- Queue -->
+  <div class="queue-panel">
+    <div class="queue-header">
+      <div class="queue-title">🎶 Upcoming</div>
+      <div class="queue-badge" id="queueBadge">0</div>
+    </div>
+    <div id="queueList">
+      <div class="empty-queue">
+        <div class="big">📋</div>
+        <p>Queue is empty<br>Guests are adding songs!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="qr-bar">
+  <div id="qrcode"></div>
+  <div>
+    <p>Guests scan to add songs 👇</p>
+    <strong id="guestUrl">Loading...</strong>
+    <p style="font-size:0.7rem;color:#4a3a6a;margin-top:3px">Put this on the screen!</p>
+  </div>
+</div>
+
+<script src="/socket.io/socket.io.js"></script>
+<script>
+const socket = io();
+let state = { queue: [], currentSong: null };
+
+socket.on('queue_update', data => { state = data; render(); });
+
+function render() {
+  const { queue, currentSong } = state;
+  document.getElementById('queueNum').textContent = queue.length;
+  document.getElementById('queueBadge').textContent = queue.length;
+
+  const nowCard = document.getElementById('nowCard');
+  const nextBtn = document.getElementById('nextBtn');
+  const doneBtn = document.getElementById('doneBtn');
+  const skipBtn = document.getElementById('skipBtn');
+
+  if (currentSong) {
+    const src = currentSong.song.source === 'jkaraoke' ? 'JKaraoke' : 'KaraFun';
+    const srcClass = currentSong.song.source === 'jkaraoke' ? 'src-jk' : 'src-kf';
+    nowCard.innerHTML = `
+      <div class="now-masks">🎭</div>
+      <div class="now-singer">🎤 ${esc(currentSong.singerName)}</div>
+      <div class="now-title">${esc(currentSong.song.title)}</div>
+      <div class="now-artist">${esc(currentSong.song.artist || '')}</div>
+      <span class="now-source ${srcClass}">${src}</span>
+    `;
+    nextBtn.style.display = 'none';
+    doneBtn.style.display = 'block';
+    skipBtn.style.display = 'block';
+  } else {
+    nowCard.innerHTML = `<div class="empty-now"><div class="big">🎭</div><p>Ready to start!<br>Press Next Song below</p></div>`;
+    nextBtn.style.display = 'block';
+    doneBtn.style.display = 'none';
+    skipBtn.style.display = 'none';
+    nextBtn.disabled = queue.length === 0;
+  }
+
+  const listEl = document.getElementById('queueList');
+  if (!queue.length) {
+    listEl.innerHTML = `<div class="empty-queue"><div class="big">🎊</div><p>Queue is empty — guests can add songs!</p></div>`;
+    return;
+  }
+
+  listEl.innerHTML = queue.map((e, i) => {
+    const src = e.song.source === 'jkaraoke' ? '✡️ JK' : '🌍 KF';
+    const srcClass = e.song.source === 'jkaraoke' ? 'src-jk' : 'src-kf';
+    return `<div class="queue-item">
+      <div class="queue-pos">${i+1}</div>
+      <div class="queue-info">
+        <div class="queue-singer">🎤 ${esc(e.singerName)}</div>
+        <div class="queue-song">${esc(e.song.title)}</div>
+        <div class="queue-artist">${esc(e.song.artist||'')}</div>
+      </div>
+      <span class="source-badge ${srcClass}">${src}</span>
+      <div class="queue-actions">
+        ${i>0?`<button class="q-btn btn-up" onclick="moveUp(${e.queueId})">▲</button>`:''}
+        ${i<queue.length-1?`<button class="q-btn btn-down" onclick="moveDown(${e.queueId})">▼</button>`:''}
+        <button class="q-btn btn-remove" onclick="removeEntry(${e.queueId})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function nextSong() { await fetch('/api/host/next', { method:'POST' }); }
+async function doneSong() { await fetch('/api/host/done', { method:'POST' }); }
+async function removeEntry(id) { await fetch(`/api/host/remove/${id}`, { method:'POST' }); }
+async function moveUp(id) { await fetch(`/api/host/move-up/${id}`, { method:'POST' }); }
+async function moveDown(id) { await fetch(`/api/host/move-down/${id}`, { method:'POST' }); }
+
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function setGuestUrl() {
+  const url = `http://${location.hostname}${location.port?':'+location.port:''}/guest.html`;
+  document.getElementById('guestUrl').textContent = url;
+  document.getElementById('qrcode').innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=${encodeURIComponent(url)}" width="80" height="80" style="border-radius:6px">`;
+}
+
+setGuestUrl();
+fetch('/api/queue').then(r=>r.json()).then(data => { state = data; render(); });
+</script>
+</body>
+</html>
