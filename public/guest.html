@@ -351,8 +351,9 @@ body::before {
 <div class="queue-pill" id="queuePill"></div>
 
 <div class="source-bar">
-  <button class="source-btn active" onclick="setSource('jewish')" id="src-jewish">✡️ Jewish Music</button>
-  <button class="source-btn" onclick="setSource('secular')" id="src-secular">🌍 Secular Hits</button>
+  <button class="source-btn active" onclick="setSource('jewish')" id="src-jewish">✡️ Jewish</button>
+  <button class="source-btn" onclick="setSource('secular')" id="src-secular">🌍 Secular</button>
+  <button class="source-btn" onclick="setSource('queue')" id="src-queue">📋 Queue</button>
 </div>
 
 <div class="search-wrap">
@@ -383,10 +384,16 @@ let currentCat = null;
 let view = 'home';
 let jkData = null, jkPopular = null, kfGenres = null;
 
-socket.on('queue_update', ({ queue }) => {
+let liveQueue = [];
+let liveCurrent = null;
+
+socket.on('queue_update', ({ queue, currentSong }) => {
+  liveQueue = queue;
+  liveCurrent = currentSong;
   const pill = document.getElementById('queuePill');
   if (queue.length > 0) { pill.textContent = queue.length + ' in queue'; pill.style.display = 'block'; }
   else pill.style.display = 'none';
+  if (currentSource === 'queue') renderQueueView();
 });
 
 async function loadData() {
@@ -400,10 +407,12 @@ async function loadData() {
 
 function setSource(src) {
   currentSource = src;
-  document.getElementById('src-jewish').classList.toggle('active', src === 'jewish');
-  document.getElementById('src-secular').classList.toggle('active', src === 'secular');
+  ['jewish','secular','queue'].forEach(s => document.getElementById('src-'+s).classList.toggle('active', s === src));
   document.getElementById('searchInput').value = '';
+  document.getElementById('searchInput').style.display = src === 'queue' ? 'none' : '';
+  document.querySelector('.search-icon').style.display = src === 'queue' ? 'none' : '';
   if (src === 'secular') currentCat = 'Top20';
+  if (src === 'queue') { renderQueueView(); return; }
   view = 'home';
   renderHome();
 }
@@ -510,6 +519,41 @@ function renderSongList(songs, title) {
     </div>`;
 }
 
+function renderQueueView() {
+  const now = liveCurrent;
+  const queue = liveQueue;
+  let html = `<div class="section" style="padding-top:14px">`;
+
+  if (now) {
+    html += `
+      <div class="section-title">🎙️ Now Singing</div>
+      <div style="background:linear-gradient(135deg,#2d1555,#1a0a2e);border:2px solid var(--gold);border-radius:14px;padding:16px;margin-bottom:14px;box-shadow:0 0 20px rgba(245,197,24,0.15)">
+        <div style="font-size:1.5rem;font-weight:900;color:var(--gold)">🎤 ${esc(now.singerName)}</div>
+        <div style="font-size:1rem;font-weight:700;margin-top:4px">${esc(now.song.title)}</div>
+        <div style="font-size:0.82rem;color:var(--muted)">${esc(now.song.artist||'')}</div>
+      </div>`;
+  }
+
+  html += `<div class="section-title">📋 Up Next <span style="color:#4a3a6a;font-weight:400">(${queue.length})</span></div>`;
+
+  if (!queue.length && !now) {
+    html += `<div class="no-results">Queue is empty — be the first! 🎭</div>`;
+  } else {
+    html += `<div class="song-list">` + queue.map((e, i) => `
+      <div style="display:flex;align-items:center;gap:10px;background:var(--card);border-radius:10px;padding:10px 12px">
+        <div style="font-size:1.2rem;font-weight:900;color:#3d1f7a;width:26px;text-align:center">${i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:0.9rem;font-weight:700">🎤 ${esc(e.singerName)}</div>
+          <div style="font-size:0.78rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(e.song.title)} · ${esc(e.song.artist||'')}</div>
+        </div>
+        <span class="badge ${e.song.source==='jkaraoke'?'badge-jk':'badge-kf'}">${e.song.source==='jkaraoke'?'✡️':'🌍'}</span>
+      </div>`).join('') + `</div>`;
+  }
+
+  html += `</div>`;
+  document.getElementById('content').innerHTML = html;
+}
+
 // ---- ARTIST HELPERS ----
 function topJewishArtists() {
   const map = {};
@@ -550,11 +594,15 @@ function songRow(s) {
   const imgEl = img ? `<img class="song-row-img" src="${esc(img)}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">` : '';
   const ph = `<div class="song-row-placeholder" ${img?'style="display:none"':''}>🎵</div>`;
   const badge = s.source==='jkaraoke' ? `<span class="badge badge-jk">✡️</span>` : (s.duo?`<span class="badge badge-duo">Duet</span>`:`<span class="badge badge-kf">KF</span>`);
+  const spotifyUrl = `https://open.spotify.com/search/${encodeURIComponent(s.title+' '+s.artist)}`;
   return `<div class="song-row ${selectedSong&&selectedSong.id==s.id&&selectedSong.source==s.source?'selected':''}" onclick='selectSong(${JSON.stringify(s)})'>
     ${imgEl}${ph}
     <div class="song-row-info">
       <div class="song-row-title">${esc(s.title)}</div>
-      <div class="song-row-artist">${esc(s.artist)}${s.year?' · '+s.year:''}</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:2px">
+        <div class="song-row-artist" style="flex:1">${esc(s.artist)}${s.year?' · '+s.year:''}</div>
+        <a href="${spotifyUrl}" target="_blank" onclick="event.stopPropagation()" style="color:#1db954;font-size:0.7rem;text-decoration:none;flex-shrink:0" title="Listen on Spotify">▶ Spotify</a>
+      </div>
     </div>
     ${badge}
   </div>`;

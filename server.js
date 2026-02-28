@@ -90,10 +90,11 @@ app.get('/api/search', (req, res) => {
   if (!q || q.length < 2) return res.json([]);
 
   if (source === 'karafun') {
-    const results = karafunSongs.filter(s =>
-      s.title.toLowerCase().includes(q) ||
-      s.artist.toLowerCase().includes(q)
-    ).slice(0, 50);
+    const results = karafunSongs.filter(s => {
+      const title = s.title.replace(/^\.+\s*/, '').toLowerCase();
+      const fullTitle = s.title.toLowerCase();
+      return title.includes(q) || fullTitle.includes(q) || s.artist.toLowerCase().includes(q);
+    }).slice(0, 50);
     return res.json(results);
   }
 
