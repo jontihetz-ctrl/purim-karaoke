@@ -40,6 +40,9 @@ let queueIdCounter = 1;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/', (req, res) => res.redirect('/guest.html'));
+app.get('/host', (req, res) => res.redirect('/host.html'));
+
 // Catalogue endpoints
 let jkCatalogue = null;
 let jkPopular = null;
