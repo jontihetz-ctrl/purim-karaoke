@@ -81,7 +81,7 @@ body::before {
 }
 .source-btn {
   flex: 1;
-  padding: 10px 8px;
+  padding: 8px 8px;
   border: none;
   background: transparent;
   color: var(--muted);
@@ -90,11 +90,18 @@ body::before {
   cursor: pointer;
   border-bottom: 3px solid transparent;
   transition: all 0.2s;
+  line-height: 1.3;
 }
 .source-btn.active {
   color: var(--gold);
   border-bottom-color: var(--gold);
   background: rgba(245,197,24,0.06);
+}
+.src-count {
+  font-size: 0.6rem;
+  font-weight: 600;
+  opacity: 0.7;
+  letter-spacing: 0.02em;
 }
 
 /* Search */
@@ -351,8 +358,8 @@ body::before {
 <div class="queue-pill" id="queuePill"></div>
 
 <div class="source-bar">
-  <button class="source-btn active" onclick="setSource('jewish')" id="src-jewish">✡️ Jewish</button>
-  <button class="source-btn" onclick="setSource('secular')" id="src-secular">🌍 Secular</button>
+  <button class="source-btn active" onclick="setSource('jewish')" id="src-jewish">✡️ Jewish<br><span class="src-count" id="count-jewish"></span></button>
+  <button class="source-btn" onclick="setSource('secular')" id="src-secular">🌍 Secular<br><span class="src-count" id="count-secular"></span></button>
   <button class="source-btn" onclick="setSource('queue')" id="src-queue">📋 Queue</button>
 </div>
 
@@ -403,6 +410,13 @@ async function loadData() {
     fetch('/api/catalogue/kf-genres').then(r => r.json()),
   ]);
   renderHome();
+  // Load catalogue counts for source tabs
+  fetch('/api/catalogue/counts').then(r => r.json()).then(counts => {
+    const jEl = document.getElementById('count-jewish');
+    const sEl = document.getElementById('count-secular');
+    if (jEl) jEl.textContent = counts.jewish.toLocaleString() + ' songs';
+    if (sEl) sEl.textContent = counts.secular.toLocaleString() + ' songs';
+  });
 }
 
 function setSource(src) {
@@ -411,7 +425,7 @@ function setSource(src) {
   document.getElementById('searchInput').value = '';
   document.getElementById('searchInput').style.display = src === 'queue' ? 'none' : '';
   document.querySelector('.search-icon').style.display = src === 'queue' ? 'none' : '';
-  if (src === 'secular') currentCat = 'Top20';
+  if (src === 'secular') { currentCat = 'Top20'; allCatPage = 0; allCatSongs = []; allCatTotal = 0; }
   if (src === 'queue') { renderQueueView(); return; }
   view = 'home';
   renderHome();
@@ -467,7 +481,8 @@ function renderJewishHome() {
 }
 
 const SECULAR_CATS = [
-  { key:'Top20',      icon:'🏆', color:'#f5c518', label:'Top 20' },
+  { key:'All',        icon:'🎶', color:'#f5c518', label:'All' },
+  { key:'Top20',      icon:'🏆', color:'#e6a817', label:'Top 20' },
   { key:'Pop',        icon:'🎵', color:'#f72585', label:'Pop' },
   { key:'Rock',       icon:'🎸', color:'#ef4444', label:'Rock' },
   { key:'Country',    icon:'🤠', color:'#f59e0b', label:'Country' },
@@ -479,6 +494,12 @@ const SECULAR_CATS = [
   { key:'Christmas',  icon:'🎄', color:'#22c55e', label:'Xmas' },
 ];
 
+// All-catalogue state
+let allCatPage = 0;
+let allCatSongs = [];
+let allCatTotal = 0;
+let allCatLoading = false;
+
 function renderSecularHome() {
   if (!currentCat) currentCat = 'Top20';
   const cats = SECULAR_CATS.map(c => `
@@ -486,6 +507,24 @@ function renderSecularHome() {
       <div class="cat-icon" style="background:${c.color}22;border-color:${currentCat===c.key?c.color:c.color+'33'}">${c.icon}</div>
       <div class="cat-label">${c.label}</div>
     </div>`).join('');
+
+  if (currentCat === 'All') {
+    const cat = SECULAR_CATS[0];
+    const countLabel = allCatTotal ? `<span style="color:#4a3a6a;font-weight:400">(${allCatTotal.toLocaleString()} songs)</span>` : '';
+    document.getElementById('content').innerHTML = `
+      <div class="section" style="padding-top:14px">
+        <div class="cats">${cats}</div>
+      </div>
+      <div class="section-divider"></div>
+      <div class="section" style="padding-top:14px">
+        <div class="section-title">${cat.icon} Full Catalogue ${countLabel}</div>
+        <div class="song-list" id="allSongList">${allCatSongs.map(s=>songRow(s)).join('')}</div>
+        <div id="allLoadMore" style="text-align:center;padding:16px 0"></div>
+      </div>`;
+    updateAllLoadMore();
+    return;
+  }
+
   const songs = (kfGenres[currentCat]||[]).slice(0,50);
   const cat = SECULAR_CATS.find(c=>c.key===currentCat);
   document.getElementById('content').innerHTML = `
@@ -499,7 +538,51 @@ function renderSecularHome() {
     </div>`;
 }
 
-function showKFCat(key) { currentCat = key; renderSecularHome(); }
+function updateAllLoadMore() {
+  const el = document.getElementById('allLoadMore');
+  if (!el) return;
+  const shown = allCatSongs.length;
+  const hasMore = shown < allCatTotal || allCatTotal === 0;
+  if (allCatLoading) {
+    el.innerHTML = `<span style="color:var(--muted);font-size:0.85rem">Loading… ⏳</span>`;
+  } else if (hasMore) {
+    el.innerHTML = `<button onclick="loadMoreAll()" style="background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:0.9rem;font-weight:700;cursor:pointer">
+      Load more · ${shown.toLocaleString()}${allCatTotal?` / ${allCatTotal.toLocaleString()}`:''}
+    </button>`;
+  } else {
+    el.innerHTML = `<span style="color:var(--muted);font-size:0.8rem">All ${allCatTotal.toLocaleString()} songs loaded ✓</span>`;
+  }
+}
+
+async function loadMoreAll() {
+  if (allCatLoading) return;
+  allCatLoading = true;
+  updateAllLoadMore();
+  const res = await fetch(`/api/catalogue/kf?page=${allCatPage}&limit=50`);
+  const data = await res.json();
+  allCatTotal = data.total;
+  allCatPage++;
+  allCatSongs = allCatSongs.concat(data.songs);
+  allCatLoading = false;
+  const list = document.getElementById('allSongList');
+  if (list) {
+    list.innerHTML += data.songs.map(s => songRow(s)).join('');
+    const countLabel = `<span style="color:#4a3a6a;font-weight:400">(${allCatTotal.toLocaleString()} songs)</span>`;
+    const title = document.querySelector('#content .section-title');
+    if (title) title.innerHTML = `🎶 Full Catalogue ${countLabel}`;
+  }
+  updateAllLoadMore();
+}
+
+async function showKFCat(key) {
+  currentCat = key;
+  if (key === 'All' && allCatSongs.length === 0) {
+    renderSecularHome();
+    await loadMoreAll();
+  } else {
+    renderSecularHome();
+  }
+}
 
 function showArtistSongs(id, name) {
   const songs = jkData.filter(s => s.artist_id === id || s.artist === name);

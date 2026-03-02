@@ -82,6 +82,21 @@ app.get('/api/catalogue/jk', (req, res) => res.json(jkCatalogue || []));
 app.get('/api/catalogue/jk-popular', (req, res) => res.json(jkPopular || []));
 app.get('/api/catalogue/kf-genres', (req, res) => res.json(kfGenres || {}));
 
+app.get('/api/catalogue/counts', (req, res) => {
+  res.json({
+    jewish: (jkCatalogue || []).length,
+    secular: karafunSongs.length
+  });
+});
+
+app.get('/api/catalogue/kf', (req, res) => {
+  const page = Math.max(0, parseInt(req.query.page) || 0);
+  const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 50));
+  const start = page * limit;
+  const songs = karafunSongs.slice(start, start + limit);
+  res.json({ songs, total: karafunSongs.length, page, limit, hasMore: start + limit < karafunSongs.length });
+});
+
 // Search KaraFun
 app.get('/api/search', (req, res) => {
   const q = (req.query.q || '').toLowerCase().trim();
