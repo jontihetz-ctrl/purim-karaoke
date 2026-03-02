@@ -426,6 +426,7 @@ function setSource(src) {
   document.getElementById('searchInput').style.display = src === 'queue' ? 'none' : '';
   document.querySelector('.search-icon').style.display = src === 'queue' ? 'none' : '';
   if (src === 'secular') { currentCat = 'Top20'; allCatPage = 0; allCatSongs = []; allCatTotal = 0; }
+  if (src === 'jewish') { jewishView = 'home'; jkAllPage = 0; jkAllShown = []; }
   if (src === 'queue') { renderQueueView(); return; }
   view = 'home';
   renderHome();
@@ -460,9 +461,27 @@ function renderHome() {
   else renderSecularHome();
 }
 
+const JEWISH_VIEWS = [
+  { key:'home',   icon:'🏠', label:'Home' },
+  { key:'all',    icon:'🎶', label:'All' },
+];
+let jewishView = 'home';
+
 function renderJewishHome() {
+  if (jewishView === 'all') { renderJewishAll(); return; }
+
+  const navTabs = JEWISH_VIEWS.map(v => `
+    <div class="cat-chip ${jewishView===v.key?'selected':''}" onclick="setJewishView('${v.key}')">
+      <div class="cat-icon" style="background:#f5c51822;border-color:${jewishView===v.key?'#f5c518':'#f5c51833'}">${v.icon}</div>
+      <div class="cat-label">${v.label}</div>
+    </div>`).join('');
+
   const artists = topJewishArtists();
   document.getElementById('content').innerHTML = `
+    <div class="section" style="padding-top:14px">
+      <div class="cats">${navTabs}</div>
+    </div>
+    <div class="section-divider"></div>
     <div class="section" style="padding-top:14px">
       <div class="section-title">⭐ Popular Right Now</div>
       <div class="card-row">${jkPopular.slice(0,20).map(s => songCard(s)).join('')}</div>
@@ -478,6 +497,62 @@ function renderJewishHome() {
       <div class="song-list">${jkData.slice(0,30).map(s => songRow(s)).join('')}</div>
     </div>
   `;
+}
+
+// Jewish All-catalogue state
+let jkAllPage = 0;
+let jkAllShown = [];
+
+function renderJewishAll() {
+  const navTabs = JEWISH_VIEWS.map(v => `
+    <div class="cat-chip ${jewishView===v.key?'selected':''}" onclick="setJewishView('${v.key}')">
+      <div class="cat-icon" style="background:#f5c51822;border-color:${jewishView===v.key?'#f5c518':'#f5c51833'}">${v.icon}</div>
+      <div class="cat-label">${v.label}</div>
+    </div>`).join('');
+
+  const total = jkData.length;
+  document.getElementById('content').innerHTML = `
+    <div class="section" style="padding-top:14px">
+      <div class="cats">${navTabs}</div>
+    </div>
+    <div class="section-divider"></div>
+    <div class="section" style="padding-top:14px">
+      <div class="section-title">🎶 Full Jewish Catalogue <span style="color:#4a3a6a;font-weight:400">(${total.toLocaleString()} songs)</span></div>
+      <div class="song-list" id="jkAllList">${jkAllShown.map(s=>songRow(s)).join('')}</div>
+      <div id="jkLoadMore" style="text-align:center;padding:16px 0"></div>
+    </div>`;
+  updateJkLoadMore();
+}
+
+function updateJkLoadMore() {
+  const el = document.getElementById('jkLoadMore');
+  if (!el) return;
+  const shown = jkAllShown.length;
+  const total = jkData.length;
+  if (shown >= total) {
+    el.innerHTML = `<span style="color:var(--muted);font-size:0.8rem">All ${total.toLocaleString()} songs loaded ✓</span>`;
+  } else {
+    el.innerHTML = `<button onclick="loadMoreJk()" style="background:linear-gradient(135deg,var(--purple),var(--purple2));color:#fff;border:none;border-radius:10px;padding:11px 28px;font-size:0.9rem;font-weight:700;cursor:pointer">
+      Load more · ${shown.toLocaleString()} / ${total.toLocaleString()}
+    </button>`;
+  }
+}
+
+function loadMoreJk() {
+  const PAGE = 50;
+  const next = jkData.slice(jkAllShown.length, jkAllShown.length + PAGE);
+  jkAllShown = jkAllShown.concat(next);
+  const list = document.getElementById('jkAllList');
+  if (list) list.innerHTML += next.map(s=>songRow(s)).join('');
+  updateJkLoadMore();
+}
+
+function setJewishView(v) {
+  jewishView = v;
+  if (v === 'all' && jkAllShown.length === 0) {
+    jkAllShown = jkData.slice(0, 50);
+  }
+  renderJewishHome();
 }
 
 const SECULAR_CATS = [
