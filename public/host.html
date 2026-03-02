@@ -272,15 +272,24 @@ function render() {
   if (currentSong) {
     const src = currentSong.song.source === 'jkaraoke' ? 'JKaraoke' : 'KaraFun';
     const srcClass = currentSong.song.source === 'jkaraoke' ? 'src-jk' : 'src-kf';
+    const isKF = currentSong.song.source !== 'jkaraoke';
+    const songIdBadge = isKF
+      ? `<div style="margin-top:10px;background:#1a0a2e;border:1px solid var(--gold);border-radius:8px;padding:8px 12px;display:flex;align-items:center;gap:10px;justify-content:center;">
+           <span style="color:#aaa;font-size:0.75rem;">KaraFun ID:</span>
+           <span style="color:var(--gold);font-weight:900;font-size:1.1rem;letter-spacing:1px">${esc(currentSong.song.id)}</span>
+           <button onclick="navigator.clipboard.writeText('${esc(currentSong.song.id)}')" style="background:#7c3aed;color:#fff;border:none;border-radius:5px;padding:3px 8px;font-size:0.7rem;cursor:pointer;" title="Copy ID">📋</button>
+         </div>`
+      : `<div style="margin-top:10px;">
+           <button onclick="openInPlayerWindow(state.currentSong.song)" style="padding:8px 16px;background:var(--gold);color:#1a0a2e;border:none;border-radius:8px;font-weight:900;font-size:0.85rem;cursor:pointer;width:100%">🎵 Open JKaraoke</button>
+         </div>`;
     nowCard.innerHTML = `
       <div class="now-masks">🎭</div>
       <div class="now-singer">🎤 ${esc(currentSong.singerName)}</div>
       <div class="now-title">${esc(currentSong.song.title)}</div>
       <div class="now-artist">${esc(currentSong.song.artist || '')}</div>
       <span class="now-source ${srcClass}">${src}</span>
-      <button onclick="openInPlayerWindow(state.currentSong.song)" style="margin-top:14px;padding:10px 20px;background:var(--gold);color:#1a0a2e;border:none;border-radius:10px;font-weight:900;font-size:0.9rem;cursor:pointer;width:100%">🖥️ Open in Player Window</button>
+      ${songIdBadge}
     `;
-    maybeAutoOpen(currentSong);
     nextBtn.style.display = 'none';
     doneBtn.style.display = 'block';
     skipBtn.style.display = 'block';
@@ -343,7 +352,6 @@ function getPlayLink(song) {
 
 // ---- Player Window ----
 const PLAYER_WIN = 'kfPlayerWindow';
-let lastPlayedKey = null;
 
 function openInPlayerWindow(song) {
   const url = getPlayLink(song);
@@ -360,13 +368,6 @@ function updatePlayerBadge(open) {
   }
 }
 
-function maybeAutoOpen(currentSong) {
-  if (!currentSong) return;
-  const key = `${currentSong.song.source}:${currentSong.song.id}`;
-  if (key === lastPlayedKey) return; // already opened this song
-  lastPlayedKey = key;
-  openInPlayerWindow(currentSong.song);
-}
 
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
