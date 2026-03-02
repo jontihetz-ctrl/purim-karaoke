@@ -33,9 +33,30 @@ fs.createReadStream(csvPath)
   });
 
 // Queue state
-let queue = [];
-let currentSong = null;
-let queueIdCounter = 1;
+// ---- Persistent State ----
+const STATE_FILE = path.join('/tmp', 'karaoke-state.json');
+
+function loadState() {
+  try {
+    if (fs.existsSync(STATE_FILE)) {
+      const data = JSON.parse(fs.readFileSync(STATE_FILE, 'utf8'));
+      console.log(`Restored state: queue=${data.queue?.length}, currentSong=${!!data.currentSong}`);
+      return data;
+    }
+  } catch (e) { console.warn('Could not load state:', e.message); }
+  return { queue: [], currentSong: null, queueIdCounter: 1 };
+}
+
+function saveState() {
+  try {
+    fs.writeFileSync(STATE_FILE, JSON.stringify({ queue, currentSong, queueIdCounter }));
+  } catch (e) { console.warn('Could not save state:', e.message); }
+}
+
+const saved = loadState();
+let queue = saved.queue || [];
+let currentSong = saved.currentSong || null;
+let queueIdCounter = saved.queueIdCounter || 1;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -131,7 +152,7 @@ app.post('/api/queue', (req, res) => {
   };
 
   queue.push(entry);
-  io.emit('queue_update', { queue, currentSong });
+  io.emit('queue_update', { queue, currentSong }); saveState();
   res.json({ ok: true, entry });
 });
 
@@ -145,20 +166,20 @@ app.post('/api/host/next', (req, res) => {
   if (queue.length === 0) return res.json({ ok: true });
   currentSong = queue.shift();
   currentSong.status = 'playing';
-  io.emit('queue_update', { queue, currentSong });
+  io.emit('queue_update', { queue, currentSong }); saveState();
   res.json({ ok: true, currentSong });
 });
 
 app.post('/api/host/done', (req, res) => {
   currentSong = null;
-  io.emit('queue_update', { queue, currentSong });
+  io.emit('queue_update', { queue, currentSong }); saveState();
   res.json({ ok: true });
 });
 
 app.post('/api/host/remove/:queueId', (req, res) => {
   const id = parseInt(req.params.queueId);
   queue = queue.filter(e => e.queueId !== id);
-  io.emit('queue_update', { queue, currentSong });
+  io.emit('queue_update', { queue, currentSong }); saveState();
   res.json({ ok: true });
 });
 
@@ -167,7 +188,7 @@ app.post('/api/host/reorder', (req, res) => {
   const map = {};
   queue.forEach(e => map[e.queueId] = e);
   queue = orderedIds.map(id => map[id]).filter(Boolean);
-  io.emit('queue_update', { queue, currentSong });
+  io.emit('queue_update', { queue, currentSong }); saveState();
   res.json({ ok: true });
 });
 
@@ -176,7 +197,7 @@ app.post('/api/host/move-up/:queueId', (req, res) => {
   const idx = queue.findIndex(e => e.queueId === id);
   if (idx > 0) {
     [queue[idx - 1], queue[idx]] = [queue[idx], queue[idx - 1]];
-    io.emit('queue_update', { queue, currentSong });
+    io.emit('queue_update', { queue, currentSong }); saveState();
   }
   res.json({ ok: true });
 });
@@ -186,7 +207,7 @@ app.post('/api/host/move-down/:queueId', (req, res) => {
   const idx = queue.findIndex(e => e.queueId === id);
   if (idx >= 0 && idx < queue.length - 1) {
     [queue[idx], queue[idx + 1]] = [queue[idx + 1], queue[idx]];
-    io.emit('queue_update', { queue, currentSong });
+    io.emit('queue_update', { queue, currentSong }); saveState();
   }
   res.json({ ok: true });
 });
