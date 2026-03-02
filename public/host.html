@@ -206,7 +206,7 @@ header {
       <div class="num" id="queueNum">0</div>
       <div class="lbl">in queue</div>
     </div>
-    <div id="playerBadge" onclick="manualOpenPlayer()" style="cursor:pointer;background:#374151;color:#fff;font-size:0.7rem;font-weight:800;padding:5px 10px;border-radius:8px;white-space:nowrap">🖥️ Player: closed</div>
+    <div id="playerBadge" onclick="manualOpenPlayer()" title="Click first to open KaraFun &amp; log in, then use Next Song" style="cursor:pointer;background:#374151;color:#fff;font-size:0.7rem;font-weight:800;padding:5px 10px;border-radius:8px;white-space:nowrap">🖥️ Open KaraFun</div>
     <span>🎉🎊</span>
   </div>
 </header>
@@ -319,13 +319,9 @@ function render() {
 }
 
 function manualOpenPlayer() {
-  if (state.currentSong) {
-    openInPlayerWindow(state.currentSong.song);
-  } else {
-    // Open a blank named window so it's ready to receive the first song
-    window.open('about:blank', PLAYER_WINDOW);
-    updatePlayerBadge(true);
-  }
+  // Always open base KaraFun web app first — user logs in, then Next Song navigates directly to songs
+  window.open('https://www.karafun.com/web/', PLAYER_WINDOW, `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
+  updatePlayerBadge(true);
 }
 
 async function nextSong() { await fetch('/api/host/next', { method:'POST' }); }
@@ -358,7 +354,7 @@ function openInPlayerWindow(song) {
 function updatePlayerBadge(open) {
   const badge = document.getElementById('playerBadge');
   if (badge) {
-    badge.textContent = open ? '🖥️ Player: LIVE' : '🖥️ Player: closed';
+    badge.textContent = open ? '🖥️ Player: LIVE' : '🖥️ Open KaraFun';
     badge.style.background = open ? '#22c55e' : '#374151';
   }
 }
