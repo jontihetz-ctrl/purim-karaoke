@@ -76,15 +76,9 @@
     @page { margin: 10mm; size: A4; }
   }
 
-  /* 2×2 grid of cards per page */
+  /* One card per page */
   .card-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
-    gap: 8mm;
-    width: 100%;
-    height: 277mm; /* A4 height minus margins */
-    page-break-after: always;
+    display: block;
   }
 
   /* Individual table card */
@@ -96,10 +90,14 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 12px 10px;
+    padding: 20px 16px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    width: 190mm;
+    height: 267mm;
+    margin: 0 auto;
+    page-break-after: always;
   }
 
   /* Decorative dots background */
@@ -117,15 +115,15 @@
   /* Purple top banner */
   .card-banner {
     background: linear-gradient(135deg, #5b1fa8, #7c3aed, #a855f7);
-    width: calc(100% + 20px);
-    margin: -12px -10px 10px;
-    padding: 8px 10px;
-    border-bottom: 2px solid #f5c518;
+    width: calc(100% + 32px);
+    margin: -20px -16px 16px;
+    padding: 20px 16px;
+    border-bottom: 3px solid #f5c518;
     position: relative;
   }
   .card-banner-title {
     font-family: Georgia, serif;
-    font-size: 0.95rem;
+    font-size: 1.6rem;
     font-weight: 900;
     color: #f5c518;
     letter-spacing: 0.04em;
@@ -133,70 +131,70 @@
   }
   .card-banner-sub {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.6rem;
+    font-size: 1rem;
     color: rgba(255,255,255,0.8);
-    margin-top: 1px;
+    margin-top: 4px;
   }
 
   /* QR code */
   .card-qr {
-    width: 140px;
-    height: 140px;
-    border: 4px solid #f5c518;
-    border-radius: 10px;
+    width: 260px;
+    height: 260px;
+    border: 6px solid #f5c518;
+    border-radius: 16px;
     background: #fff;
-    padding: 4px;
-    margin: 6px 0;
+    padding: 6px;
+    margin: 20px 0;
     position: relative;
   }
-  .card-qr img { width: 100%; height: 100%; display: block; border-radius: 4px; }
+  .card-qr img { width: 100%; height: 100%; display: block; border-radius: 8px; }
 
   /* CTA text */
   .card-cta {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 1rem;
+    font-size: 2rem;
     font-weight: 900;
     color: #f5c518;
-    margin: 4px 0 2px;
+    margin: 8px 0 4px;
     position: relative;
   }
   .card-sub {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    font-size: 0.62rem;
+    font-size: 1.1rem;
     color: #c4a0ff;
     position: relative;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   /* URL display */
   .card-url {
     font-family: 'Courier New', monospace;
-    font-size: 0.55rem;
+    font-size: 0.85rem;
     color: #6b5a8a;
-    margin-top: 6px;
+    margin-top: 14px;
     word-break: break-all;
     position: relative;
-    padding: 0 4px;
+    padding: 0 8px;
   }
 
   /* Bottom decorations */
   .card-footer {
-    font-size: 1rem;
-    margin-top: 4px;
+    font-size: 2rem;
+    margin-top: 14px;
     position: relative;
-    letter-spacing: 3px;
+    letter-spacing: 6px;
   }
 
   /* Purim emoji corners */
   .corner {
     position: absolute;
-    font-size: 1.1rem;
-    opacity: 0.5;
+    font-size: 2rem;
+    opacity: 0.4;
   }
-  .corner-tl { top: 36px; left: 8px; }
-  .corner-tr { top: 36px; right: 8px; }
-  .corner-bl { bottom: 6px; left: 8px; }
-  .corner-br { bottom: 6px; right: 8px; }
+  .corner-tl { top: 60px; left: 16px; }
+  .corner-tr { top: 60px; right: 16px; }
+  .corner-bl { bottom: 16px; left: 16px; }
+  .corner-br { bottom: 16px; right: 16px; }
 </style>
 </head>
 <body>
@@ -208,9 +206,9 @@
     <label>Karaoke URL (guests will scan this)</label>
     <input type="text" id="urlInput" placeholder="e.g. http://192.168.1.50:3000" value="http://172.31.108.148:3000" oninput="updateCards()">
     <label>Number of cards to print</label>
-    <input type="number" id="countInput" min="1" max="40" value="8" oninput="updateCards()">
+    <input type="number" id="countInput" min="1" max="40" value="4" oninput="updateCards()">
     <button class="print-btn" onclick="window.print()">🖨️ Print Now</button>
-    <div class="layout-note">2 cards per row · 4 per A4 page · cut along the borders</div>
+    <div class="layout-note">1 card per A4 page · one per table</div>
   </div>
 
   <div class="print-sheet ready" id="printSheet"></div>
@@ -221,7 +219,7 @@
 
 <script>
 function makeCard(url) {
-  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=2&data=${encodeURIComponent(url)}`;
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=2&data=${encodeURIComponent(url)}`;
   return `
     <div class="table-card">
       <div class="card-banner">
@@ -247,16 +245,10 @@ function updateCards() {
   const url = document.getElementById('urlInput').value.trim() || 'http://192.168.1.x:3000';
   const count = Math.max(1, Math.min(40, parseInt(document.getElementById('countInput').value) || 8));
 
-  // Build pages (4 cards per page)
-  let pages = '';
-  for (let i = 0; i < count; i += 4) {
-    const cardsInPage = Math.min(4, count - i);
-    let cards = '';
-    for (let j = 0; j < cardsInPage; j++) cards += makeCard(url);
-    // Pad to 4 if last page has fewer
-    for (let j = cardsInPage; j < 4; j++) cards += '<div class="table-card" style="border-style:dashed;opacity:0.2"></div>';
-    pages += `<div class="card-grid">${cards}</div>`;
-  }
+  // One card per page
+  let pages = '<div class="card-grid">';
+  for (let i = 0; i < count; i++) pages += makeCard(url);
+  pages += '</div>';
 
   document.getElementById('printSheet').innerHTML = pages;
   document.getElementById('printSheetActual').innerHTML = pages;
