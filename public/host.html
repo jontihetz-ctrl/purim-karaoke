@@ -341,7 +341,7 @@ function getPlayLink(song) {
   if (song.source === 'jkaraoke') {
     return `https://jkaraoke.com/music/play/${song.id}/${slug(song.title)}`;
   } else {
-    return `https://www.karafun.com/web/#song/${song.id}`;
+    return `https://www.karafun.com/web/?song=${song.id}`;
   }
 }
 
