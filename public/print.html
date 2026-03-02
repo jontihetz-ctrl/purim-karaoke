@@ -236,10 +236,15 @@
     <h2>🖨️ Purim Torah Table Card Generator</h2>
     <label>Karaoke URL (guests scan this)</label>
     <input type="text" id="urlInput" placeholder="e.g. http://192.168.1.50:3000" value="http://172.31.108.148:3000" oninput="updateCards()">
+    <label>Style</label>
+    <div style="display:flex;gap:10px;margin-bottom:14px">
+      <button id="styleGemara" onclick="setStyle('gemara')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #f5c518;background:#2d1555;color:#f5c518;font-weight:800;cursor:pointer;font-size:0.85rem">📜 Gemara Page</button>
+      <button id="styleQR" onclick="setStyle('qr')" style="flex:1;padding:10px;border-radius:8px;border:2px solid #3d1f7a;background:transparent;color:#a89ec9;font-weight:800;cursor:pointer;font-size:0.85rem">📱 QR Code Only</button>
+    </div>
     <label>Number of cards</label>
     <input type="number" id="countInput" min="1" max="30" value="4" oninput="updateCards()">
     <button class="print-btn" onclick="window.print()">🖨️ Print Now</button>
-    <div class="layout-note">1 full A4 page per table · one per table</div>
+    <div class="layout-note" id="layoutNote">1 full A4 page per table · one per table</div>
   </div>
   <div class="print-sheet ready" id="printSheet"></div>
 </div>
@@ -247,6 +252,71 @@
 <div class="print-sheet" id="printSheetActual"></div>
 
 <script>
+let currentStyle = 'gemara';
+
+function setStyle(s) {
+  currentStyle = s;
+  document.getElementById('styleGemara').style.borderColor = s === 'gemara' ? '#f5c518' : '#3d1f7a';
+  document.getElementById('styleGemara').style.background  = s === 'gemara' ? '#2d1555' : 'transparent';
+  document.getElementById('styleGemara').style.color       = s === 'gemara' ? '#f5c518' : '#a89ec9';
+  document.getElementById('styleQR').style.borderColor     = s === 'qr' ? '#f5c518' : '#3d1f7a';
+  document.getElementById('styleQR').style.background      = s === 'qr' ? '#2d1555' : 'transparent';
+  document.getElementById('styleQR').style.color           = s === 'qr' ? '#f5c518' : '#a89ec9';
+  document.getElementById('layoutNote').textContent = s === 'qr' ? '1 QR card per A4 page · big and scannable' : '1 full A4 page per table · one per table';
+  updateCards();
+}
+
+function makeQRCard(url) {
+  const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=800x800&margin=4&data=${encodeURIComponent(url)}`;
+  return `
+  <div style="
+    width:194mm; min-height:277mm; margin:0 auto; page-break-after:always;
+    background:#1a0a2e;
+    border:5px solid #f5c518;
+    border-radius:14px;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:center;
+    text-align:center;
+    padding:24px 20px;
+    font-family:'Times New Roman',Times,serif;
+    position:relative;
+    overflow:hidden;
+  ">
+    <!-- dot background -->
+    <div style="position:absolute;inset:0;background-image:radial-gradient(circle,#f5c51818 1px,transparent 1px),radial-gradient(circle,#7c3aed18 1px,transparent 1px);background-size:22px 22px,36px 36px;background-position:0 0,11px 11px;pointer-events:none"></div>
+
+    <div style="position:relative;z-index:1;width:100%">
+      <!-- Header -->
+      <div style="background:linear-gradient(135deg,#3b0d82,#5b1fa8,#7c3aed);border-radius:10px;padding:14px 16px;margin-bottom:24px;border:2px solid #f5c518">
+        <div style="font-size:1.4rem;font-weight:900;color:#f5c518;letter-spacing:0.05em">👑 AISH HATORAH JHB 👑</div>
+        <div style="font-size:0.95rem;color:rgba(255,255,255,0.85);margin-top:4px">🎭 Purim Karaoke 2026 · 5786 🎭</div>
+      </div>
+
+      <!-- CTA -->
+      <div style="font-size:2rem;font-weight:900;color:#f5c518;margin-bottom:6px">🎤 Sing Tonight!</div>
+      <div style="font-size:1.1rem;color:#c4a0ff;margin-bottom:24px;line-height:1.5">Scan to browse 70,000+ songs<br>&amp; add yourself to the queue</div>
+
+      <!-- QR -->
+      <div style="background:#fff;border:6px solid #f5c518;border-radius:16px;padding:8px;display:inline-block;margin-bottom:24px">
+        <img src="${qrUrl}" style="width:220px;height:220px;display:block;border-radius:8px">
+      </div>
+
+      <!-- Scan instruction -->
+      <div style="font-size:1.1rem;font-weight:700;color:#f5c518;margin-bottom:6px">📱 Point your phone camera here</div>
+      <div style="font-family:'Courier New',monospace;font-size:0.75rem;color:#4a3a6a;margin-bottom:28px">${url}</div>
+
+      <!-- Purim verse -->
+      <div style="border-top:1px solid #2d1555;padding-top:16px">
+        <div style="font-size:1rem;color:#7c3aed;direction:rtl;margin-bottom:4px">וְשָׂמַחְתָּ בְּחַגֶּךָ</div>
+        <div style="font-size:0.8rem;color:#6b5a8a;font-style:italic">"And you shall rejoice in your festival" — Devarim 16:14</div>
+      </div>
+
+      <!-- Footer emojis -->
+      <div style="font-size:2rem;margin-top:20px;letter-spacing:8px">🎭 🎉 ✡️ 🎊 🎤</div>
+    </div>
+  </div>`;
+}
+
 function makeCard(url) {
   const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=400x400&margin=2&data=${encodeURIComponent(url)}`;
   return `
@@ -357,7 +427,7 @@ function updateCards() {
   const url = document.getElementById('urlInput').value.trim() || 'http://192.168.x.x:3000';
   const count = Math.max(1, Math.min(30, parseInt(document.getElementById('countInput').value) || 4));
   let pages = '';
-  for (let i = 0; i < count; i++) pages += makeCard(url);
+  for (let i = 0; i < count; i++) pages += currentStyle === 'qr' ? makeQRCard(url) : makeCard(url);
   document.getElementById('printSheet').innerHTML = pages;
   document.getElementById('printSheetActual').innerHTML = pages;
 }
