@@ -319,8 +319,8 @@ function render() {
 }
 
 function manualOpenPlayer() {
-  // Always open base KaraFun web app first — user logs in, then Next Song navigates directly to songs
-  window.open('https://www.karafun.com/web/', PLAYER_WINDOW, `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
+  if (playerWin && !playerWin.closed) playerWin.close();
+  playerWin = window.open('https://www.karafun.com/web/', '_blank', `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
   updatePlayerBadge(true);
 }
 
@@ -342,12 +342,14 @@ function getPlayLink(song) {
 }
 
 // ---- Player Window ----
-const PLAYER_WINDOW = 'karaokePlayerWindow';
+let playerWin = null;
 let lastPlayedKey = null;
 
 function openInPlayerWindow(song) {
+  // Close old window first (KaraFun only allows one tab)
+  if (playerWin && !playerWin.closed) playerWin.close();
   const url = getPlayLink(song);
-  window.open(url, PLAYER_WINDOW, `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
+  playerWin = window.open(url, '_blank', `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
   updatePlayerBadge(true);
 }
 
