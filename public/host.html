@@ -319,8 +319,8 @@ function render() {
 }
 
 function manualOpenPlayer() {
-  if (playerWin && !playerWin.closed) playerWin.close();
-  playerWin = window.open('https://www.karafun.com/web/', '_blank', `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
+  // Open KaraFun base URL in the named window — log in, then click Dual Screen Display
+  window.open('https://www.karafun.com/web/', PLAYER_WIN, `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
   updatePlayerBadge(true);
 }
 
@@ -342,14 +342,13 @@ function getPlayLink(song) {
 }
 
 // ---- Player Window ----
-let playerWin = null;
+const PLAYER_WIN = 'kfPlayerWindow';
 let lastPlayedKey = null;
 
 function openInPlayerWindow(song) {
-  // Close old window first (KaraFun only allows one tab)
-  if (playerWin && !playerWin.closed) playerWin.close();
   const url = getPlayLink(song);
-  playerWin = window.open(url, '_blank', `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
+  // Navigate the existing named window — keeps Dual Screen Display popup alive
+  window.open(url, PLAYER_WIN, `width=${screen.width},height=${screen.height},left=0,top=0,scrollbars=yes,resizable=yes`);
   updatePlayerBadge(true);
 }
 
