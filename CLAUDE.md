@@ -1,5 +1,12 @@
 # Claude Session Guide
 
+## Session Start Checklist
+
+At the start of every session, **always do this first**:
+1. Verify VPS connection by running `echo VPS_OK` through the bridge (see VPS Access below)
+2. If `$VPS_BRIDGE_URL` is already in the environment (set by the session-start hook), use it directly — no need to `source vps.env`
+3. Confirm connection before proceeding with any task
+
 ## VPS Access
 
 All commands on the VPS run via the claude-bridge HTTP API (no SSH needed).
