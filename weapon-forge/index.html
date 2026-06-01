@@ -673,12 +673,10 @@ const pCtx = previewCanvas.getContext('2d');
 // ============================================================
 // TEMPLATES (16x16, null = transparent)
 // ============================================================
-const T = {
-  // shortcuts
-  _: null, W: '#ffffff', L: '#e8e8e8', D: '#9e9e9e', K: '#505050',
-  G: '#f0c040', H: '#a0623e', B: '#6b3a1f',
-  S: '#40a0ff', M: '#2060d0',
-};
+// template colour shortcuts — must be plain vars so the array literals resolve them
+const _ = null, W = '#ffffff', L = '#e8e8e8', D = '#9e9e9e', K = '#505050',
+      G = '#f0c040', H = '#a0623e', B = '#6b3a1f',
+      S = '#40a0ff', M = '#2060d0';
 
 const TEMPLATES = {
   blank: new Array(256).fill(null),
