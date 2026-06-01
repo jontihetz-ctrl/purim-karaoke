@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚔️ Minecraft Weapon Forge</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  h1 {
+    font-family: 'Press Start 2P', monospace;
+    color: #FFD700;
+    text-align: center;
+    font-size: clamp(12px, 2.5vw, 20px);
+    text-shadow: 3px 3px 0 #7a5c00, 0 0 20px rgba(255,215,0,0.4);
+    margin-bottom: 8px;
+    padding: 16px;
+  }
+
+  .subtitle {
+    font-family: 'Press Start 2P', monospace;
+    color: #4CAF50;
+    text-align: center;
+    font-size: clamp(6px, 1.2vw, 9px);
+    margin-bottom: 20px;
+    opacity: 0.8;
+  }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 340px 1fr 260px;
+    gap: 16px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 900px) {
+    .main-layout { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: #2d2d2d;
+    border: 2px solid #404040;
+    border-radius: 4px;
+    padding: 16px;
+  }
+
+  .panel-title {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #4CAF50;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid #404040;
+    padding-bottom: 8px;
+  }
+
+  /* ===== EDITOR ===== */
+  .editor-panel { min-width: 0; }
+
+  .toolbar {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tool-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    background: #1a1a1a;
+    border: 2px solid #404040;
+    color: #ccc;
+    padding: 6px 8px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.1s;
+    white-space: nowrap;
+  }
+  .tool-btn:hover { border-color: #4CAF50; color: #4CAF50; }
+  .tool-btn.active { border-color: #FFD700; color: #FFD700; background: #2a2a00; }
+
+  .canvas-wrapper {
+    position: relative;
+    display: inline-block;
+    cursor: crosshair;
+    touch-action: none;
+  }
+  .canvas-wrapper.eraser-mode { cursor: cell; }
+  .canvas-wrapper.fill-mode { cursor: copy; }
+
+  #pixelCanvas {
+    display: block;
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: 2px solid #555;
+  }
+
+  #gridCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    pointer-events: none;
+    image-rendering: pixelated;
+  }
+
+  .templates-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .tpl-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    background: #1a1a1a;
+    border: 2px solid #404040;
+    color: #aaa;
+    padding: 5px 7px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.1s;
+  }
+  .tpl-btn:hover { border-color: #4CAF50; color: #fff; }
+
+  .color-section { margin-top: 12px; }
+
+  .current-color-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .current-color-swatch {
+    width: 30px;
+    height: 30px;
+    border: 2px solid #888;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+
+  .current-color-label {
+    font-size: 11px;
+    color: #aaa;
+  }
+
+  #customColorPicker {
+    opacity: 0;
+    position: absolute;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
+
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 28px);
+    gap: 3px;
+  }
+
+  .color-cell {
+    width: 28px;
+    height: 28px;
+    border: 2px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.1s;
+  }
+  .color-cell:hover { transform: scale(1.2); border-color: #fff; z-index: 1; position: relative; }
+  .color-cell.selected { border-color: #FFD700 !important; transform: scale(1.15); position: relative; z-index: 1; }
+
+  /* ===== CONFIG ===== */
+  .config-panel {}
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  label {
+    display: block;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: #aaa;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+
+  input[type="text"], select {
+    width: 100%;
+    background: #1a1a1a;
+    border: 2px solid #404040;
+    color: #e0e0e0;
+    padding: 8px 10px;
+    font-size: 13px;
+    border-radius: 2px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  input[type="text"]:focus, select:focus { border-color: #4CAF50; }
+  select option { background: #1a1a1a; }
+
+  .name-row {
+    display: flex;
+    gap: 8px;
+    align-items: stretch;
+  }
+  .name-row input { flex: 1; }
+  .rand-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    background: #1a1a1a;
+    border: 2px solid #404040;
+    color: #aaa;
+    padding: 0 10px;
+    cursor: pointer;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .rand-btn:hover { border-color: #4CAF50; color: #4CAF50; }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  input[type="range"] {
+    flex: 1;
+    accent-color: #4CAF50;
+    cursor: pointer;
+  }
+  .slider-val {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #FFD700;
+    min-width: 40px;
+    text-align: right;
+  }
+
+  .enchant-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+  }
+
+  .enchant-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    padding: 5px 6px;
+    border: 1px solid #404040;
+    border-radius: 2px;
+    transition: background 0.1s;
+  }
+  .enchant-item:hover { background: #333; }
+  .enchant-item input[type="checkbox"] {
+    accent-color: #b07eff;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+  .enchant-item span {
+    font-size: 11px;
+    color: #b07eff;
+  }
+
+  /* ===== PREVIEW ===== */
+  .preview-panel {}
+
+  .preview-art {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  #previewCanvas {
+    image-rendering: pixelated;
+    image-rendering: crisp-edges;
+    border: 2px solid #404040;
+    background: #111;
+  }
+
+  .mc-tooltip {
+    background: linear-gradient(to bottom, #100010, #280028);
+    border: 1px solid #5000a0;
+    box-shadow: inset 0 0 0 1px #000, 2px 2px 0 #000;
+    padding: 10px 12px;
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 1.6;
+    min-height: 60px;
+  }
+
+  .mc-name { color: #FFD700; font-weight: bold; margin-bottom: 4px; }
+  .mc-type { color: #aaa; font-size: 11px; margin-bottom: 6px; }
+  .mc-stat { color: #ccc; font-size: 11px; }
+  .mc-enchant { color: #b07eff; font-size: 11px; }
+  .mc-lore { color: #aaa; font-style: italic; font-size: 11px; margin-top: 6px; }
+
+  /* ===== FORGE BUTTON ===== */
+  .forge-section {
+    text-align: center;
+    margin-top: 20px;
+    max-width: 1100px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  #forgeBtn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(10px, 2vw, 15px);
+    background: linear-gradient(to bottom, #1a4a1a, #0d2e0d);
+    border: 3px solid #4CAF50;
+    color: #FFD700;
+    padding: 18px 40px;
+    cursor: pointer;
+    border-radius: 4px;
+    text-shadow: 1px 1px 0 #7a5c00;
+    box-shadow: 0 0 20px rgba(76,175,80,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+  #forgeBtn:hover {
+    background: linear-gradient(to bottom, #1e5a1e, #0f3a0f);
+    box-shadow: 0 0 35px rgba(76,175,80,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+    transform: translateY(-1px);
+  }
+  #forgeBtn:active { transform: translateY(1px); }
+
+  @keyframes forgeShake {
+    0%, 100% { transform: translateX(0); }
+    10% { transform: translateX(-4px) rotate(-1deg); }
+    20% { transform: translateX(4px) rotate(1deg); }
+    30% { transform: translateX(-4px); }
+    40% { transform: translateX(4px); }
+    50% { transform: translateX(-2px); }
+    60% { transform: translateX(2px); }
+    70% { transform: translateX(-1px); }
+    80% { transform: translateX(1px); }
+  }
+  @keyframes forgeGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(76,175,80,0.3); }
+    50% { box-shadow: 0 0 60px rgba(255,215,0,0.8), 0 0 100px rgba(76,175,80,0.5); }
+  }
+  #forgeBtn.forging {
+    animation: forgeShake 0.5s ease, forgeGlow 0.5s ease;
+  }
+
+  #forgeStatus {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 9px;
+    color: #4CAF50;
+    margin-top: 10px;
+    min-height: 20px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  #forgeStatus.visible { opacity: 1; }
+
+  /* ===== INSTALL ===== */
+  .install-section {
+    max-width: 1100px;
+    margin: 16px auto 0;
+  }
+
+  details {
+    background: #2d2d2d;
+    border: 2px solid #404040;
+    border-radius: 4px;
+    padding: 12px 16px;
+  }
+
+  summary {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #4CAF50;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  summary::before { content: '▶'; font-size: 8px; transition: transform 0.2s; }
+  details[open] summary::before { transform: rotate(90deg); }
+  summary::-webkit-details-marker { display: none; }
+
+  .install-steps {
+    margin-top: 14px;
+    counter-reset: step;
+  }
+
+  .install-step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Press Start 2P', monospace;
+    font-size: 8px;
+    color: #FFD700;
+    background: #1a1a1a;
+    border: 2px solid #FFD700;
+    min-width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .step-text {
+    font-size: 12px;
+    color: #ccc;
+    line-height: 1.5;
+    padding-top: 5px;
+  }
+
+  .step-text code {
+    background: #1a1a1a;
+    border: 1px solid #555;
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: #FFD700;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<h1>⚔️ MINECRAFT WEAPON FORGE ⚔️</h1>
+<p class="subtitle">Design your Bedwars weapon &amp; forge a real .mcaddon!</p>
+
+<div class="main-layout">
+
+  <!-- ===== LEFT: PIXEL EDITOR ===== -->
+  <div class="panel editor-panel">
+    <div class="panel-title">🎨 Pixel Art Editor</div>
+
+    <div class="toolbar">
+      <button class="tool-btn active" id="toolDraw" onclick="setTool('draw')">✏️ Draw</button>
+      <button class="tool-btn" id="toolErase" onclick="setTool('erase')">🧹 Erase</button>
+      <button class="tool-btn" id="toolFill" onclick="setTool('fill')">🪣 Fill</button>
+      <button class="tool-btn" id="undoBtn" onclick="undo()">↩ Undo</button>
+      <button class="tool-btn" id="clearBtn" onclick="clearCanvas()">🗑 Clear</button>
+    </div>
+
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <canvas id="pixelCanvas" width="320" height="320"></canvas>
+      <canvas id="gridCanvas" width="320" height="320"></canvas>
+    </div>
+
+    <div class="templates-row">
+      <span style="font-family:'Press Start 2P',monospace;font-size:7px;color:#888;line-height:2em;">Templates:</span>
+      <button class="tpl-btn" onclick="loadTemplate('blank')">Blank</button>
+      <button class="tpl-btn" onclick="loadTemplate('sword')">Sword</button>
+      <button class="tpl-btn" onclick="loadTemplate('axe')">Axe</button>
+      <button class="tpl-btn" onclick="loadTemplate('bow')">Bow</button>
+      <button class="tpl-btn" onclick="loadTemplate('trident')">Trident</button>
+    </div>
+
+    <div class="color-section">
+      <div class="current-color-row">
+        <div class="current-color-swatch" id="currentSwatch" onclick="openColorPicker()" title="Click for custom color"></div>
+        <input type="color" id="customColorPicker" onchange="setCustomColor(this.value)">
+        <span class="current-color-label">Current color (click for custom)</span>
+      </div>
+      <div class="palette-grid" id="paletteGrid"></div>
+    </div>
+  </div>
+
+  <!-- ===== MIDDLE: CONFIG ===== -->
+  <div class="panel config-panel">
+    <div class="panel-title">⚙️ Weapon Config</div>
+
+    <div class="form-group">
+      <label>Weapon Name</label>
+      <div class="name-row">
+        <input type="text" id="weaponName" value="Shadow Fang" maxlength="40">
+        <button class="rand-btn" onclick="randomName()">🎲 Random</button>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Weapon Type</label>
+      <select id="weaponType" onchange="onTypeChange()">
+        <option value="sword">⚔️ Sword</option>
+        <option value="axe">🪓 Axe</option>
+        <option value="bow">🏹 Bow</option>
+        <option value="trident">🔱 Trident</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Damage: <span id="damageVal" style="color:#FFD700">7</span></label>
+      <div class="slider-row">
+        <input type="range" id="damageSlider" min="1" max="20" value="7"
+          oninput="document.getElementById('damageVal').textContent=this.value; updatePreview()">
+        <span class="slider-val" id="damageValSide">7 ⚔</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Durability: <span id="durabilityVal" style="color:#FFD700">500</span></label>
+      <div class="slider-row">
+        <input type="range" id="durabilitySlider" min="50" max="2000" value="500"
+          oninput="document.getElementById('durabilityVal').textContent=this.value; document.getElementById('durabilityValSide').textContent=this.value+' 🛡'; updatePreview()">
+        <span class="slider-val" id="durabilityValSide">500 🛡</span>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Enchantments</label>
+      <div class="enchant-grid" id="enchantGrid">
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_sharpness" onchange="updatePreview()">
+          <span>Sharpness</span>
+        </label>
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_fire_aspect" onchange="updatePreview()">
+          <span>Fire Aspect</span>
+        </label>
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_knockback" onchange="updatePreview()">
+          <span>Knockback</span>
+        </label>
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_unbreaking" onchange="updatePreview()">
+          <span>Unbreaking</span>
+        </label>
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_sweeping" onchange="updatePreview()">
+          <span>Sweeping Edge</span>
+        </label>
+        <label class="enchant-item">
+          <input type="checkbox" id="enc_looting" onchange="updatePreview()">
+          <span>Looting</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Lore (flavor text)</label>
+      <input type="text" id="loreText" placeholder="e.g. Forged in the End..." maxlength="60"
+        oninput="updatePreview()">
+    </div>
+
+    <div style="margin-top:6px;padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:2px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#888;margin-bottom:6px;">QUICK FILL</div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+        <button class="tool-btn" onclick="quickFill('#e8e8e8')" style="font-size:9px">⬜ Silver</button>
+        <button class="tool-btn" onclick="quickFill('#40a0ff')" style="font-size:9px">🟦 Blue</button>
+        <button class="tool-btn" onclick="quickFill('#f0c040')" style="font-size:9px">🟨 Gold</button>
+        <button class="tool-btn" onclick="quickFill('#b07eff')" style="font-size:9px">🟪 Purple</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== RIGHT: PREVIEW ===== -->
+  <div class="panel preview-panel">
+    <div class="panel-title">👁 Preview</div>
+
+    <div class="preview-art">
+      <canvas id="previewCanvas" width="128" height="128"></canvas>
+    </div>
+
+    <div class="mc-tooltip" id="mcTooltip">
+      <div class="mc-name" id="tip-name">Shadow Fang</div>
+      <div class="mc-type" id="tip-type">Sword</div>
+      <div class="mc-stat" id="tip-damage">+7 Attack Damage</div>
+      <div id="tip-enchants"></div>
+      <div class="mc-lore" id="tip-lore"></div>
+    </div>
+
+    <div style="margin-top:12px;padding:10px;background:#1a1a1a;border:1px solid #333;border-radius:2px;">
+      <div style="font-family:'Press Start 2P',monospace;font-size:7px;color:#888;margin-bottom:6px;">ITEM ID</div>
+      <div id="itemIdDisplay" style="font-size:10px;color:#4CAF50;font-family:monospace;word-break:break-all;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== FORGE BUTTON ===== -->
+<div class="forge-section">
+  <button id="forgeBtn" onclick="forgeWeapon()">⚔️ FORGE WEAPON ⚔️</button>
+  <div id="forgeStatus"></div>
+</div>
+
+<!-- ===== INSTALL INSTRUCTIONS ===== -->
+<div class="install-section">
+  <details>
+    <summary>How to Install Your .mcaddon</summary>
+    <div class="install-steps">
+      <div class="install-step">
+        <div class="step-num">1</div>
+        <div class="step-text">Click <strong style="color:#FFD700">⚔️ FORGE WEAPON</strong> and download the <code>.mcaddon</code> file.</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">2</div>
+        <div class="step-text">On your device, open the <strong>Files</strong> app and find the downloaded file. Tap it — Minecraft opens automatically and imports both packs!</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">3</div>
+        <div class="step-text">On PC: double-click the <code>.mcaddon</code> file. Minecraft Bedrock (Windows 10/11 edition) will open and import it automatically.</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">4</div>
+        <div class="step-text">In Minecraft, go to <strong>Play → Create New World</strong> (or edit existing) → <strong>Add-Ons</strong> → add both the <strong>Resource Pack</strong> and <strong>Behavior Pack</strong> from "My Packs".</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">5</div>
+        <div class="step-text">Start the world, then type in chat: <code>/give @s weaponforge:&lt;weapon_id&gt;</code> — your custom weapon appears in your hand!</div>
+      </div>
+      <div class="install-step">
+        <div class="step-num">💡</div>
+        <div class="step-text" style="color:#888">The item ID is shown in the preview panel. Replace spaces with underscores and use lowercase — e.g. <code>weaponforge:shadow_fang</code></div>
+      </div>
+    </div>
+  </details>
+</div>
+
+<script>
+// ============================================================
+// CONSTANTS & GLOBALS
+// ============================================================
+const GRID = 16;
+const CELL = 20; // pixels per cell (320 / 16)
+
+const PALETTE = [
+  // Row 1 — whites/grays/blacks
+  '#ffffff','#dddddd','#b0b0b0','#808080','#505050','#303030','#1a1a1a','#000000',
+  // Row 2 — reds/pinks/oranges
+  '#ff4444','#cc2222','#ff8844','#ff6622','#ffaa44','#ff8800','#ffdd44','#ffc200',
+  // Row 3 — yellows/greens
+  '#FFD700','#d4af00','#a0d040','#4CAF50','#228b22','#00a050','#00d080','#00b8a0',
+  // Row 4 — blues/purples
+  '#40a0ff','#2060d0','#0040b0','#0020a0','#8040ff','#6020d0','#b07eff','#cc44ff',
+  // Row 5 — browns/skin tones
+  '#f0c040','#d4a020','#a06030','#6b3a1f','#a0623e','#7a3f2a','#3a1a00','#5a3010',
+  // Row 6 — misc cool
+  '#40ffff','#00c8c8','#ff40ff','#c000c0','#ff0088','#880000','#004400','#000044',
+];
+
+let pixels = new Array(GRID * GRID).fill(null); // null = transparent
+let undoStack = [];
+let currentTool = 'draw';
+let currentColor = PALETTE[0];
+let isDrawing = false;
+
+const canvas = document.getElementById('pixelCanvas');
+const ctx = canvas.getContext('2d');
+const gridCanvas = document.getElementById('gridCanvas');
+const gCtx = gridCanvas.getContext('2d');
+const previewCanvas = document.getElementById('previewCanvas');
+const pCtx = previewCanvas.getContext('2d');
+
+// ============================================================
+// TEMPLATES (16x16, null = transparent)
+// ============================================================
+const T = {
+  // shortcuts
+  _: null, W: '#ffffff', L: '#e8e8e8', D: '#9e9e9e', K: '#505050',
+  G: '#f0c040', H: '#a0623e', B: '#6b3a1f',
+  S: '#40a0ff', M: '#2060d0',
+};
+
+const TEMPLATES = {
+  blank: new Array(256).fill(null),
+
+  sword: [
+    // 0         1         2         3         4         5         6         7         8         9         10        11        12        13        14        15
+    _,_,_,_,_,_,_,_,_,_,_,_,_,_,L,_,
+    _,_,_,_,_,_,_,_,_,_,_,_,_,L,D,_,
+    _,_,_,_,_,_,_,_,_,_,_,_,L,D,_,_,
+    _,_,_,_,_,_,_,_,_,_,_,L,D,_,_,_,
+    _,_,_,_,_,_,_,_,_,_,L,D,_,_,_,_,
+    _,_,_,_,_,_,_,_,_,L,D,_,_,_,_,_,
+    _,_,_,_,_,_,_,_,L,D,_,_,_,_,_,_,
+    _,_,G,G,G,G,G,L,D,G,G,G,G,_,_,_,
+    _,_,G,G,G,G,L,D,G,G,G,G,_,_,_,_,
+    _,_,_,_,_,L,D,_,_,_,_,_,_,_,_,_,
+    _,_,_,_,L,D,_,_,_,_,_,_,_,_,_,_,
+    _,_,_,H,B,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,H,B,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,H,B,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    H,B,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    B,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+  ].map(v=>v===undefined?null:v),
+
+  axe: [
+    _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,_,_,_,_,_,_,_,_,_,L,L,L,_,_,
+    _,_,_,_,_,_,_,_,_,_,L,D,D,L,W,_,
+    _,_,_,_,_,_,_,_,_,L,D,D,D,W,_,_,
+    _,_,_,_,_,_,_,_,L,D,D,D,W,_,_,_,
+    _,_,_,_,_,_,_,L,D,D,D,W,_,_,_,_,
+    _,_,_,_,_,_,L,D,D,D,W,_,_,_,_,_,
+    _,_,_,_,_,L,D,D,D,W,L,L,_,_,_,_,
+    _,_,_,_,L,D,D,D,W,_,_,L,L,_,_,_,
+    _,_,_,H,B,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,H,B,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,H,B,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    H,B,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    B,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+  ].map(v=>v===undefined?null:v),
+
+  bow: [
+    _,_,_,_,_,_,_,_,_,_,_,_,H,_,_,_,
+    _,_,_,_,_,_,_,_,_,_,_,H,_,H,_,_,
+    _,_,_,_,_,_,_,_,_,_,H,_,_,_,H,_,
+    _,_,_,_,_,_,_,_,_,H,_,_,_,_,_,H,
+    _,_,_,_,_,_,_,_,H,_,'#ddd',_,_,_,_,_,
+    _,_,_,_,_,_,_,H,_,'#ddd',_,_,_,_,_,_,
+    _,_,_,_,_,_,H,_,'#ddd',_,_,_,_,_,_,_,
+    _,_,_,_,_,H,_,'#ddd',_,_,_,_,_,_,_,_,
+    _,_,_,_,H,_,'#ddd',_,_,_,_,_,_,_,_,_,
+    _,_,_,H,_,'#ddd',_,_,_,_,_,_,_,_,_,_,
+    _,_,H,_,'#ddd',_,_,_,_,_,_,_,_,_,_,_,
+    _,H,_,_,_,H,_,_,_,_,_,_,_,_,_,_,
+    H,_,_,_,_,_,H,_,_,_,_,_,_,_,_,_,
+    _,H,_,_,_,_,_,H,_,_,_,_,_,_,_,_,
+    _,_,H,_,_,_,_,_,H,_,_,_,_,_,_,_,
+    _,_,_,H,H,H,H,H,_,_,_,_,_,_,_,_,
+  ].map(v=>v===undefined?null:v),
+
+  trident: [
+    _,_,_,_,_,_,_,S,M,_,_,_,_,_,_,_,
+    _,_,_,_,_,_,S,M,S,M,_,_,_,_,_,_,
+    _,_,_,_,_,_,S,M,S,M,_,_,_,_,_,_,
+    _,S,M,_,_,_,S,M,S,_,_,_,S,M,_,_,
+    _,S,M,_,_,S,M,_,_,_,_,S,M,_,_,_,
+    _,_,S,M,S,M,_,_,_,_,S,M,_,_,_,_,
+    _,_,_,S,M,_,_,_,_,S,M,_,_,_,_,_,
+    _,_,_,_,S,M,_,_,S,M,_,_,_,_,_,_,
+    _,_,_,_,_,S,M,S,M,_,_,_,_,_,_,_,
+    _,_,_,_,_,_,S,M,_,_,_,_,_,_,_,_,
+    _,_,_,_,_,S,M,_,_,_,_,_,_,_,_,_,
+    _,_,_,_,S,M,_,_,_,_,_,_,_,_,_,_,
+    _,_,_,S,M,_,_,_,_,_,_,_,_,_,_,_,
+    _,_,S,M,_,_,_,_,_,_,_,_,_,_,_,_,
+    _,S,M,_,_,_,_,_,_,_,_,_,_,_,_,_,
+    S,M,_,_,_,_,_,_,_,_,_,_,_,_,_,_,
+  ].map(v=>v===undefined?null:v),
+};
+
+// ============================================================
+// RANDOM NAMES
+// ============================================================
+const RANDOM_NAMES = [
+  'Shadow Fang','Blaze Reaper','Void Cleaver','Storm Breaker','Iron Titan',
+  'Crimson Edge','Frost Bite','Thunder Strike','Ember Shard','Soul Ripper',
+  'Night Slayer','Blood Moon','Dragon Tooth','Dark Matter','Chaos Blade',
+  'Venom Strike','Phantom Claw','Wrath Bringer','Death\'s Edge','Nether Scythe',
+  'Titan\'s Grasp','Eclipse Blade','Burning Wrath','Glacier Fang','Lava Surge',
+  'Spirit Crush','Bone Splitter','War Hymn','Obsidian Edge','Ruby Carnage',
+  'Sky Piercer','Inferno Wing','Tempest Claw','Golden Bane','Aqua Shatter',
+  'Emerald Doom','Plague Tongue','Comet Crash','Star Forged','King\'s Fury',
+];
+
+function randomName() {
+  const n = RANDOM_NAMES[Math.floor(Math.random() * RANDOM_NAMES.length)];
+  document.getElementById('weaponName').value = n;
+  updatePreview();
+}
+
+// ============================================================
+// PALETTE
+// ============================================================
+function buildPalette() {
+  const grid = document.getElementById('paletteGrid');
+  grid.innerHTML = '';
+  PALETTE.forEach((col, i) => {
+    const cell = document.createElement('div');
+    cell.className = 'color-cell' + (col === currentColor ? ' selected' : '');
+    cell.style.background = col;
+    cell.title = col;
+    cell.dataset.index = i;
+    cell.addEventListener('click', () => selectColor(col, cell));
+    grid.appendChild(cell);
+  });
+}
+
+function selectColor(col, cellEl) {
+  currentColor = col;
+  document.getElementById('currentSwatch').style.background = col;
+  document.querySelectorAll('.color-cell').forEach(c => c.classList.remove('selected'));
+  if (cellEl) cellEl.classList.add('selected');
+  else {
+    // find matching
+    document.querySelectorAll('.color-cell').forEach(c => {
+      if (c.style.background === col || c.title === col) c.classList.add('selected');
+    });
+  }
+}
+
+function openColorPicker() {
+  const picker = document.getElementById('customColorPicker');
+  picker.style.pointerEvents = 'auto';
+  picker.click();
+  picker.style.pointerEvents = 'none';
+}
+
+function setCustomColor(val) {
+  currentColor = val;
+  document.getElementById('currentSwatch').style.background = val;
+  document.querySelectorAll('.color-cell').forEach(c => c.classList.remove('selected'));
+}
+
+// ============================================================
+// CANVAS DRAWING
+// ============================================================
+function renderCanvas() {
+  ctx.clearRect(0, 0, 320, 320);
+  for (let i = 0; i < GRID * GRID; i++) {
+    const x = (i % GRID) * CELL;
+    const y = Math.floor(i / GRID) * CELL;
+    if (pixels[i]) {
+      ctx.fillStyle = pixels[i];
+      ctx.fillRect(x, y, CELL, CELL);
+    } else {
+      // checkerboard for transparency
+      const cx = i % GRID, cy = Math.floor(i / GRID);
+      ctx.fillStyle = (cx + cy) % 2 === 0 ? '#333' : '#2a2a2a';
+      ctx.fillRect(x, y, CELL, CELL);
+    }
+  }
+  renderGrid();
+  updatePreviewCanvas();
+}
+
+function renderGrid() {
+  gCtx.clearRect(0, 0, 320, 320);
+  gCtx.strokeStyle = 'rgba(80,80,80,0.5)';
+  gCtx.lineWidth = 0.5;
+  for (let i = 0; i <= GRID; i++) {
+    gCtx.beginPath();
+    gCtx.moveTo(i * CELL, 0);
+    gCtx.lineTo(i * CELL, 320);
+    gCtx.stroke();
+    gCtx.beginPath();
+    gCtx.moveTo(0, i * CELL);
+    gCtx.lineTo(320, i * CELL);
+    gCtx.stroke();
+  }
+}
+
+function updatePreviewCanvas() {
+  pCtx.clearRect(0, 0, 128, 128);
+  const scale = 8;
+  for (let i = 0; i < GRID * GRID; i++) {
+    if (pixels[i]) {
+      const x = (i % GRID) * scale;
+      const y = Math.floor(i / GRID) * scale;
+      pCtx.fillStyle = pixels[i];
+      pCtx.fillRect(x, y, scale, scale);
+    }
+  }
+}
+
+function getPixelIndex(e) {
+  const rect = canvas.getBoundingClientRect();
+  let cx, cy;
+  if (e.touches) {
+    cx = e.touches[0].clientX - rect.left;
+    cy = e.touches[0].clientY - rect.top;
+  } else {
+    cx = e.clientX - rect.left;
+    cy = e.clientY - rect.top;
+  }
+  const scaleX = 320 / rect.width;
+  const scaleY = 320 / rect.height;
+  const px = Math.floor(cx * scaleX / CELL);
+  const py = Math.floor(cy * scaleY / CELL);
+  if (px < 0 || px >= GRID || py < 0 || py >= GRID) return -1;
+  return py * GRID + px;
+}
+
+function paintPixel(idx) {
+  if (idx < 0) return;
+  if (currentTool === 'draw') {
+    pixels[idx] = currentColor;
+  } else if (currentTool === 'erase') {
+    pixels[idx] = null;
+  }
+  renderCanvas();
+}
+
+function floodFill(idx, targetColor, replaceColor) {
+  if (idx < 0 || idx >= GRID * GRID) return;
+  if (pixels[idx] !== targetColor) return;
+  if (targetColor === replaceColor) return;
+  const stack = [idx];
+  const visited = new Set();
+  while (stack.length) {
+    const i = stack.pop();
+    if (i < 0 || i >= GRID * GRID) continue;
+    if (visited.has(i)) continue;
+    if (pixels[i] !== targetColor) continue;
+    visited.add(i);
+    pixels[i] = replaceColor;
+    const x = i % GRID, y = Math.floor(i / GRID);
+    if (x > 0) stack.push(i - 1);
+    if (x < GRID - 1) stack.push(i + 1);
+    if (y > 0) stack.push(i - GRID);
+    if (y < GRID - 1) stack.push(i + GRID);
+  }
+}
+
+canvas.addEventListener('mousedown', e => {
+  e.preventDefault();
+  if (currentTool === 'fill') {
+    const idx = getPixelIndex(e);
+    if (idx >= 0) {
+      pushUndo();
+      floodFill(idx, pixels[idx], currentColor);
+      renderCanvas();
+    }
+    return;
+  }
+  pushUndo();
+  isDrawing = true;
+  paintPixel(getPixelIndex(e));
+});
+canvas.addEventListener('mousemove', e => {
+  if (!isDrawing) return;
+  e.preventDefault();
+  paintPixel(getPixelIndex(e));
+});
+window.addEventListener('mouseup', () => { isDrawing = false; });
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  if (currentTool === 'fill') {
+    const idx = getPixelIndex(e);
+    if (idx >= 0) { pushUndo(); floodFill(idx, pixels[idx], currentColor); renderCanvas(); }
+    return;
+  }
+  pushUndo();
+  isDrawing = true;
+  paintPixel(getPixelIndex(e));
+}, { passive: false });
+canvas.addEventListener('touchmove', e => {
+  e.preventDefault();
+  if (!isDrawing) return;
+  paintPixel(getPixelIndex(e));
+}, { passive: false });
+canvas.addEventListener('touchend', () => { isDrawing = false; });
+
+// ============================================================
+// TOOLS / UNDO
+// ============================================================
+function setTool(t) {
+  currentTool = t;
+  document.querySelectorAll('.tool-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tool' + t.charAt(0).toUpperCase() + t.slice(1)).classList.add('active');
+  const wrapper = document.getElementById('canvasWrapper');
+  wrapper.className = 'canvas-wrapper' + (t === 'erase' ? ' eraser-mode' : t === 'fill' ? ' fill-mode' : '');
+}
+
+function pushUndo() {
+  undoStack.push([...pixels]);
+  if (undoStack.length > 20) undoStack.shift();
+}
+
+function undo() {
+  if (undoStack.length === 0) return;
+  pixels = undoStack.pop();
+  renderCanvas();
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+});
+
+function clearCanvas() {
+  pushUndo();
+  pixels = new Array(GRID * GRID).fill(null);
+  renderCanvas();
+}
+
+function loadTemplate(name) {
+  pushUndo();
+  const tpl = TEMPLATES[name];
+  pixels = [...tpl];
+  renderCanvas();
+}
+
+function quickFill(color) {
+  pushUndo();
+  pixels = pixels.map(p => p !== null ? color : null);
+  renderCanvas();
+}
+
+// ============================================================
+// PREVIEW / TOOLTIP
+// ============================================================
+function getWeaponId() {
+  const name = document.getElementById('weaponName').value.trim() || 'my_weapon';
+  return name.toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_').replace(/^_|_$/g, '');
+}
+
+function updatePreview() {
+  const name = document.getElementById('weaponName').value || 'My Weapon';
+  const type = document.getElementById('weaponType');
+  const typeLabel = type.options[type.selectedIndex].text.replace(/^.+? /,'');
+  const dmg = document.getElementById('damageSlider').value;
+  const dur = document.getElementById('durabilitySlider').value;
+
+  document.getElementById('damageValSide').textContent = dmg + ' ⚔';
+  document.getElementById('damageVal').textContent = dmg;
+
+  document.getElementById('tip-name').textContent = name;
+  document.getElementById('tip-type').textContent = typeLabel;
+  document.getElementById('tip-damage').textContent = '+' + dmg + ' Attack Damage  •  ' + dur + ' Durability';
+
+  const enchants = ['sharpness','fire_aspect','knockback','unbreaking','sweeping','looting'];
+  const enchantLabels = { sharpness:'Sharpness V', fire_aspect:'Fire Aspect II', knockback:'Knockback II', unbreaking:'Unbreaking III', sweeping:'Sweeping Edge III', looting:'Looting III' };
+  const enchDiv = document.getElementById('tip-enchants');
+  enchDiv.innerHTML = '';
+  enchants.forEach(e => {
+    if (document.getElementById('enc_' + e)?.checked) {
+      const d = document.createElement('div');
+      d.className = 'mc-enchant';
+      d.textContent = enchantLabels[e];
+      enchDiv.appendChild(d);
+    }
+  });
+
+  const lore = document.getElementById('loreText').value;
+  document.getElementById('tip-lore').textContent = lore ? '"' + lore + '"' : '';
+
+  document.getElementById('itemIdDisplay').textContent = 'weaponforge:' + getWeaponId();
+}
+
+function onTypeChange() { updatePreview(); }
+
+// ============================================================
+// PNG GENERATION HELPERS
+// ============================================================
+function pixelsToBase64PNG() {
+  const off = document.createElement('canvas');
+  off.width = 16; off.height = 16;
+  const octx = off.getContext('2d');
+  octx.clearRect(0, 0, 16, 16);
+  for (let i = 0; i < 256; i++) {
+    if (pixels[i]) {
+      const x = i % 16, y = Math.floor(i / 16);
+      octx.fillStyle = pixels[i];
+      octx.fillRect(x, y, 1, 1);
+    }
+  }
+  return off.toDataURL('image/png').split(',')[1];
+}
+
+function makePackIconBase64() {
+  const off = document.createElement('canvas');
+  off.width = 64; off.height = 64;
+  const octx = off.getContext('2d');
+  octx.fillStyle = '#1a2a1a';
+  octx.fillRect(0, 0, 64, 64);
+  octx.fillStyle = '#4CAF50';
+  octx.fillRect(2, 2, 60, 60);
+  octx.fillStyle = '#1a2a1a';
+  octx.fillRect(4, 4, 56, 56);
+  // draw a simple pixel sword
+  octx.fillStyle = '#FFD700';
+  const sw = [
+    [30,8],[30,12],[30,16],[30,20],[30,24],
+    [26,28],[28,28],[30,28],[32,28],[34,28],
+    [30,32],[28,34],[30,36],[32,36],[26,38],[28,40],[30,42],[32,44],[30,46],
+  ];
+  sw.forEach(([x,y]) => { octx.fillRect(x, y, 4, 4); });
+  return off.toDataURL('image/png').split(',')[1];
+}
+
+function base64ToUint8(b64) {
+  const bin = atob(b64);
+  const arr = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i);
+  return arr;
+}
+
+// ============================================================
+// MCADDON GENERATION
+// ============================================================
+async function forgeWeapon() {
+  const btn = document.getElementById('forgeBtn');
+  btn.classList.add('forging');
+  setTimeout(() => btn.classList.remove('forging'), 600);
+
+  const name = document.getElementById('weaponName').value.trim() || 'My Weapon';
+  const weaponId = getWeaponId();
+  const damage = parseInt(document.getElementById('damageSlider').value);
+  const durability = parseInt(document.getElementById('durabilitySlider').value);
+  const lore = document.getElementById('loreText').value.trim();
+  const typeEl = document.getElementById('weaponType');
+  const typeName = typeEl.options[typeEl.selectedIndex].text.replace(/^.+? /,'');
+
+  const enchants = [
+    { id: 'sharpness',   label: 'Sharpness V' },
+    { id: 'fire_aspect', label: 'Fire Aspect II' },
+    { id: 'knockback',   label: 'Knockback II' },
+    { id: 'unbreaking',  label: 'Unbreaking III' },
+    { id: 'sweeping',    label: 'Sweeping Edge III' },
+    { id: 'looting',     label: 'Looting III' },
+  ].filter(e => document.getElementById('enc_' + e.id)?.checked);
+
+  // Build lore lines (Minecraft color codes)
+  const loreLine = [];
+  enchants.forEach(e => loreLine.push('§5' + e.label));
+  if (lore) loreLine.push('§7' + lore);
+
+  const bpUUID  = crypto.randomUUID();
+  const rpUUID  = crypto.randomUUID();
+  const bpModUUID = crypto.randomUUID();
+  const rpModUUID = crypto.randomUUID();
+
+  // ── BEHAVIOR PACK MANIFEST ──────────────────────────────
+  const bpManifest = {
+    format_version: 2,
+    header: {
+      name: name + ' Behavior Pack',
+      description: 'Custom weapon: ' + name,
+      uuid: bpUUID,
+      version: [1, 0, 0],
+      min_engine_version: [1, 20, 0]
+    },
+    modules: [{
+      type: 'data',
+      uuid: bpModUUID,
+      version: [1, 0, 0]
+    }],
+    dependencies: [{ uuid: rpUUID, version: [1, 0, 0] }]
+  };
+
+  // ── RESOURCE PACK MANIFEST ──────────────────────────────
+  const rpManifest = {
+    format_version: 2,
+    header: {
+      name: name + ' Resource Pack',
+      description: 'Custom weapon texture: ' + name,
+      uuid: rpUUID,
+      version: [1, 0, 0],
+      min_engine_version: [1, 20, 0]
+    },
+    modules: [{
+      type: 'resources',
+      uuid: rpModUUID,
+      version: [1, 0, 0]
+    }]
+  };
+
+  // ── ITEM JSON ───────────────────────────────────────────
+  const itemJson = {
+    format_version: '1.20.10',
+    'minecraft:item': {
+      description: {
+        identifier: 'weaponforge:' + weaponId,
+        category: 'Equipment'
+      },
+      components: {
+        'minecraft:display_name': { value: 'item.weaponforge:' + weaponId + '.name' },
+        'minecraft:icon': { texture: weaponId },
+        'minecraft:max_stack_size': 1,
+        'minecraft:durability': { max_durability: durability },
+        'minecraft:damage': { value: damage },
+        'minecraft:weapon': {},
+        'minecraft:hand_equipped': true,
+        'minecraft:enchantable': { value: 15, slot: 'sword' },
+        'minecraft:lore': loreLine
+      }
+    }
+  };
+
+  // ── ITEM TEXTURE JSON ───────────────────────────────────
+  const itemTexture = {
+    resource_pack_name: 'weaponforge',
+    texture_name: 'atlas.items',
+    texture_data: {
+      [weaponId]: { textures: 'textures/items/' + weaponId }
+    }
+  };
+
+  // ── LANG FILE ───────────────────────────────────────────
+  const langContent = `item.weaponforge:${weaponId}.name=${name}\n`;
+
+  // ── PNG DATA ────────────────────────────────────────────
+  const texturePng = base64ToUint8(pixelsToBase64PNG());
+  const iconPng    = base64ToUint8(makePackIconBase64());
+
+  // ── BUILD BEHAVIOR PACK ZIP ─────────────────────────────
+  const bpZip = new JSZip();
+  bpZip.file('manifest.json', JSON.stringify(bpManifest, null, 2));
+  bpZip.file('pack_icon.png', iconPng);
+  bpZip.file('items/' + weaponId + '.json', JSON.stringify(itemJson, null, 2));
+  const bpBlob = await bpZip.generateAsync({ type: 'uint8array' });
+
+  // ── BUILD RESOURCE PACK ZIP ─────────────────────────────
+  const rpZip = new JSZip();
+  rpZip.file('manifest.json', JSON.stringify(rpManifest, null, 2));
+  rpZip.file('pack_icon.png', iconPng);
+  rpZip.file('textures/items/' + weaponId + '.png', texturePng);
+  rpZip.file('textures/item_texture.json', JSON.stringify(itemTexture, null, 2));
+  rpZip.file('texts/en_US.lang', langContent);
+  const rpBlob = await rpZip.generateAsync({ type: 'uint8array' });
+
+  // ── BUILD .MCADDON (ZIP of both ZIPs) ───────────────────
+  const addonZip = new JSZip();
+  addonZip.file(weaponId + '_BP.mcpack', bpBlob);
+  addonZip.file(weaponId + '_RP.mcpack', rpBlob);
+  const addonBlob = await addonZip.generateAsync({ type: 'blob' });
+
+  // ── DOWNLOAD ─────────────────────────────────────────────
+  const url = URL.createObjectURL(addonBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name.replace(/[^a-zA-Z0-9]/g, '_') + '.mcaddon';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+
+  // ── STATUS ───────────────────────────────────────────────
+  const status = document.getElementById('forgeStatus');
+  status.textContent = 'Weapon forged! ⚔️  Download started!';
+  status.classList.add('visible');
+  setTimeout(() => status.classList.remove('visible'), 4000);
+}
+
+// ============================================================
+// DAMAGE SLIDER SYNC
+// ============================================================
+document.getElementById('damageSlider').addEventListener('input', function() {
+  document.getElementById('damageValSide').textContent = this.value + ' ⚔';
+  updatePreview();
+});
+
+// ============================================================
+// INIT
+// ============================================================
+buildPalette();
+selectColor(PALETTE[0], document.querySelector('.color-cell'));
+document.getElementById('currentSwatch').style.background = currentColor;
+loadTemplate('sword');
+updatePreview();
+</script>
+</body>
+</html>
