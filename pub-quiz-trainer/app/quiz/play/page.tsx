@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useReducer, useRef, useCallback } from 'react'
+import { Suspense, useEffect, useReducer, useRef, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { decodeHtml, buildOptions } from '@/lib/trivia'
 import { accuracyColor } from '@/lib/stats'
@@ -114,6 +114,18 @@ const init: State = {
 }
 
 export default function QuizPlayPage() {
+  return <Suspense fallback={<LoadingScreen />}><QuizPlay /></Suspense>
+}
+
+function LoadingScreen() {
+  return (
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <div className="text-center"><div className="text-4xl mb-4 animate-pulse">🎯</div><p className="text-gray-400">Loading…</p></div>
+    </div>
+  )
+}
+
+function QuizPlay() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [state, dispatch] = useReducer(reducer, init)
