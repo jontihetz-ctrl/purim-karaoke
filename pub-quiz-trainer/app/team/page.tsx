@@ -12,8 +12,8 @@ export default async function TeamPage() {
   if (!user) redirect('/auth')
 
   const { data: profile } = await supabase
-    .from('profiles')
-    .select('*, teams(*)')
+    .from('quiz_players')
+    .select('*, quiz_teams(*)')
     .eq('id', user.id)
     .single()
 
@@ -35,7 +35,7 @@ export default async function TeamPage() {
 
   // All members of this team
   const { data: members } = await supabase
-    .from('profiles')
+    .from('quiz_players')
     .select('id, display_name')
     .eq('team_id', profile.team_id)
 
@@ -58,7 +58,7 @@ export default async function TeamPage() {
   })
 
   const teamStats = buildTeamStats(memberStats)
-  const team = profile.teams as { id: string; name: string; invite_code: string }
+  const team = profile.quiz_teams as { id: string; name: string; invite_code: string }
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || ''
 
   const totalTeamQuestions = memberStats.reduce((s, m) => s + m.total_questions, 0)

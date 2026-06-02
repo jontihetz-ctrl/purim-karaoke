@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
   let team = null
   for (let i = 0; i < 5; i++) {
     const { data, error } = await supabase
-      .from('teams')
+      .from('quiz_teams')
       .insert({ name: name.trim(), invite_code: randomCode(), owner_id: user.id })
       .select()
       .single()
@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   if (!team) return NextResponse.json({ error: 'Failed to create team' }, { status: 500 })
 
-  await supabase.from('profiles').update({ team_id: team.id }).eq('id', user.id)
+  await supabase.from('quiz_players').update({ team_id: team.id }).eq('id', user.id)
 
   return NextResponse.json({ ok: true, team })
 }

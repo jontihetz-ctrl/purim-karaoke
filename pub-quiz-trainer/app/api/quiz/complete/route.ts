@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   }
 
   const { data: profile } = await supabase
-    .from('profiles')
+    .from('quiz_players')
     .select('id, team_id')
     .eq('id', user.id)
     .single()

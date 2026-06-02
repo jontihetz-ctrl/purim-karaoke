@@ -20,7 +20,7 @@ export default function OnboardPage() {
     const supabase = createClient()
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) { router.push('/auth'); return }
-    const { error } = await supabase.from('profiles').insert({ id: user.id, display_name: displayName.trim() })
+    const { error } = await supabase.from('quiz_players').insert({ id: user.id, display_name: displayName.trim() })
     setLoading(false)
     if (error) setError(error.message)
     else setStep('team')

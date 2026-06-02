@@ -10,14 +10,14 @@ export async function POST(req: NextRequest) {
   if (!invite_code?.trim()) return NextResponse.json({ error: 'Invite code required' }, { status: 400 })
 
   const { data: team } = await supabase
-    .from('teams')
+    .from('quiz_teams')
     .select('id, name')
     .eq('invite_code', invite_code.trim().toUpperCase())
     .single()
 
   if (!team) return NextResponse.json({ error: 'Team not found' }, { status: 404 })
 
-  await supabase.from('profiles').update({ team_id: team.id }).eq('id', user.id)
+  await supabase.from('quiz_players').update({ team_id: team.id }).eq('id', user.id)
 
   return NextResponse.json({ ok: true, team })
 }

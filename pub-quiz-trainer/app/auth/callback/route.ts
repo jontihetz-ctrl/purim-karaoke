@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       const { data: { user } } = await supabase.auth.getUser()
       if (user) {
         const { data: profile } = await supabase
-          .from('profiles')
+          .from('quiz_players')
           .select('id')
           .eq('id', user.id)
           .single()

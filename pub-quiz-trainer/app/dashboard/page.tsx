@@ -12,8 +12,8 @@ export default async function DashboardPage() {
   if (!user) redirect('/auth')
 
   const { data: profile } = await supabase
-    .from('profiles')
-    .select('*, teams(*)')
+    .from('quiz_players')
+    .select('*, quiz_teams(*)')
     .eq('id', user.id)
     .single()
 
@@ -51,9 +51,9 @@ export default async function DashboardPage() {
       <nav className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2 font-bold">🧠 QuizIQ</div>
         <div className="flex items-center gap-4">
-          {profile.teams && (
+          {profile.quiz_teams && (
             <Link href="/team" className="text-gray-400 hover:text-white text-sm transition-colors">
-              👥 {profile.teams.name}
+              👥 {profile.quiz_teams.name}
             </Link>
           )}
           <Link href="/quiz" className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">

@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
 
   if (user && pathname !== '/onboard' && !isPublic) {
     const { data: profile } = await supabase
-      .from('profiles')
+      .from('quiz_players')
       .select('id')
       .eq('id', user.id)
       .single()
