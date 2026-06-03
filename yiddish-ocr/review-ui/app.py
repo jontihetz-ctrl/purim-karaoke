@@ -1,17 +1,27 @@
 """
-Local review UI — approve/reject image+transcription pairs before training.
-Run: python app.py  →  http://localhost:5050
+Review UI — approve/reject image+transcription pairs before training.
+
+Local:   python app.py  →  http://localhost:5050
+VPS:     python app.py --host 0.0.0.0 --port 5050
+
+Also exposes a JSON API used by the Vercel review frontend:
+  GET  /api/next           → next pending item (with image as base64)
+  POST /api/review/<id>    → {"action": "approve"|"reject"|"skip", "transcription": "..."}
+  GET  /api/stats          → counts
 """
 
-from flask import Flask, render_template_string, request, redirect, jsonify
+import argparse
+import base64
 import sqlite3
 from pathlib import Path
-import base64
+from flask import Flask, render_template_string, request, redirect, jsonify
+from flask_cors import CORS
 
 DB_PATH = Path(__file__).parent.parent / "data" / "postcards.db"
 IMAGES_DIR = Path(__file__).parent.parent / "data" / "images"
 
 app = Flask(__name__)
+CORS(app)  # Allow Vercel frontend to call this API
 
 HTML = """
 <!DOCTYPE html>
@@ -98,7 +108,7 @@ body { font-family: sans-serif; background: #111; color: #eee; }
     <div class="actions">
       <form method="POST" action="/review/{{ item.queue_id }}" style="display:contents">
         <input type="hidden" name="action" value="approve">
-        <input type="hidden" name="transcription_id" id="hid_trans" value="{{ item.transcription_id }}">
+        <input type="hidden" name="transcription" id="hid_trans" value="{{ item.raw_text }}">
         <button type="submit" class="btn btn-approve" onclick="syncFields()">✓ Approve</button>
       </form>
       <form method="POST" action="/review/{{ item.queue_id }}" style="display:contents">
@@ -114,8 +124,7 @@ body { font-family: sans-serif; background: #111; color: #eee; }
 </div>
 <script>
 function syncFields() {
-  // Update transcription before submit
-  document.querySelector('input[name="transcription_id"]').value = document.getElementById('transcription').value;
+  document.getElementById('hid_trans').value = document.getElementById('transcription').value;
 }
 </script>
 {% else %}
@@ -129,9 +138,14 @@ function syncFields() {
 """
 
 
-def get_stats():
+def get_db():
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
+    return conn
+
+
+def get_stats():
+    conn = get_db()
     stats = {
         "pending": conn.execute("SELECT COUNT(*) FROM review_queue WHERE status='pending'").fetchone()[0],
         "approved": conn.execute("SELECT COUNT(*) FROM review_queue WHERE status='approved'").fetchone()[0],
@@ -144,8 +158,7 @@ def get_stats():
 def get_next_item():
     if not DB_PATH.exists():
         return None
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     row = conn.execute("""
         SELECT rq.id as queue_id, rq.image_id, rq.transcription_id,
                t.commenter_name, t.language, t.script, t.raw_text, t.source,
@@ -162,6 +175,44 @@ def get_next_item():
     return dict(row) if row else None
 
 
+def do_review(queue_id, action, transcription=None):
+    conn = get_db()
+    conn.execute(
+        "UPDATE review_queue SET status=?, reviewed_at=datetime('now') WHERE id=?",
+        (action if action != "skip" else "pending", queue_id)
+    )
+    if action == "approve":
+        item = conn.execute(
+            "SELECT image_id, transcription_id FROM review_queue WHERE id=?", (queue_id,)
+        ).fetchone()
+        if item:
+            trans = conn.execute(
+                "SELECT raw_text, language FROM transcriptions WHERE id=?", (item[1],)
+            ).fetchone()
+            if trans:
+                text = transcription or trans[0]
+                conn.execute(
+                    "INSERT OR IGNORE INTO training_pairs (image_id, transcription, language) VALUES (?,?,?)",
+                    (item[0], text, trans[1])
+                )
+    conn.commit()
+    conn.close()
+
+
+def image_as_base64(image_id):
+    conn = get_db()
+    row = conn.execute("SELECT filename FROM images WHERE id=?", (image_id,)).fetchone()
+    conn.close()
+    if not row:
+        return None
+    img_path = IMAGES_DIR / Path(row[0]).name
+    if not img_path.exists():
+        return None
+    return base64.b64encode(img_path.read_bytes()).decode()
+
+
+# ── HTML UI ──────────────────────────────────────────────────────────────────
+
 @app.route("/")
 def index():
     item = get_next_item()
@@ -172,44 +223,60 @@ def index():
 @app.route("/review/<int:queue_id>", methods=["POST"])
 def review(queue_id):
     action = request.form["action"]
-    conn = sqlite3.connect(DB_PATH)
-    conn.execute(
-        "UPDATE review_queue SET status=?, reviewed_at=datetime('now') WHERE id=?",
-        (action if action != "skip" else "pending", queue_id)
-    )
-    if action == "approve":
-        # Promote to training pairs
-        item = conn.execute(
-            "SELECT image_id, transcription_id FROM review_queue WHERE id=?", (queue_id,)
-        ).fetchone()
-        if item:
-            trans = conn.execute(
-                "SELECT raw_text, language FROM transcriptions WHERE id=?", (item[1],)
-            ).fetchone()
-            if trans:
-                conn.execute(
-                    "INSERT INTO training_pairs (image_id, transcription, language) VALUES (?,?,?)",
-                    (item[0], trans[0], trans[1])
-                )
-    conn.commit()
-    conn.close()
+    transcription = request.form.get("transcription")
+    do_review(queue_id, action, transcription)
     return redirect("/")
 
 
 @app.route("/image/<int:image_id>")
 def serve_image(image_id):
-    conn = sqlite3.connect(DB_PATH)
-    row = conn.execute("SELECT filename FROM images WHERE id=?", (image_id,)).fetchone()
-    conn.close()
-    if not row:
+    b64 = image_as_base64(image_id)
+    if not b64:
         return "Not found", 404
-    img_path = IMAGES_DIR / Path(row[0]).name
-    if not img_path.exists():
-        return "File not found", 404
-    data = img_path.read_bytes()
-    b64 = base64.b64encode(data).decode()
     return f'<img src="data:image/jpeg;base64,{b64}">', 200
 
 
+# ── JSON API (used by Vercel frontend) ───────────────────────────────────────
+
+@app.route("/api/stats")
+def api_stats():
+    return jsonify(get_stats())
+
+
+@app.route("/api/next")
+def api_next():
+    item = get_next_item()
+    if not item:
+        return jsonify(None)
+    b64 = image_as_base64(item["image_id"])
+    return jsonify({
+        "queue_id": item["queue_id"],
+        "image_id": item["image_id"],
+        "image_b64": b64,
+        "transcription": item["raw_text"],
+        "language": item["language"],
+        "script": item["script"],
+        "source": item["source"],
+        "commenter": item["commenter_name"],
+        "post_text": item["post_text"],
+        "post_date": item["post_date"],
+    })
+
+
+@app.route("/api/review/<int:queue_id>", methods=["POST"])
+def api_review(queue_id):
+    data = request.get_json()
+    action = data.get("action")
+    transcription = data.get("transcription")
+    if action not in ("approve", "reject", "skip"):
+        return jsonify({"error": "invalid action"}), 400
+    do_review(queue_id, action, transcription)
+    return jsonify({"ok": True})
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5050, debug=True)
+    p = argparse.ArgumentParser()
+    p.add_argument("--host", default="127.0.0.1")
+    p.add_argument("--port", type=int, default=5050)
+    args = p.parse_args()
+    app.run(host=args.host, port=args.port, debug=False)

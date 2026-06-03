@@ -200,30 +200,34 @@ def scrape_group(group_url: str, max_posts: int = 500):
             return
 
         print(f"Logged in. Page: {page.title()}")
-        print("Pre-loading feed (scrolling to gather posts)...")
-        # Scroll aggressively first to load a large batch of posts before processing
-        prev_count = 0
-        for i in range(60):
-            page.mouse.wheel(0, 3000)
-            page.wait_for_timeout(1500)
-            count = len(page.query_selector_all("[role='feed'] > div"))
-            if i % 5 == 0:
-                print(f"  Pre-scroll {i+1}: {count} posts loaded")
-            if count == prev_count and i > 5:
-                break
-            prev_count = count
-        print(f"Pre-load done: {prev_count} posts in feed. Processing...")
         print("Scrolling feed...")
 
         posts_processed = 0
-        last_height = 0
+        last_feed_size = 0
         stall_count = 0
 
         while posts_processed < max_posts:
-            # Feed children are individual post containers
+            # Scroll a small batch to trigger Facebook's infinite load
+            for _ in range(5):
+                page.mouse.wheel(0, 3000)
+                page.wait_for_timeout(700)
+            page.wait_for_timeout(1500)
+
+            feed_size = len(page.query_selector_all("[role='feed'] > div"))
+            print(f"  Feed size: {feed_size}, processed so far: {posts_processed}")
+
+            if feed_size == last_feed_size:
+                stall_count += 1
+                if stall_count >= 5:
+                    print("Feed end reached.")
+                    break
+            else:
+                stall_count = 0
+            last_feed_size = feed_size
+
+            # Process all currently visible post containers
             feed = page.query_selector("[role='feed']")
             if not feed:
-                print("Feed not found, retrying...")
                 page.wait_for_timeout(3000)
                 continue
             post_containers = feed.query_selector_all(":scope > div")
@@ -322,20 +326,6 @@ def scrape_group(group_url: str, max_posts: int = 500):
                     print(f"  Post parse error: {e}")
                     continue
 
-            # Mouse wheel scroll triggers Facebook's infinite scroll
-            page.mouse.wheel(0, 5000)
-            page.wait_for_timeout(3000)
-
-            new_count = len(page.query_selector_all("[role='feed'] > div"))
-            if new_count == last_height:
-                stall_count += 1
-                if stall_count >= 5:
-                    print("Feed end reached.")
-                    break
-            else:
-                stall_count = 0
-            last_height = new_count
-            print(f"  Scrolled — {len(seen_posts)} posts seen, feed size={new_count}")
 
         browser.close()
 
