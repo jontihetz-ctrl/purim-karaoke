@@ -47,6 +47,7 @@ export interface TriviaQuestion {
   question: string
   correct_answer: string
   incorrect_answers: string[]
+  image?: string
 }
 
 export interface CategoryStat {

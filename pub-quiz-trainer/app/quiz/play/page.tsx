@@ -11,6 +11,7 @@ interface ProcessedQ {
   difficulty: string
   correct_answer: string
   options: string[]
+  image?: string
 }
 
 interface AnswerRecord {
@@ -135,9 +136,13 @@ function QuizPlay() {
   const category = searchParams.get('category') || ''
   const difficulty = searchParams.get('difficulty') || ''
   const amount = searchParams.get('amount') || '10'
+  const quizType = searchParams.get('type') || 'multiple'
 
   useEffect(() => {
-    fetch(`/api/questions?amount=${amount}&category=${category}&difficulty=${difficulty}`)
+    const params = new URLSearchParams({ amount, type: quizType })
+    if (category) params.set('category', category)
+    if (difficulty) params.set('difficulty', difficulty)
+    fetch(`/api/questions?${params}`)
       .then(r => r.json())
       .then(data => {
         if (data.error) { dispatch({ type: 'ERROR', msg: data.error }); return }
@@ -147,12 +152,13 @@ function QuizPlay() {
           difficulty: q.difficulty,
           correct_answer: decodeHtml(q.correct_answer),
           options: buildOptions(q),
+          image: q.image,
         }))
         dispatch({ type: 'LOADED', questions })
         questionStartRef.current = Date.now()
       })
       .catch(() => dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' }))
-  }, [amount, category, difficulty])
+  }, [amount, category, difficulty, quizType])
 
   // Countdown timer
   useEffect(() => {
@@ -307,6 +313,16 @@ function QuizPlay() {
                 'bg-red-900/50 text-red-400'
               }`}>{q.difficulty}</span>
             </div>
+            {q.image && (
+              <div className="flex justify-center mb-4">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={q.image}
+                  alt="Quiz question"
+                  className="h-40 w-auto rounded-lg border border-gray-700 object-cover shadow-lg"
+                />
+              </div>
+            )}
             <p className="text-lg font-semibold text-white leading-snug">{q.question}</p>
           </div>
 

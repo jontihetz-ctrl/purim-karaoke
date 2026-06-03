@@ -10,13 +10,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'No answers' }, { status: 400 })
   }
 
-  const { data: profile } = await db
+  let { data: profile } = await db
     .from('quiz_players')
     .select('id, team_id')
     .eq('id', userId)
     .single()
 
-  if (!profile) return NextResponse.json({ error: 'No profile' }, { status: 400 })
+  if (!profile) {
+    await db.from('quiz_players').upsert({ id: userId, display_name: 'Guest' })
+    profile = { id: userId, team_id: null }
+  }
 
   const correct_count = answers.filter((a: { is_correct: boolean }) => a.is_correct).length
 

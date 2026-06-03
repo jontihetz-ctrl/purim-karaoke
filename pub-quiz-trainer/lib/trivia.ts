@@ -28,9 +28,10 @@ export function buildOptions(q: TriviaQuestion): string[] {
 export async function fetchQuestions(
   amount: number,
   category?: string,
-  difficulty?: string
+  difficulty?: string,
+  type: 'multiple' | 'boolean' = 'multiple'
 ): Promise<TriviaQuestion[]> {
-  const params = new URLSearchParams({ amount: String(amount), type: 'multiple' })
+  const params = new URLSearchParams({ amount: String(amount), type })
   if (category) params.set('category', category)
   if (difficulty) params.set('difficulty', difficulty)
 
