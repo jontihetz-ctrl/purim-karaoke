@@ -1,17 +1,14 @@
 """
-Facebook group scraper for postcard images + translation comments.
-Uses saved browser cookies — much more reliable than email/password login.
-
-Setup (one-time):
-    1. Install "Cookie Editor" Chrome extension
-       https://chrome.google.com/webstore/detail/cookie-editor/hlkenndednhfkekhgcdicdfddnkalmdm
-    2. Log in to Facebook in Chrome
-    3. Click Cookie Editor → Export → Export as JSON
-    4. Save the file as: yiddish-ocr/scraper/fb_cookies.json
+Facebook group scraper — two-phase approach:
+  Phase 1: Scroll feed fast, collect post URLs (avoids DOM unloading)
+  Phase 2: Open each post individually, expand ALL See More / comments
 
 Usage:
-    python facebook_scraper.py --group-url https://www.facebook.com/groups/361690548110384/
-    python facebook_scraper.py --group-url URL --max-posts 1000
+    python facebook_scraper.py --group-url URL --max-posts 500
+    python facebook_scraper.py --group-url URL --max-posts 500 --urls-only
+    python facebook_scraper.py --group-url URL --max-posts 500 --skip-phase1
+
+Cookies:  yiddish-ocr/scraper/fb_cookies.json  (export from Cookie Editor)
 """
 
 import argparse
@@ -27,24 +24,22 @@ from db import get_conn, init_db
 IMAGES_DIR = Path(__file__).parent.parent / "data" / "images"
 IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 COOKIES_FILE = Path(__file__).parent / "fb_cookies.json"
+URL_CACHE_FILE = Path(__file__).parent / "fb_post_urls.json"
+
+GROUP_URL = "https://www.facebook.com/groups/361690548110384/"
 
 
-def human_delay(min_s=1.0, max_s=3.0):
+def human_delay(min_s=0.5, max_s=1.5):
     time.sleep(random.uniform(min_s, max_s))
 
 
-def load_cookies(path: Path) -> list[dict]:
-    with open(path) as f:
+def load_cookies():
+    with open(COOKIES_FILE) as f:
         raw = json.load(f)
-    # Cookie Editor exports as a list; Playwright wants specific fields
     out = []
     for c in raw:
-        cookie = {
-            "name": c["name"],
-            "value": c["value"],
-            "domain": c.get("domain", ".facebook.com"),
-            "path": c.get("path", "/"),
-        }
+        cookie = {"name": c["name"], "value": c["value"],
+                  "domain": c.get("domain", ".facebook.com"), "path": c.get("path", "/")}
         if c.get("secure") is not None:
             cookie["secure"] = c["secure"]
         if c.get("sameSite") in ("Strict", "Lax", "None"):
@@ -55,6 +50,124 @@ def load_cookies(path: Path) -> list[dict]:
     return out
 
 
+def make_browser(pw):
+    browser = pw.chromium.launch(
+        headless=True,
+        args=["--no-sandbox", "--disable-blink-features=AutomationControlled",
+              "--ignore-certificate-errors"],
+    )
+    ctx = browser.new_context(
+        viewport={"width": 1280, "height": 1600},
+        user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                   "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        locale="en-US",
+        ignore_https_errors=True,
+    )
+    ctx.add_cookies(load_cookies())
+    page = ctx.new_page()
+    page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+    return browser, ctx, page
+
+
+# ── Phase 1: collect post URLs ────────────────────────────────────────────────
+
+def collect_post_urls(max_posts: int) -> list[str]:
+    """Scroll the group feed as fast as possible, just collecting post URLs."""
+    existing = set()
+    if URL_CACHE_FILE.exists():
+        existing = set(json.loads(URL_CACHE_FILE.read_text()))
+        print(f"Loaded {len(existing)} cached URLs")
+
+    try:
+        from playwright.sync_api import sync_playwright
+    except ImportError:
+        print("pip install playwright && playwright install chromium")
+        return list(existing)
+
+    urls = list(existing)
+    new_found = 0
+
+    with sync_playwright() as pw:
+        browser, ctx, page = make_browser(pw)
+        print(f"Phase 1: collecting post URLs from {GROUP_URL}")
+        page.goto(GROUP_URL, wait_until="domcontentloaded", timeout=30000)
+        page.wait_for_selector("[role='feed']", timeout=15000)
+        page.wait_for_timeout(3000)
+
+        if "login" in page.url:
+            print("Not logged in — re-export cookies")
+            browser.close()
+            return urls
+
+        seen = set(urls)
+        stall = 0
+        last_count = len(seen)
+        scroll_n = 0
+
+        while len(urls) < max_posts:
+            # Collect all post links currently in DOM
+            links = page.query_selector_all(
+                "a[href*='/groups/'][href*='/posts/'], "
+                "a[href*='?story_fbid='], "
+                "a[href*='fbid=']"
+            )
+            for link in links:
+                href = link.get_attribute("href") or ""
+                # Normalise URL
+                href = href.split("?")[0] if "story_fbid" not in href else href
+                if href and href not in seen and "/groups/" in href:
+                    seen.add(href)
+                    urls.append(href)
+                    new_found += 1
+
+            scroll_n += 1
+            if scroll_n % 10 == 0:
+                print(f"  scroll {scroll_n}: {len(urls)} URLs collected")
+
+            # Fast scroll — just collecting links, not processing
+            page.mouse.wheel(0, 4000)
+            page.wait_for_timeout(1000)
+
+            if len(urls) == last_count:
+                stall += 1
+                if stall >= 8:
+                    print(f"  Feed end — {len(urls)} URLs total")
+                    break
+            else:
+                stall = 0
+            last_count = len(urls)
+
+        browser.close()
+
+    # Save cache
+    URL_CACHE_FILE.write_text(json.dumps(urls, indent=2))
+    print(f"Phase 1 done: {len(urls)} post URLs ({new_found} new)")
+    return urls[:max_posts]
+
+
+# ── Phase 2: scrape each post individually ────────────────────────────────────
+
+def expand_see_more(page):
+    """Click all See More buttons on the page."""
+    for _ in range(6):
+        expanded = False
+        for btn in page.query_selector_all("div[role='button'], span[role='button']"):
+            try:
+                label = btn.inner_text().strip()
+                if any(x in label for x in [
+                    "See more", "See More", "View more comments",
+                    "View previous comments", "Most relevant",
+                    "View all comments", "More comments",
+                ]):
+                    btn.click()
+                    page.wait_for_timeout(600)
+                    expanded = True
+            except Exception:
+                pass
+        if not expanded:
+            break
+
+
 def download_image(url: str, fname: str) -> bool:
     fpath = IMAGES_DIR / fname
     if fpath.exists():
@@ -63,20 +176,12 @@ def download_image(url: str, fname: str) -> bool:
         r = requests.get(url, timeout=20, headers={
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
         })
-        if r.status_code != 200:
-            return False
-        ct = r.headers.get("content-type", "")
-        if "image" not in ct:
+        if r.status_code != 200 or "image" not in r.headers.get("content-type", ""):
             return False
         fpath.write_bytes(r.content)
         return True
     except Exception:
         return False
-
-
-def is_useful_comment(text: str) -> bool:
-    """Keep all non-trivial comments — we'll sort the actual translation in review."""
-    return len(text.strip()) >= 10
 
 
 def detect_lang(text: str) -> tuple[str, str]:
@@ -87,8 +192,7 @@ def detect_lang(text: str) -> tuple[str, str]:
     return lang, script
 
 
-def save_post(post_id: str, post_url: str, post_date: str, post_text: str,
-              group_url: str, images: list[dict], comments: list[dict]):
+def save_post(post_id, post_url, post_date, post_text, group_url, images, comments):
     conn = get_conn()
     try:
         if conn.execute("SELECT id FROM posts WHERE id=?", (post_id,)).fetchone():
@@ -98,11 +202,11 @@ def save_post(post_id: str, post_url: str, post_date: str, post_text: str,
         conn.execute(
             "INSERT INTO posts (id, source, group_url, post_url, post_date, post_text, raw_json) "
             "VALUES (?,?,?,?,?,?,?)",
-            (post_id, "facebook", group_url, post_url, post_date, post_text,
-             json.dumps({"comments": comments})),
+            (post_id, "facebook", group_url, post_url, post_date,
+             post_text[:2000], json.dumps({"comments": comments[:50]})),
         )
 
-        saved_images = 0
+        saved = 0
         for img in images:
             if not download_image(img["url"], img["fname"]):
                 continue
@@ -111,16 +215,18 @@ def save_post(post_id: str, post_url: str, post_date: str, post_text: str,
                 (post_id, img["fname"], img["url"]),
             )
             image_id = cursor.lastrowid
-            saved_images += 1
+            saved += 1
 
             for comment in comments:
-                if not is_useful_comment(comment["text"]):
+                text = comment["text"].strip()
+                if len(text) < 10:
                     continue
-                lang, script = detect_lang(comment["text"])
+                lang, script = detect_lang(text)
                 tid = conn.execute(
-                    "INSERT INTO transcriptions (image_id, source, commenter_name, language, script, raw_text) "
+                    "INSERT INTO transcriptions "
+                    "(image_id, source, commenter_name, language, script, raw_text) "
                     "VALUES (?,?,?,?,?,?)",
-                    (image_id, "comment", comment["author"], lang, script, comment["text"]),
+                    (image_id, "comment", comment["author"], lang, script, text[:3000]),
                 ).lastrowid
                 conn.execute(
                     "INSERT INTO review_queue (image_id, transcription_id) VALUES (?,?)",
@@ -129,7 +235,7 @@ def save_post(post_id: str, post_url: str, post_date: str, post_text: str,
 
         conn.commit()
         conn.close()
-        return saved_images
+        return saved
     except Exception as e:
         conn.rollback()
         conn.close()
@@ -137,230 +243,144 @@ def save_post(post_id: str, post_url: str, post_date: str, post_text: str,
         return 0
 
 
-def scrape_group(group_url: str, max_posts: int = 500):
+def scrape_post_page(page, post_url: str, group_url: str) -> int:
+    """Open a single post, expand everything, extract content."""
     try:
-        from playwright.sync_api import sync_playwright, TimeoutError as PWTimeout
+        page.goto(post_url, wait_until="domcontentloaded", timeout=25000)
+        page.wait_for_timeout(2500)
+
+        # Expand ALL See More buttons on the post page
+        expand_see_more(page)
+        page.wait_for_timeout(500)
+
+        post_id = "fb_" + hashlib.md5(post_url.encode()).hexdigest()[:12]
+
+        # Check already scraped
+        conn = get_conn()
+        exists = conn.execute("SELECT id FROM posts WHERE id=?", (post_id,)).fetchone()
+        conn.close()
+        if exists:
+            return 0
+
+        # Post text — grab all text blocks
+        text_els = page.query_selector_all("div[dir='auto'], span[dir='auto']")
+        post_text = "\n".join(
+            el.inner_text().strip() for el in text_els if el.inner_text().strip()
+        )[:2000]
+
+        # Date
+        time_el = page.query_selector("abbr[data-utime], abbr[title]")
+        post_date = ""
+        if time_el:
+            post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or ""
+
+        # Images
+        img_els = page.query_selector_all("img")
+        images = []
+        seen_srcs = set()
+        for img in img_els:
+            src = img.get_attribute("src") or ""
+            if not src or "scontent" not in src or src in seen_srcs:
+                continue
+            if "emoji" in src or "static" in src:
+                continue
+            try:
+                w = int(img.get_attribute("width") or 0)
+                if 0 < w < 100:
+                    continue
+            except Exception:
+                pass
+            seen_srcs.add(src)
+            fname = "fb_" + hashlib.md5(src.encode()).hexdigest()[:16] + ".jpg"
+            images.append({"url": src, "fname": fname})
+
+        if not images:
+            return 0
+
+        # Comments — collect ALL text, deduplicated
+        comment_els = page.query_selector_all("div[role='article']")
+        comments = []
+        seen_texts = set()
+        for c in comment_els:
+            try:
+                author_el = c.query_selector("a[role='link'] span, a span")
+                body_els = c.query_selector_all("div[dir='auto'], span[dir='auto']")
+                text = " ".join(
+                    el.inner_text().strip() for el in body_els if el.inner_text().strip()
+                )
+                author = author_el.inner_text().strip() if author_el else "unknown"
+                key = text[:80]
+                if text and len(text) >= 10 and key not in seen_texts:
+                    seen_texts.add(key)
+                    comments.append({"author": author, "text": text})
+            except Exception:
+                pass
+
+        n = save_post(post_id, post_url, post_date, post_text, group_url, images, comments)
+        return n
+
+    except Exception as e:
+        print(f"  Error on {post_url[:60]}: {e}")
+        return 0
+
+
+def scrape_all(group_url: str, max_posts: int, urls_only: bool, skip_phase1: bool):
+    init_db()
+
+    try:
+        from playwright.sync_api import sync_playwright
     except ImportError:
-        print("Install playwright first: pip install playwright && playwright install chromium")
+        print("pip install playwright && playwright install chromium")
         return
 
     if not COOKIES_FILE.exists():
-        print(f"Cookie file not found: {COOKIES_FILE}")
-        print("\nSetup steps:")
-        print("  1. Install 'Cookie Editor' Chrome extension")
-        print("  2. Log in to Facebook in Chrome")
-        print("  3. Click Cookie Editor → Export → Export as JSON")
-        print(f"  4. Save to: {COOKIES_FILE}")
+        print(f"No cookies file at {COOKIES_FILE}")
+        print("Export from Cookie Editor Chrome extension → fb_cookies.json")
         return
 
-    cookies = load_cookies(COOKIES_FILE)
-    print(f"Loaded {len(cookies)} cookies")
+    # Phase 1: collect URLs
+    if not skip_phase1:
+        post_urls = collect_post_urls(max_posts)
+    else:
+        if URL_CACHE_FILE.exists():
+            post_urls = json.loads(URL_CACHE_FILE.read_text())
+            print(f"Skipping phase 1, using {len(post_urls)} cached URLs")
+        else:
+            print("No URL cache found, running phase 1")
+            post_urls = collect_post_urls(max_posts)
 
-    init_db()
+    if urls_only:
+        print(f"URLs saved to {URL_CACHE_FILE}")
+        return
+
+    print(f"\nPhase 2: scraping {len(post_urls)} posts individually")
+
     total_images = 0
-    seen_posts = set()
+    processed = 0
 
     with sync_playwright() as pw:
-        browser = pw.chromium.launch(
-            headless=True,
-            args=["--no-sandbox", "--disable-blink-features=AutomationControlled",
-                  "--ignore-certificate-errors"],
-        )
-        ctx = browser.new_context(
-            viewport={"width": 1280, "height": 2000},
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-                       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-            locale="en-US",
-            ignore_https_errors=True,
-        )
-        ctx.add_cookies(cookies)
-        page = ctx.new_page()
-        page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+        browser, ctx, page = make_browser(pw)
 
-        print(f"Opening group: {group_url}")
-        page.goto(group_url, wait_until="domcontentloaded", timeout=30000)
-        # Wait for the feed to actually render
-        try:
-            page.wait_for_selector("[role='feed']", timeout=15000)
-        except Exception:
-            pass
-        human_delay(4, 6)
+        for i, url in enumerate(post_urls):
+            n = scrape_post_page(page, url, group_url)
+            if n > 0:
+                total_images += n
+                processed += 1
+                print(f"  [{i+1}/{len(post_urls)}] +{n} images — {url[-40:]}")
+            elif n == 0:
+                print(f"  [{i+1}/{len(post_urls)}] skip (no images or dupe) — {url[-40:]}")
 
-        # Check we're logged in
-        if "login" in page.url or page.query_selector("[data-testid='royal_login_form']"):
-            print("Not logged in — cookies may have expired. Re-export from browser.")
-            browser.close()
-            return
+            human_delay(1.5, 3.0)
 
-        print(f"Logged in. Page: {page.title()}")
-        print("Scrolling feed...")
-
-        posts_processed = 0
-        last_feed_size = 0
-        stall_count = 0
-
-        while posts_processed < max_posts:
-            # Scroll a small batch to trigger Facebook's infinite load
-            for _ in range(5):
-                page.mouse.wheel(0, 3000)
-                page.wait_for_timeout(700)
-            page.wait_for_timeout(1500)
-
-            feed_size = len(page.query_selector_all("[role='feed'] > div"))
-            print(f"  Feed size: {feed_size}, processed so far: {posts_processed}")
-
-            if feed_size == last_feed_size:
-                stall_count += 1
-                if stall_count >= 5:
-                    print("Feed end reached.")
-                    break
-            else:
-                stall_count = 0
-            last_feed_size = feed_size
-
-            # Process all currently visible post containers
-            feed = page.query_selector("[role='feed']")
-            if not feed:
-                page.wait_for_timeout(3000)
-                continue
-            post_containers = feed.query_selector_all(":scope > div")
-
-            for article in post_containers:
-                # Get a stable ID from the post link
-                try:
-                    link = article.query_selector(
-                        "a[href*='/posts/'], a[href*='story_fbid'], a[href*='?fbid=']"
-                    )
-                    post_url = link.get_attribute("href") if link else None
-                    if not post_url:
-                        # Fall back to hashing the text content
-                        post_url = article.inner_text()[:80]
-                    post_id = "fb_" + hashlib.md5(post_url.encode()).hexdigest()[:12]
-                except Exception:
-                    continue
-
-                if post_id in seen_posts:
-                    continue
-                seen_posts.add(post_id)
-                print(f"  Processing post {post_id[:16]}...")
-
-                try:
-                    # Expand post "See more" before reading text
-                    for see_more in article.query_selector_all("div[role='button']:has-text('See more'), span[role='button']:has-text('See more')"):
-                        try:
-                            see_more.click()
-                            page.wait_for_timeout(500)
-                        except Exception:
-                            pass
-
-                    # Post text (grab all text blocks, join them)
-                    text_els = article.query_selector_all("div[dir='auto']")
-                    post_text = "\n".join(
-                        el.inner_text().strip() for el in text_els if el.inner_text().strip()
-                    )[:2000]
-
-                    # Date
-                    time_el = article.query_selector("abbr")
-                    post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or "" \
-                        if time_el else ""
-
-                    # Images — scontent CDN only, skip avatars/emoji
-                    img_els = article.query_selector_all("img")
-                    images = []
-                    for img in img_els:
-                        src = img.get_attribute("src") or ""
-                        if not src or "scontent" not in src:
-                            continue
-                        if "emoji" in src or "static" in src:
-                            continue
-                        try:
-                            w = int(img.get_attribute("width") or 0)
-                            if 0 < w < 100:
-                                continue
-                        except Exception:
-                            pass
-                        fname = "fb_" + hashlib.md5(src.encode()).hexdigest()[:16] + ".jpg"
-                        images.append({"url": src, "fname": fname})
-
-                    if not images:
-                        continue
-
-                    # Expand ALL comment "View more" / "See more" buttons repeatedly
-                    for _ in range(5):
-                        expanded = False
-                        for btn in article.query_selector_all(
-                            "div[role='button'], span[role='button']"
-                        ):
-                            try:
-                                label = btn.inner_text().strip()
-                                if any(x in label for x in [
-                                    "View more comments", "View previous comments",
-                                    "See more", "See More", "More comments",
-                                    "Most relevant", "View all comments"
-                                ]):
-                                    btn.click()
-                                    page.wait_for_timeout(800)
-                                    expanded = True
-                            except Exception:
-                                pass
-                        if not expanded:
-                            break
-
-                    # Expand "See more" inside each comment
-                    for btn in article.query_selector_all("div[role='article'] div[role='button']:has-text('See more'), div[role='article'] span[role='button']:has-text('See more')"):
-                        try:
-                            btn.click()
-                            page.wait_for_timeout(300)
-                        except Exception:
-                            pass
-
-                    # Collect ALL comments — no filtering, grab everything
-                    comment_els = article.query_selector_all("div[role='article']")
-                    comments = []
-                    for c in comment_els:
-                        try:
-                            author_el = c.query_selector("a[role='link'] span, a span")
-                            # Get all text divs in comment (handles "See more" expansion)
-                            body_els = c.query_selector_all("div[dir='auto'], span[dir='auto']")
-                            text = " ".join(
-                                el.inner_text().strip() for el in body_els if el.inner_text().strip()
-                            )
-                            author = author_el.inner_text().strip() if author_el else "unknown"
-                            if text and len(text) > 5:
-                                comments.append({"author": author, "text": text})
-                        except Exception:
-                            pass
-
-                    # Deduplicate comments (same text appearing in multiple divs)
-                    seen_texts = set()
-                    unique_comments = []
-                    for c in comments:
-                        key = c["text"][:100]
-                        if key not in seen_texts:
-                            seen_texts.add(key)
-                            unique_comments.append(c)
-                    comments = unique_comments
-
-                    n = save_post(post_id, post_url, post_date, post_text,
-                                  group_url, images, comments)
-                    if n > 0:
-                        total_images += n
-                        print(f"  [{posts_processed+1}] {n} img, {len(comments)} comments — {post_text[:60]}")
-
-                    posts_processed += 1
-                    if posts_processed >= max_posts:
-                        break
-
-                    human_delay(1.0, 2.0)
-
-                except Exception as e:
-                    print(f"  Post parse error: {e}")
-                    continue
-
+            # Refresh session every 50 posts to avoid timeouts
+            if (i + 1) % 50 == 0:
+                print("  Refreshing browser session...")
+                browser.close()
+                browser, ctx, page = make_browser(pw)
 
         browser.close()
 
-    print(f"\nDone. Posts processed: {posts_processed}, images saved: {total_images}")
+    print(f"\nDone. Scraped {processed} posts, {total_images} images saved.")
     conn = get_conn()
     q = conn.execute("SELECT COUNT(*) FROM review_queue WHERE status='pending'").fetchone()[0]
     conn.close()
@@ -369,7 +389,9 @@ def scrape_group(group_url: str, max_posts: int = 500):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
-    p.add_argument("--group-url", default="https://www.facebook.com/groups/361690548110384/")
+    p.add_argument("--group-url", default=GROUP_URL)
     p.add_argument("--max-posts", type=int, default=500)
+    p.add_argument("--urls-only", action="store_true", help="Phase 1 only — just collect URLs")
+    p.add_argument("--skip-phase1", action="store_true", help="Skip to phase 2 using cached URLs")
     args = p.parse_args()
-    scrape_group(args.group_url, args.max_posts)
+    scrape_all(args.group_url, args.max_posts, args.urls_only, args.skip_phase1)
