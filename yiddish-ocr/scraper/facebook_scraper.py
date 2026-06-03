@@ -170,13 +170,15 @@ def scrape_group(group_url: str, max_posts: int = 500):
     with sync_playwright() as pw:
         browser = pw.chromium.launch(
             headless=True,
-            args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
+            args=["--no-sandbox", "--disable-blink-features=AutomationControlled",
+                  "--ignore-certificate-errors"],
         )
         ctx = browser.new_context(
             viewport={"width": 1280, "height": 900},
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             locale="en-US",
+            ignore_https_errors=True,
         )
         ctx.add_cookies(cookies)
         page = ctx.new_page()
