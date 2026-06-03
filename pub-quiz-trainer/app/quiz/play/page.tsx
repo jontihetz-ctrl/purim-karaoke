@@ -1,5 +1,5 @@
 'use client'
-import { Suspense, useEffect, useReducer, useRef, useCallback } from 'react'
+import { Suspense, useEffect, useReducer, useRef, useCallback, useState } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { decodeHtml, buildOptions } from '@/lib/trivia'
 import { accuracyColor } from '@/lib/stats'
@@ -104,11 +104,23 @@ function LoadingScreen() {
   )
 }
 
+function wikiUrl(title: string): string {
+  return `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
+}
+
+function truncate(text: string, maxSentences = 2): string {
+  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) || []
+  if (sentences.length === 0) return text.slice(0, 280)
+  return sentences.slice(0, maxSentences).join('').trim()
+}
+
 function QuizPlay() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [state, dispatch] = useReducer(reducer, init)
   const questionStartRef = useRef<number>(Date.now())
+  const [wikiSummary, setWikiSummary] = useState<'idle' | 'loading' | string>('idle')
+  const wikiAbortRef = useRef<AbortController | null>(null)
 
   const category = searchParams.get('category') || ''
   const difficulty = searchParams.get('difficulty') || ''
@@ -137,6 +149,42 @@ function QuizPlay() {
       })
       .catch(() => dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' }))
   }, [amount, category, difficulty, quizType])
+
+  // Fetch Wikipedia summary on reveal (for questions without built-in explanation)
+  useEffect(() => {
+    if (state.status === 'playing') {
+      setWikiSummary('idle')
+      wikiAbortRef.current?.abort()
+      return
+    }
+    if (state.status !== 'revealed') return
+
+    const q = state.questions[state.currentIndex]
+
+    // Image questions have rich explanations already
+    if (q.explanation) return
+
+    // Boolean answers ("True"/"False") don't map to useful Wikipedia articles
+    const answer = q.correct_answer
+    if (answer === 'True' || answer === 'False') return
+
+    const ctrl = new AbortController()
+    wikiAbortRef.current = ctrl
+    setWikiSummary('loading')
+
+    fetch(wikiUrl(answer), { signal: ctrl.signal })
+      .then(r => r.json())
+      .then(data => {
+        if (data.extract && data.type !== 'disambiguation') {
+          setWikiSummary(truncate(data.extract, 2))
+        } else {
+          setWikiSummary('idle')
+        }
+      })
+      .catch(() => setWikiSummary('idle'))
+
+    return () => ctrl.abort()
+  }, [state.status, state.currentIndex, state.questions])
 
   const handleAnswer = useCallback((option: string) => {
     if (state.status !== 'playing') return
@@ -242,6 +290,8 @@ function QuizPlay() {
   const isRevealed = state.status === 'revealed'
   const isLastQuestion = state.currentIndex + 1 >= state.questions.length
 
+  const factText = q.explanation || (typeof wikiSummary === 'string' && wikiSummary !== 'idle' && wikiSummary !== 'loading' ? wikiSummary : null)
+
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* Top bar */}
@@ -277,9 +327,18 @@ function QuizPlay() {
             )}
             <p className="text-lg font-semibold text-white leading-snug">{q.question}</p>
 
-            {isRevealed && q.explanation && (
-              <div className="mt-4 p-3 bg-blue-950/40 border border-blue-800/50 rounded-lg">
-                <p className="text-sm text-blue-200 leading-relaxed">{q.explanation}</p>
+            {isRevealed && (
+              <div className="mt-4">
+                {wikiSummary === 'loading' && !q.explanation ? (
+                  <div className="p-3 bg-gray-800/50 border border-gray-700/50 rounded-lg">
+                    <p className="text-sm text-gray-500 animate-pulse">Loading fact…</p>
+                  </div>
+                ) : factText ? (
+                  <div className="p-3 bg-blue-950/40 border border-blue-800/50 rounded-lg">
+                    <p className="text-xs font-semibold text-blue-400 mb-1 uppercase tracking-wide">💡 Did you know</p>
+                    <p className="text-sm text-blue-200 leading-relaxed">{factText}</p>
+                  </div>
+                ) : null}
               </div>
             )}
           </div>
