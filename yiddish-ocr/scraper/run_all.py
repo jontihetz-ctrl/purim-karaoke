@@ -1,35 +1,63 @@
 """
-Run all scrapers in sequence.
+Run all scrapers. Sources that need no keys run automatically.
+Sources needing keys are skipped with instructions if keys not provided.
+
 Usage:
-    python run_all.py [--flickr-key KEY]
+    python run_all.py [--flickr-key KEY] [--europeana-key KEY]
+                      [--reddit-client-id ID --reddit-client-secret SECRET
+                       --reddit-username USER --reddit-password PASS]
 """
 
 import argparse
 import subprocess
 import sys
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--flickr-key", default=None, help="Optional Flickr API key")
-args = parser.parse_args()
+p = argparse.ArgumentParser()
+p.add_argument("--flickr-key")
+p.add_argument("--europeana-key")
+p.add_argument("--reddit-client-id")
+p.add_argument("--reddit-client-secret")
+p.add_argument("--reddit-username")
+p.add_argument("--reddit-password")
+args = p.parse_args()
+
+
+def run(cmd):
+    subprocess.run([sys.executable] + cmd, check=False)
+
 
 print("=" * 60)
-print("STEP 1: Reddit (r/TranslateMe, r/OldHandwriting, r/Yiddish)")
+print("Internet Archive (no key needed)")
 print("=" * 60)
-subprocess.run([sys.executable, "reddit_scraper.py"], check=False)
+run(["internet_archive_scraper.py"])
 
-print("\n" + "=" * 60)
-print("STEP 2: Internet Archive")
-print("=" * 60)
-subprocess.run([sys.executable, "internet_archive_scraper.py"], check=False)
+if args.europeana_key:
+    print("\n" + "=" * 60)
+    print("Europeana")
+    print("=" * 60)
+    run(["europeana_scraper.py", "--api-key", args.europeana_key])
+else:
+    print("\n[Europeana skipped] — free key at https://pro.europeana.eu/page/get-api")
 
 if args.flickr_key:
     print("\n" + "=" * 60)
-    print("STEP 3: Flickr")
+    print("Flickr")
     print("=" * 60)
-    subprocess.run([sys.executable, "flickr_scraper.py", "--api-key", args.flickr_key], check=False)
+    run(["flickr_scraper.py", "--api-key", args.flickr_key])
 else:
-    print("\nSkipping Flickr (no --flickr-key provided)")
-    print("Get a free key at: https://www.flickr.com/services/apps/create/")
+    print("[Flickr skipped] — free key at https://www.flickr.com/services/apps/create/")
 
-print("\n✓ All scrapers done. Run the review UI to approve training pairs:")
-print("  cd ../review-ui && python app.py")
+if all([args.reddit_client_id, args.reddit_client_secret, args.reddit_username, args.reddit_password]):
+    print("\n" + "=" * 60)
+    print("Reddit")
+    print("=" * 60)
+    run(["reddit_scraper.py",
+         "--client-id", args.reddit_client_id,
+         "--client-secret", args.reddit_client_secret,
+         "--username", args.reddit_username,
+         "--password", args.reddit_password])
+else:
+    print("[Reddit skipped] — create free app at https://www.reddit.com/prefs/apps")
+
+print("\n✓ Done. Launch review UI:")
+print("  cd ../review-ui && python app.py  →  http://localhost:5050")
