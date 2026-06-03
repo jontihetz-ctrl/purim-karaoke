@@ -186,7 +186,12 @@ def scrape_group(group_url: str, max_posts: int = 500):
 
         print(f"Opening group: {group_url}")
         page.goto(group_url, wait_until="domcontentloaded", timeout=30000)
-        human_delay(3, 5)
+        # Wait for the feed to actually render
+        try:
+            page.wait_for_selector("[role='feed']", timeout=15000)
+        except Exception:
+            pass
+        human_delay(4, 6)
 
         # Check we're logged in
         if "login" in page.url or page.query_selector("[data-testid='royal_login_form']"):
@@ -194,7 +199,8 @@ def scrape_group(group_url: str, max_posts: int = 500):
             browser.close()
             return
 
-        print("Logged in. Scrolling feed...")
+        print(f"Logged in. Page: {page.title()}")
+        print("Scrolling feed...")
 
         posts_processed = 0
         last_height = 0
@@ -210,8 +216,7 @@ def scrape_group(group_url: str, max_posts: int = 500):
                     link = article.query_selector("a[href*='/posts/'], a[href*='story_fbid']")
                     post_url = link.get_attribute("href") if link else None
                     if not post_url:
-                        # Try aria-label or data attributes
-                        post_url = article.get_attribute("aria-label") or ""
+                        post_url = article.get_attribute("aria-label") or str(articles.index(article))
                     post_id = "fb_" + hashlib.md5(post_url.encode()).hexdigest()[:12]
                 except Exception:
                     continue
@@ -219,6 +224,7 @@ def scrape_group(group_url: str, max_posts: int = 500):
                 if post_id in seen_posts:
                     continue
                 seen_posts.add(post_id)
+                print(f"  Processing post {post_id[:16]}...")
 
                 try:
                     # Post text
