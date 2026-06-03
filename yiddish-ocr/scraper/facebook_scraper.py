@@ -309,29 +309,20 @@ def scrape_group(group_url: str, max_posts: int = 500):
                     print(f"  Post parse error: {e}")
                     continue
 
-            # Scroll down and wait for new posts to load
-            for _ in range(3):
-                page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
-                page.wait_for_timeout(2000)
+            # Mouse wheel scroll triggers Facebook's infinite scroll
+            page.mouse.wheel(0, 5000)
+            page.wait_for_timeout(3000)
 
-            new_height = page.evaluate("document.body.scrollHeight")
-            if new_height == last_height:
+            new_count = len(page.query_selector_all("[role='feed'] > div"))
+            if new_count == last_height:
                 stall_count += 1
                 if stall_count >= 5:
                     print("Feed end reached.")
                     break
-                # Try clicking "See more posts" if available
-                see_more = page.query_selector("div[role='button']:has-text('See more')")
-                if see_more:
-                    try:
-                        see_more.click()
-                        page.wait_for_timeout(3000)
-                    except Exception:
-                        pass
             else:
                 stall_count = 0
-            last_height = new_height
-            print(f"  Scrolled — {len(seen_posts)} posts seen so far, height={new_height}")
+            last_height = new_count
+            print(f"  Scrolled — {len(seen_posts)} posts seen, feed size={new_count}")
 
         browser.close()
 
