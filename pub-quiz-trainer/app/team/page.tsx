@@ -1,20 +1,18 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { getEffectiveUser } from '@/lib/supabase/server'
 import { buildPlayerStats, buildTeamStats, accuracyColor } from '@/lib/stats'
 import CategoryBars from '@/components/CategoryBars'
 import MemberGrid from '@/components/MemberGrid'
 import type { QuizAnswer, QuizSession } from '@/types'
 
 export default async function TeamPage() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth')
+  const { userId, db } = await getEffectiveUser()
 
-  const { data: profile } = await supabase
+  const { data: profile } = await db
     .from('quiz_players')
     .select('*, quiz_teams(*)')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (!profile) redirect('/onboard')
@@ -34,19 +32,19 @@ export default async function TeamPage() {
   }
 
   // All members of this team
-  const { data: members } = await supabase
+  const { data: members } = await db
     .from('quiz_players')
     .select('id, display_name')
     .eq('team_id', profile.team_id)
 
   // All answers for this team
-  const { data: allAnswers } = await supabase
+  const { data: allAnswers } = await db
     .from('quiz_answers')
     .select('*')
     .in('player_id', (members ?? []).map(m => m.id))
 
   // All sessions for this team
-  const { data: allSessions } = await supabase
+  const { data: allSessions } = await db
     .from('quiz_sessions')
     .select('*')
     .eq('team_id', profile.team_id)

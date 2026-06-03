@@ -1,7 +1,6 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClient } from '@/lib/supabase/client'
 
 export default function OnboardPage() {
   const router = useRouter()
@@ -17,12 +16,14 @@ export default function OnboardPage() {
     e.preventDefault()
     if (!displayName.trim()) return
     setLoading(true)
-    const supabase = createClient()
-    const { data: { user } } = await supabase.auth.getUser()
-    if (!user) { router.push('/auth'); return }
-    const { error } = await supabase.from('quiz_players').insert({ id: user.id, display_name: displayName.trim() })
+    const res = await fetch('/api/player/create', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ display_name: displayName.trim() }),
+    })
+    const data = await res.json()
     setLoading(false)
-    if (error) setError(error.message)
+    if (!res.ok) setError(data.error)
     else setStep('team')
   }
 

@@ -1,6 +1,15 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
+export const DEMO_PLAYER_ID = '00000000-0000-0000-0000-000000000001'
+
+export async function getEffectiveUser() {
+  const regular = createClient()
+  const { data: { user } } = await regular.auth.getUser()
+  if (user) return { userId: user.id, db: regular }
+  return { userId: DEMO_PLAYER_ID, db: createServiceClient() }
+}
+
 export function createClient() {
   const cookieStore = cookies()
   return createServerClient(

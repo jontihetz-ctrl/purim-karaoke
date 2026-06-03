@@ -1,37 +1,35 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
+import { getEffectiveUser } from '@/lib/supabase/server'
 import { buildPlayerStats, accuracyColor } from '@/lib/stats'
 import CategoryBars from '@/components/CategoryBars'
 import AccuracyTrend from '@/components/AccuracyTrend'
 import type { QuizAnswer, QuizSession } from '@/types'
 
 export default async function DashboardPage() {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/auth')
+  const { userId, db } = await getEffectiveUser()
 
-  const { data: profile } = await supabase
+  const { data: profile } = await db
     .from('quiz_players')
     .select('*, quiz_teams(*)')
-    .eq('id', user.id)
+    .eq('id', userId)
     .single()
 
   if (!profile) redirect('/onboard')
 
-  const { data: sessions } = await supabase
+  const { data: sessions } = await db
     .from('quiz_sessions')
     .select('*')
-    .eq('player_id', user.id)
+    .eq('player_id', userId)
     .order('created_at', { ascending: false })
 
-  const { data: answers } = await supabase
+  const { data: answers } = await db
     .from('quiz_answers')
     .select('*')
-    .eq('player_id', user.id)
+    .eq('player_id', userId)
 
   const stats = buildPlayerStats(
-    user.id,
+    userId,
     profile.display_name,
     (answers as QuizAnswer[]) ?? [],
     (sessions ?? []).length
