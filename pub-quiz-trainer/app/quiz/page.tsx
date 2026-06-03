@@ -6,8 +6,10 @@ import { CATEGORIES, DIFFICULTIES } from '@/types'
 
 const QUIZ_TYPES = [
   { id: 'multiple', label: 'Multiple Choice', emoji: '🧠', desc: 'Classic 4-option questions' },
-  { id: 'boolean', label: 'True / False', emoji: '✅', desc: 'Quick fire true or false' },
-  { id: 'flags', label: 'Flag Quiz', emoji: '🚩', desc: 'Identify country flags' },
+  { id: 'boolean', label: 'True / False',     emoji: '✅', desc: 'Quick-fire true or false' },
+  { id: 'flags',   label: 'Flag Quiz',         emoji: '🚩', desc: 'Identify country flags' },
+  { id: 'faces',   label: 'Famous Faces',      emoji: '🤩', desc: 'Who is this person?' },
+  { id: 'places',  label: 'Famous Places',     emoji: '📍', desc: 'Where is this landmark?' },
 ]
 
 export default function QuizSetupPage() {
@@ -17,7 +19,7 @@ export default function QuizSetupPage() {
   const [difficulty, setDifficulty] = useState('')
   const [amount, setAmount] = useState('10')
 
-  const isFlagsOrBool = quizType === 'flags' || quizType === 'boolean'
+  const isFlagsOrBool = ['flags', 'boolean', 'faces', 'places'].includes(quizType)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -44,7 +46,7 @@ export default function QuizSetupPage() {
           {/* Quiz Type */}
           <div>
             <label className="block text-sm font-medium text-gray-300 mb-3">Quiz type</label>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               {QUIZ_TYPES.map(t => (
                 <button
                   key={t.id}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { fetchQuestions } from '@/lib/trivia'
 import { generateFlagQuestions } from '@/lib/flags'
+import { generateImageQuestions } from '@/lib/image-questions'
 
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl
@@ -11,6 +12,12 @@ export async function GET(req: NextRequest) {
 
   if (type === 'flags') {
     return NextResponse.json({ questions: generateFlagQuestions(amount) })
+  }
+  if (type === 'faces') {
+    return NextResponse.json({ questions: generateImageQuestions(amount, 'faces') })
+  }
+  if (type === 'places') {
+    return NextResponse.json({ questions: generateImageQuestions(amount, 'places') })
   }
 
   try {

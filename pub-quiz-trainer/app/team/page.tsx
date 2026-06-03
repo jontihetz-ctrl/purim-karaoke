@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getEffectiveUser } from '@/lib/supabase/server'
-import { buildPlayerStats, buildTeamStats, accuracyColor } from '@/lib/stats'
+import { buildPlayerStats, buildTeamStats, accuracyColor, getPlayerTitle } from '@/lib/stats'
 import CategoryBars from '@/components/CategoryBars'
 import MemberGrid from '@/components/MemberGrid'
 import type { QuizAnswer, QuizSession } from '@/types'
@@ -183,12 +183,13 @@ export default async function TeamPage() {
                 .sort((a, b) => b.overall_accuracy - a.overall_accuracy)
                 .map(m => (
                   <div key={m.player_id} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-                    <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center justify-between mb-1">
                       <h3 className="font-semibold text-white">{m.display_name}</h3>
                       <span className="text-lg font-bold" style={{ color: accuracyColor(m.overall_accuracy) }}>
                         {m.total_questions > 0 ? `${m.overall_accuracy}%` : '—'}
                       </span>
                     </div>
+                    <p className="text-xs text-brand-400 mb-3">{getPlayerTitle(m)}</p>
                     <div className="grid grid-cols-3 gap-2 text-center text-xs mb-3">
                       <div><div className="text-white font-semibold">{m.total_questions}</div><div className="text-gray-500">Questions</div></div>
                       <div><div className="text-white font-semibold">{m.sessions_count}</div><div className="text-gray-500">Sessions</div></div>

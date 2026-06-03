@@ -1,47 +1,48 @@
-import Link from 'next/link'
+'use client'
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { PRESET_PLAYERS } from '@/lib/players'
 
-export default function LandingPage() {
+export default function PlayerSelectPage() {
+  const router = useRouter()
+  const [loading, setLoading] = useState<string | null>(null)
+
+  async function selectPlayer(id: string) {
+    setLoading(id)
+    await fetch('/api/player/select', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ player_id: id }),
+    })
+    router.push('/dashboard')
+  }
+
   return (
-    <div className="min-h-screen bg-gray-950 flex flex-col">
-      <nav className="border-b border-gray-800 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2 font-bold text-lg">
-          <span>🧠</span> QuizIQ
-        </div>
-        <Link href="/auth" className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-          Get started
-        </Link>
-      </nav>
+    <div className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-6">
+      <div className="text-center mb-10">
+        <div className="text-5xl mb-4">🧠</div>
+        <h1 className="text-3xl font-bold text-white">QuizIQ</h1>
+        <p className="text-gray-400 mt-2">Who are you?</p>
+      </div>
 
-      <main className="flex-1 flex flex-col items-center justify-center px-6 text-center py-20">
-        <div className="inline-flex items-center gap-2 bg-brand-500/10 border border-brand-500/30 text-brand-500 text-xs font-semibold px-3 py-1.5 rounded-full mb-8">
-          🏆 Built for pub quiz teams
-        </div>
-        <h1 className="text-5xl font-bold leading-tight mb-6 max-w-2xl">
-          Train smarter.<br />
-          <span className="text-brand-500">Win more pub quizzes.</span>
-        </h1>
-        <p className="text-gray-400 text-lg max-w-xl mb-10">
-          Your whole team practises individually. QuizIQ turns that into real data —
-          who's your history expert, where you're weak as a team, and exactly what to study before next week.
-        </p>
-        <Link href="/auth" className="bg-brand-500 hover:bg-brand-600 text-white font-bold px-8 py-4 rounded-xl text-lg transition-colors shadow-lg shadow-brand-500/20">
-          Start training free →
-        </Link>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 w-full max-w-2xl">
+        {PRESET_PLAYERS.map(p => (
+          <button
+            key={p.id}
+            onClick={() => selectPlayer(p.id)}
+            disabled={loading !== null}
+            className={`bg-gray-900 border rounded-xl p-5 text-center transition-all hover:border-brand-500 hover:bg-brand-500/10 disabled:opacity-50 ${
+              loading === p.id ? 'border-brand-500 bg-brand-500/10 scale-95' : 'border-gray-700'
+            }`}
+          >
+            <div className="text-4xl mb-2">{p.emoji}</div>
+            <div className="font-bold text-white">{p.name}</div>
+            <div className="text-xs text-gray-500 mt-1">{p.bio}</div>
+          </button>
+        ))}
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-24 max-w-3xl w-full text-left">
-          {[
-            { icon: '🎯', title: 'Practice daily', body: 'Thousands of questions across 13 categories. New questions added regularly from the world\'s largest trivia database.' },
-            { icon: '📊', title: 'Deep analytics', body: 'Category accuracy, answer speed, improvement trends. Know exactly where you\'re strong and where to focus.' },
-            { icon: '👥', title: 'Team insights', body: 'See who your category experts are. Find team-wide weak spots. Get a recommended study plan before quiz night.' },
-          ].map(f => (
-            <div key={f.title} className="bg-gray-900 border border-gray-800 rounded-xl p-5">
-              <div className="text-2xl mb-3">{f.icon}</div>
-              <h3 className="font-bold text-white mb-2">{f.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{f.body}</p>
-            </div>
-          ))}
-        </div>
-      </main>
+      <p className="text-gray-600 text-xs mt-8">Pick your character to see your stats and play</p>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { getEffectiveUser } from '@/lib/supabase/server'
-import { buildPlayerStats, accuracyColor } from '@/lib/stats'
+import { buildPlayerStats, accuracyColor, getPlayerTitle } from '@/lib/stats'
 import CategoryBars from '@/components/CategoryBars'
 import AccuracyTrend from '@/components/AccuracyTrend'
 import type { QuizAnswer, QuizSession } from '@/types'
@@ -61,9 +61,14 @@ export default async function DashboardPage() {
       </nav>
 
       <div className="max-w-4xl mx-auto px-6 py-8">
-        <div className="mb-8">
-          <h1 className="text-2xl font-bold">Hey, {profile.display_name} 👋</h1>
-          <p className="text-gray-400 text-sm mt-1">{stats.sessions_count} sessions · {stats.total_questions} questions answered</p>
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div>
+            <h1 className="text-2xl font-bold">Hey, {profile.display_name} 👋</h1>
+            <p className="text-gray-400 text-sm mt-1">{stats.sessions_count} sessions · {stats.total_questions} questions answered</p>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-brand-500/10 border border-brand-500/30 text-brand-400 text-sm font-semibold px-4 py-2 rounded-full">
+            {getPlayerTitle(stats)}
+          </div>
         </div>
 
         {/* Top stats */}

@@ -7,6 +7,13 @@ export async function getEffectiveUser() {
   const regular = createClient()
   const { data: { user } } = await regular.auth.getUser()
   if (user) return { userId: user.id, db: regular }
+
+  const cookieStore = cookies()
+  const playerCookie = cookieStore.get('quiz_player_id')
+  if (playerCookie?.value) {
+    return { userId: playerCookie.value, db: createServiceClient() }
+  }
+
   return { userId: DEMO_PLAYER_ID, db: createServiceClient() }
 }
 

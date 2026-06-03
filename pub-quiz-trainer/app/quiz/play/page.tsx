@@ -12,6 +12,7 @@ interface ProcessedQ {
   correct_answer: string
   options: string[]
   image?: string
+  explanation?: string
 }
 
 interface AnswerRecord {
@@ -22,6 +23,8 @@ interface AnswerRecord {
   player_answer: string
   is_correct: boolean
   time_taken_ms: number
+  explanation?: string
+  image?: string
 }
 
 type State = {
@@ -65,6 +68,8 @@ function reducer(state: State, action: Action): State {
         player_answer: '',
         is_correct: false,
         time_taken_ms: action.timeTaken,
+        explanation: q.explanation,
+        image: q.image,
       }
       const answers = [...state.answers, record]
       const isLast = state.currentIndex >= state.questions.length - 1
@@ -83,6 +88,8 @@ function reducer(state: State, action: Action): State {
         player_answer: action.answer,
         is_correct,
         time_taken_ms: action.timeTaken,
+        explanation: q.explanation,
+        image: q.image,
       }
       return { ...state, status: 'revealed', selected: action.answer, answers: [...state.answers, record] }
     }
@@ -146,13 +153,14 @@ function QuizPlay() {
       .then(r => r.json())
       .then(data => {
         if (data.error) { dispatch({ type: 'ERROR', msg: data.error }); return }
-        const questions: ProcessedQ[] = data.questions.map((q: TriviaQuestion) => ({
+        const questions: ProcessedQ[] = data.questions.map((q: TriviaQuestion & { explanation?: string }) => ({
           question: decodeHtml(q.question),
           category: decodeHtml(q.category),
           difficulty: q.difficulty,
           correct_answer: decodeHtml(q.correct_answer),
           options: buildOptions(q),
           image: q.image,
+          explanation: q.explanation,
         }))
         dispatch({ type: 'LOADED', questions })
         questionStartRef.current = Date.now()
@@ -248,15 +256,24 @@ function QuizPlay() {
 
           <div className="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800 mb-8 text-left">
             {state.answers.map((a, i) => (
-              <div key={i} className="px-4 py-3 flex items-start gap-3">
-                <span className="mt-0.5 flex-shrink-0">{a.is_correct ? '✅' : '❌'}</span>
-                <div className="min-w-0">
-                  <p className="text-sm text-white leading-snug">{a.question_text}</p>
+              <div key={i} className="px-4 py-4 flex items-start gap-3">
+                <span className="mt-0.5 flex-shrink-0 text-lg">{a.is_correct ? '✅' : '❌'}</span>
+                <div className="min-w-0 flex-1">
+                  {a.image && (
+                    <div className="mb-2">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={a.image} alt="" className="h-16 w-auto rounded object-cover" />
+                    </div>
+                  )}
+                  <p className="text-sm text-white leading-snug font-medium">{a.question_text}</p>
                   {!a.is_correct && a.player_answer && (
-                    <p className="text-xs text-red-400 mt-0.5">You: {a.player_answer}</p>
+                    <p className="text-xs text-red-400 mt-1">Your answer: {a.player_answer}</p>
                   )}
                   {!a.is_correct && (
-                    <p className="text-xs text-green-400 mt-0.5">Correct: {a.correct_answer}</p>
+                    <p className="text-xs text-green-400 mt-0.5 font-semibold">✓ {a.correct_answer}</p>
+                  )}
+                  {a.explanation && (
+                    <p className="text-xs text-gray-400 mt-1.5 leading-relaxed border-l-2 border-gray-700 pl-2 italic">{a.explanation}</p>
                   )}
                 </div>
               </div>

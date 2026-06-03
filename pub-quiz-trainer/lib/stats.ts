@@ -98,3 +98,33 @@ export function accuracyColor(pct: number): string {
   if (pct >= 40) return '#f97316'
   return '#ef4444'
 }
+
+const CATEGORY_TITLES: Record<string, string> = {
+  'Flags':           '🚩 Flag Master',
+  'Geography':       '🌍 World Traveller',
+  'History':         '📜 History Buff',
+  'Science & Nature':'🔬 Science Whiz',
+  'Sports':          '⚽ Sports Fanatic',
+  'Music':           '🎵 Music Maestro',
+  'Film':            '🎬 Cinephile',
+  'Television':      '📺 TV Addict',
+  'Art':             '🎨 Art Connoisseur',
+  'Video Games':     '🎮 Gamer',
+  'Books':           '📚 Bookworm',
+  'Animals':         '🦁 Wildlife Expert',
+  'General Knowledge':'🧠 All-Rounder',
+  'Famous Faces':    '🤩 Celebrity Spotter',
+  'Famous Places':   '📍 Landmarks Expert',
+}
+
+export function getPlayerTitle(stats: PlayerStats): string {
+  if (stats.total_questions === 0) return '🆕 Newcomer'
+  const qualified = stats.category_stats.filter(c => c.total >= 5)
+  if (qualified.length === 0) {
+    if (stats.avg_time_ms > 0 && stats.avg_time_ms < 7000) return '⚡ Speed Demon'
+    if (stats.overall_accuracy >= 80) return '🏆 Mastermind'
+    return '🎯 Rising Star'
+  }
+  const best = qualified.reduce((a, b) => b.accuracy > a.accuracy ? b : a)
+  return CATEGORY_TITLES[best.category] ?? '🏆 Mastermind'
+}
