@@ -17,19 +17,16 @@ import time
 import random
 import re
 import hashlib
-import requests
 from pathlib import Path
 from db import get_conn, init_db
 
-IMAGES_DIR = Path(__file__).parent.parent / "data" / "images"
-IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 COOKIES_FILE = Path(__file__).parent / "fb_cookies.json"
 URL_CACHE_FILE = Path(__file__).parent / "fb_post_urls.json"
 
 GROUP_URL = "https://www.facebook.com/groups/361690548110384/"
 
 
-def human_delay(min_s=0.5, max_s=1.5):
+def human_delay(min_s=0.3, max_s=0.8):
     time.sleep(random.uniform(min_s, max_s))
 
 
@@ -160,28 +157,12 @@ def expand_see_more(page):
                     "View all comments", "More comments",
                 ]):
                     btn.click()
-                    page.wait_for_timeout(600)
+                    page.wait_for_timeout(400)
                     expanded = True
             except Exception:
                 pass
         if not expanded:
             break
-
-
-def download_image(url: str, fname: str) -> bool:
-    fpath = IMAGES_DIR / fname
-    if fpath.exists():
-        return True
-    try:
-        r = requests.get(url, timeout=20, headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-        })
-        if r.status_code != 200 or "image" not in r.headers.get("content-type", ""):
-            return False
-        fpath.write_bytes(r.content)
-        return True
-    except Exception:
-        return False
 
 
 def detect_lang(text: str) -> tuple[str, str]:
@@ -193,6 +174,10 @@ def detect_lang(text: str) -> tuple[str, str]:
 
 
 def save_post(post_id, post_url, post_date, post_text, group_url, images, comments):
+    """Store one primary image per post + all substantive comments.
+    Images are stored as CDN URLs — no download needed for review.
+    Only the first (largest/main) image is kept to avoid pairing every
+    comment with every thumbnail variant of the same document."""
     conn = get_conn()
     try:
         if conn.execute("SELECT id FROM posts WHERE id=?", (post_id,)).fetchone():
@@ -206,20 +191,21 @@ def save_post(post_id, post_url, post_date, post_text, group_url, images, commen
              post_text[:2000], json.dumps({"comments": comments[:50]})),
         )
 
+        # Keep only the first (main) image — profile pics are small and
+        # filtered earlier; the first scontent image is the posted document.
         saved = 0
-        for img in images:
-            if not download_image(img["url"], img["fname"]):
-                continue
+        for img in images[:1]:
+            fname = "fb_" + hashlib.md5(img["url"].encode()).hexdigest()[:16] + ".jpg"
             cursor = conn.execute(
                 "INSERT INTO images (post_id, filename, url) VALUES (?,?,?)",
-                (post_id, img["fname"], img["url"]),
+                (post_id, fname, img["url"]),
             )
             image_id = cursor.lastrowid
             saved += 1
 
             for comment in comments:
                 text = comment["text"].strip()
-                if len(text) < 10:
+                if len(text) < 20:
                     continue
                 lang, script = detect_lang(text)
                 tid = conn.execute(
@@ -247,11 +233,11 @@ def scrape_post_page(page, post_url: str, group_url: str) -> int:
     """Open a single post, expand everything, extract content."""
     try:
         page.goto(post_url, wait_until="domcontentloaded", timeout=25000)
-        page.wait_for_timeout(2500)
+        page.wait_for_timeout(1500)
 
         # Expand ALL See More buttons on the post page
         expand_see_more(page)
-        page.wait_for_timeout(500)
+        page.wait_for_timeout(300)
 
         post_id = "fb_" + hashlib.md5(post_url.encode()).hexdigest()[:12]
 
@@ -274,25 +260,41 @@ def scrape_post_page(page, post_url: str, group_url: str) -> int:
         if time_el:
             post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or ""
 
-        # Images
-        img_els = page.query_selector_all("img")
+        # Images — find the primary document image.
+        # Look for photo links first (the actual posted image), then fall
+        # back to large scontent img tags.
         images = []
         seen_srcs = set()
-        for img in img_els:
+
+        # Strategy 1: images inside photo anchor links (the posted photo)
+        photo_links = page.query_selector_all("a[href*='/photo/'], a[href*='photo_id=']")
+        for link in photo_links:
+            img = link.query_selector("img")
+            if not img:
+                continue
             src = img.get_attribute("src") or ""
-            if not src or "scontent" not in src or src in seen_srcs:
-                continue
-            if "emoji" in src or "static" in src:
-                continue
-            try:
-                w = int(img.get_attribute("width") or 0)
-                if 0 < w < 100:
+            if "scontent" in src and src not in seen_srcs:
+                seen_srcs.add(src)
+                images.append({"url": src})
+
+        # Strategy 2: fallback — large scontent images that aren't tiny icons
+        if not images:
+            for img in page.query_selector_all("img"):
+                src = img.get_attribute("src") or ""
+                if not src or "scontent" not in src or src in seen_srcs:
                     continue
-            except Exception:
-                pass
-            seen_srcs.add(src)
-            fname = "fb_" + hashlib.md5(src.encode()).hexdigest()[:16] + ".jpg"
-            images.append({"url": src, "fname": fname})
+                if "emoji" in src or "static" in src:
+                    continue
+                try:
+                    w = int(img.get_attribute("width") or 0)
+                    h = int(img.get_attribute("height") or 0)
+                    # Skip profile pictures (typically square and small)
+                    if 0 < w < 200 or 0 < h < 200:
+                        continue
+                except Exception:
+                    pass
+                seen_srcs.add(src)
+                images.append({"url": src})
 
         if not images:
             return 0
@@ -316,7 +318,8 @@ def scrape_post_page(page, post_url: str, group_url: str) -> int:
             except Exception:
                 pass
 
-        n = save_post(post_id, post_url, post_date, post_text, group_url, images, comments)
+        n = save_post(post_id, post_url, post_date, post_text, group_url,
+                      images, comments)
         return n
 
     except Exception as e:
@@ -370,7 +373,7 @@ def scrape_all(group_url: str, max_posts: int, urls_only: bool, skip_phase1: boo
             elif n == 0:
                 print(f"  [{i+1}/{len(post_urls)}] skip (no images or dupe) — {url[-40:]}")
 
-            human_delay(1.5, 3.0)
+            human_delay(0.5, 1.2)
 
             # Refresh session every 50 posts to avoid timeouts
             if (i + 1) % 50 == 0:
