@@ -19,13 +19,18 @@ IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 HEADERS = {"User-Agent": "YiddishOCR-Research/1.0"}
 
 QUERIES = [
-    "yiddish postcard",
-    "jewish postcard 1900",
-    "hebrew letter handwritten",
-    "yiddish letter correspondence",
-    "jewish correspondence 1920",
+    "postcard Jewish",
+    "carte postale juif",
+    "correspondence Hebrew",
+    "Hebrew handwriting",
+    "Yiddish script",
+    "judaica handwritten",
+    "Jewish letter 19th century",
     "postcard russia 1900",
-    "jewish immigration letter",
+    "Jewish immigration document",
+    "synagogue postcard",
+    "Israel postcard vintage",
+    "Palestine postcard 1900",
 ]
 
 
