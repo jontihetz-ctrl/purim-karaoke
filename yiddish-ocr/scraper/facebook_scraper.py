@@ -174,7 +174,7 @@ def scrape_group(group_url: str, max_posts: int = 500):
                   "--ignore-certificate-errors"],
         )
         ctx = browser.new_context(
-            viewport={"width": 1280, "height": 900},
+            viewport={"width": 1280, "height": 2000},
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
                        "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
             locale="en-US",
@@ -200,6 +200,19 @@ def scrape_group(group_url: str, max_posts: int = 500):
             return
 
         print(f"Logged in. Page: {page.title()}")
+        print("Pre-loading feed (scrolling to gather posts)...")
+        # Scroll aggressively first to load a large batch of posts before processing
+        prev_count = 0
+        for i in range(60):
+            page.mouse.wheel(0, 3000)
+            page.wait_for_timeout(1500)
+            count = len(page.query_selector_all("[role='feed'] > div"))
+            if i % 5 == 0:
+                print(f"  Pre-scroll {i+1}: {count} posts loaded")
+            if count == prev_count and i > 5:
+                break
+            prev_count = count
+        print(f"Pre-load done: {prev_count} posts in feed. Processing...")
         print("Scrolling feed...")
 
         posts_processed = 0
