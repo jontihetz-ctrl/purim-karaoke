@@ -75,15 +75,8 @@ def download_image(url: str, fname: str) -> bool:
 
 
 def is_useful_comment(text: str) -> bool:
-    """Filter to comments that are likely transcriptions or translations."""
-    if len(text) < 15:
-        return False
-    has_hebrew = bool(re.search(r'[א-ת]', text))
-    has_cyrillic = bool(re.search(r'[Ѐ-ӿ]', text))
-    # Keep if it has original script, or if it's a long English response
-    # (likely a translation: "It says: Dear mother...")
-    long_latin = len(text) > 60 and bool(re.search(r'[a-zA-Z]{3,}', text))
-    return has_hebrew or has_cyrillic or long_latin
+    """Keep all non-trivial comments — we'll sort the actual translation in review."""
+    return len(text.strip()) >= 10
 
 
 def detect_lang(text: str) -> tuple[str, str]:
@@ -252,10 +245,19 @@ def scrape_group(group_url: str, max_posts: int = 500):
                 print(f"  Processing post {post_id[:16]}...")
 
                 try:
-                    # Post text
-                    text_el = article.query_selector("div[data-ad-comet-preview='message']") or \
-                              article.query_selector("div[dir='auto']")
-                    post_text = text_el.inner_text().strip() if text_el else ""
+                    # Expand post "See more" before reading text
+                    for see_more in article.query_selector_all("div[role='button']:has-text('See more'), span[role='button']:has-text('See more')"):
+                        try:
+                            see_more.click()
+                            page.wait_for_timeout(500)
+                        except Exception:
+                            pass
+
+                    # Post text (grab all text blocks, join them)
+                    text_els = article.query_selector_all("div[dir='auto']")
+                    post_text = "\n".join(
+                        el.inner_text().strip() for el in text_els if el.inner_text().strip()
+                    )[:2000]
 
                     # Date
                     time_el = article.query_selector("abbr")
@@ -271,7 +273,6 @@ def scrape_group(group_url: str, max_posts: int = 500):
                             continue
                         if "emoji" in src or "static" in src:
                             continue
-                        # Skip small avatars
                         try:
                             w = int(img.get_attribute("width") or 0)
                             if 0 < w < 100:
@@ -284,43 +285,73 @@ def scrape_group(group_url: str, max_posts: int = 500):
                     if not images:
                         continue
 
-                    # Expand comments
-                    for btn_text in ["View more comments", "Most relevant", "View all"]:
-                        btn = article.query_selector(f"div[role='button']:has-text('{btn_text}')")
-                        if btn:
+                    # Expand ALL comment "View more" / "See more" buttons repeatedly
+                    for _ in range(5):
+                        expanded = False
+                        for btn in article.query_selector_all(
+                            "div[role='button'], span[role='button']"
+                        ):
                             try:
-                                btn.click()
-                                human_delay(0.5, 1.5)
+                                label = btn.inner_text().strip()
+                                if any(x in label for x in [
+                                    "View more comments", "View previous comments",
+                                    "See more", "See More", "More comments",
+                                    "Most relevant", "View all comments"
+                                ]):
+                                    btn.click()
+                                    page.wait_for_timeout(800)
+                                    expanded = True
                             except Exception:
                                 pass
+                        if not expanded:
+                            break
 
-                    # Collect comments
+                    # Expand "See more" inside each comment
+                    for btn in article.query_selector_all("div[role='article'] div[role='button']:has-text('See more'), div[role='article'] span[role='button']:has-text('See more')"):
+                        try:
+                            btn.click()
+                            page.wait_for_timeout(300)
+                        except Exception:
+                            pass
+
+                    # Collect ALL comments — no filtering, grab everything
                     comment_els = article.query_selector_all("div[role='article']")
                     comments = []
                     for c in comment_els:
                         try:
-                            author_el = c.query_selector("a span")
-                            body_el = c.query_selector("div[dir='auto']")
-                            if not body_el:
-                                continue
-                            text = body_el.inner_text().strip()
+                            author_el = c.query_selector("a[role='link'] span, a span")
+                            # Get all text divs in comment (handles "See more" expansion)
+                            body_els = c.query_selector_all("div[dir='auto'], span[dir='auto']")
+                            text = " ".join(
+                                el.inner_text().strip() for el in body_els if el.inner_text().strip()
+                            )
                             author = author_el.inner_text().strip() if author_el else "unknown"
-                            if text:
+                            if text and len(text) > 5:
                                 comments.append({"author": author, "text": text})
                         except Exception:
                             pass
+
+                    # Deduplicate comments (same text appearing in multiple divs)
+                    seen_texts = set()
+                    unique_comments = []
+                    for c in comments:
+                        key = c["text"][:100]
+                        if key not in seen_texts:
+                            seen_texts.add(key)
+                            unique_comments.append(c)
+                    comments = unique_comments
 
                     n = save_post(post_id, post_url, post_date, post_text,
                                   group_url, images, comments)
                     if n > 0:
                         total_images += n
-                        print(f"  [{posts_processed+1}] {n} image(s), {len(comments)} comments — {post_text[:60]}")
+                        print(f"  [{posts_processed+1}] {n} img, {len(comments)} comments — {post_text[:60]}")
 
                     posts_processed += 1
                     if posts_processed >= max_posts:
                         break
 
-                    human_delay(0.5, 2.0)
+                    human_delay(1.0, 2.0)
 
                 except Exception as e:
                     print(f"  Post parse error: {e}")
