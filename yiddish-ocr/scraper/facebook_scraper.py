@@ -207,16 +207,24 @@ def scrape_group(group_url: str, max_posts: int = 500):
         stall_count = 0
 
         while posts_processed < max_posts:
-            # Find all post articles
-            articles = page.query_selector_all("div[role='article']")
+            # Feed children are individual post containers
+            feed = page.query_selector("[role='feed']")
+            if not feed:
+                print("Feed not found, retrying...")
+                page.wait_for_timeout(3000)
+                continue
+            post_containers = feed.query_selector_all(":scope > div")
 
-            for article in articles:
-                # Get a stable ID for this article
+            for article in post_containers:
+                # Get a stable ID from the post link
                 try:
-                    link = article.query_selector("a[href*='/posts/'], a[href*='story_fbid']")
+                    link = article.query_selector(
+                        "a[href*='/posts/'], a[href*='story_fbid'], a[href*='?fbid=']"
+                    )
                     post_url = link.get_attribute("href") if link else None
                     if not post_url:
-                        post_url = article.get_attribute("aria-label") or str(articles.index(article))
+                        # Fall back to hashing the text content
+                        post_url = article.inner_text()[:80]
                     post_id = "fb_" + hashlib.md5(post_url.encode()).hexdigest()[:12]
                 except Exception:
                     continue
@@ -237,18 +245,19 @@ def scrape_group(group_url: str, max_posts: int = 500):
                     post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or "" \
                         if time_el else ""
 
-                    # Images — only scontent CDN images (actual photos, not UI icons)
-                    img_els = article.query_selector_all("img[src*='scontent']")
+                    # Images — scontent CDN only, skip avatars/emoji
+                    img_els = article.query_selector_all("img")
                     images = []
-                    for i, img in enumerate(img_els):
+                    for img in img_els:
                         src = img.get_attribute("src") or ""
-                        if not src or "emoji" in src or "static" in src:
+                        if not src or "scontent" not in src:
                             continue
-                        # Skip tiny images (avatars etc.)
+                        if "emoji" in src or "static" in src:
+                            continue
+                        # Skip small avatars
                         try:
                             w = int(img.get_attribute("width") or 0)
-                            h = int(img.get_attribute("height") or 0)
-                            if w > 0 and w < 100:
+                            if 0 < w < 100:
                                 continue
                         except Exception:
                             pass
