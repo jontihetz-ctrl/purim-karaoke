@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Evan Posner — Excuse Generator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0d1117;
+      --card: #161b22;
+      --border: #21262d;
+      --blue: #4a90d9;
+      --blue2: #2d6da8;
+      --text: #e6edf3;
+      --muted: #6e7681;
+      --green: #3fb950;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(74, 144, 217, 0.1), transparent),
+        radial-gradient(ellipse 50% 30% at 85% 110%, rgba(63, 185, 80, 0.06), transparent);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 640px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #4a90d9, #2d6da8);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #e6edf3, #8b949e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, #4a90d9, #79b8ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .credentials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.2rem;
+    }
+
+    .cred {
+      background: var(--border);
+      border: 1px solid #30363d;
+      color: var(--muted);
+      font-size: 0.68rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: 0 0 0 1px rgba(74,144,217,0.06), 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--blue), var(--green), transparent);
+      opacity: 0.5;
+    }
+
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: 0.6;
+      color: var(--blue);
+      opacity: 0.2;
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+    }
+
+    .excuse-text {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      line-height: 1.7;
+      color: var(--text);
+      min-height: 5rem;
+      padding: 0.5rem 0;
+      position: relative;
+      z-index: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .excuse-text.fading { opacity: 0; }
+
+    .from {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-style: italic;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .from::before {
+      content: '📊';
+      font-size: 1rem;
+      font-style: normal;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 640px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .btn-generate {
+      flex: 1;
+      background: linear-gradient(135deg, var(--blue), #79b8ff);
+      color: #0d1117;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: 0 4px 20px rgba(74,144,217,0.25);
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(74,144,217,0.4);
+    }
+
+    .btn-generate:active { transform: translateY(0); }
+
+    .btn-copy {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy:hover { border-color: var(--blue); }
+    .btn-copy.copied { color: var(--green); border-color: var(--green); }
+
+    .counter {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: center;
+      opacity: 0.5;
+      max-width: 480px;
+    }
+
+    .spin {
+      display: inline-block;
+      animation: spin 0.4s linear;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">📋 CA(SA) · Financial Accountant · Sage ERP Africa · 11 Years</div>
+  <h1>Evan Posner<br>Can't Make It Because…<em>™</em></h1>
+  <p class="subtitle">Your one-stop source for perfectly reasonable, deeply unglamorous excuses from a man who is genuinely, always, doing month end.</p>
+  <div class="credentials">
+    <span class="cred">📊 CA(SA)</span>
+    <span class="cred">👶 New Dad</span>
+    <span class="cred">🕍 Sydenham Shul</span>
+    <span class="cred">📅 Month End (Always)</span>
+    <span class="cred">🏢 Sage ERP · 11yrs</span>
+    <span class="cred">🏫 King David Linksfield</span>
+    <span class="cred">🎓 UJ</span>
+    <span class="cred">🏦 Ex-Investec</span>
+    <span class="cred">⛏️ Ex-Barrick Gold</span>
+    <span class="cred">😴 Sleep Deprived</span>
+  </div>
+</header>
+
+<div class="card" id="excuseCard">
+  <div class="quote-mark">"</div>
+  <p class="excuse-text" id="excuseText">Click the button to receive your excuse.</p>
+  <div class="from">— Evan Posner, CA(SA), Betar man, new dad, Sydenham shul regular, who does genuinely mean to come one day</div>
+</div>
+
+<div class="actions">
+  <button class="btn-generate" onclick="generate()">
+    <span id="btnIcon">📋</span> Generate Excuse
+  </button>
+  <button class="btn-copy" id="copyBtn" onclick="copyExcuse()">📎 Copy</button>
+</div>
+
+<p class="counter" id="counter"></p>
+
+<footer>
+  Made with love for Evan — CA(SA), Betar man, Sage lifer, King David old boy, and devoted dad.<br>
+  It's month end. It's always month end. Jabotinsky would understand.
+</footer>
+
+<script>
+  const excuses = [
+    // Month end / Sage / accounting
+    "It's month end.",
+    "It's month end again. I know it was month end last time. It's month end again.",
+    "The reconciliation isn't reconciling. I don't want to talk about it.",
+    "It's not month end — it's quarter end. Which is three month ends back to back with no break in between.",
+    "The trial balance doesn't balance. I am going to be here for a while.",
+    "I have 47 creditor statements to reconcile by 9am and I am currently on number three.",
+    "Year end. It's like month end but it has its own separate category of grief.",
+    "I've been at Sage for eleven years. I have seen more month ends than most people see sunsets. Tonight is another one.",
+    "My Excel crashed. It took six hours of work with it. I don't want to discuss it.",
+    "I'm doing a VAT return and no, I cannot explain what that means in a way that helps either of us.",
+    "The budget vs actuals variance is significant and I am the one who has to explain it to people who won't like the explanation.",
+    "Payroll goes out tomorrow. Payroll always goes out tomorrow.",
+    "I've found a discrepancy of R1.23 and I cannot in good conscience move forward until I understand why.",
+    "The audit file has a gap. I've been staring at it for four hours. The gap is still there.",
+    "The CFO has questions about the numbers. The numbers also have questions. Nobody is asking the numbers.",
+    "SARS has questions. I have answers. We are going back and forth and it is not enjoyable for anyone.",
+    "The debtors book is a problem. The creditors book is also a problem. I have exactly two problems.",
+    "CIPC compliance deadline tonight. I cannot overstate how much I cannot miss this.",
+    "I'm on a mandatory webinar about IFRS 16 changes. It is not optional and it is not interesting.",
+    "The shareholder wants management accounts by 8am. I started at midnight. I am still here.",
+    "Someone made a posting error in the prior period and I have been elected, by default, to fix it.",
+    "I'm doing cashflow projections and the cash is not flowing in the direction anyone planned for.",
+    "There's an intercompany loan on the balance sheet that nobody can explain. It's my problem now.",
+    "I was an audit senior at PKF. And at EisnerAmper. I have audited other people's chaos for years. Now I live in my own.",
+    "I once worked at Investec. I've never fully recovered from the expectations that placed on me.",
+    "I analysed gold mines for Barrick Corporation. I now analyse whether I have time for social events. The answer, like the gold, is rarely where you hope.",
+    "I'm a CA(SA). That stands for Can't Attend (Social Activities).",
+    "It's a very month-endy month. More so than usual. I've been saying this since January.",
+    "It's always month end. I've come to understand month end is not a period of time. It's a state of being.",
+    "I need to do my own personal tax return and it is, somehow, already overdue. I'm an accountant. I know.",
+    "The bank hasn't responded to my query from three weeks ago. This is my sixth follow-up email. We persist.",
+    "I work at Sage ERP — the company that makes the software accountants use to do month end. I also do month end. The irony is not lost on me.",
+    "I was going to come but I checked my emails and there were forty-three of them and that was two hours ago.",
+    "Group Five Construction, Investec, Barrick Gold, EisnerAmper, PKF, Legal and Tax, Sage. I have always been busy. This is not new.",
+
+    // Baby
+    "The baby was up at 2am, 3:15am, 4am, and 5:30am. I am not the person you want at your event.",
+    "The baby smiled for the first time. I know that's not technically an excuse. I'm staying home anyway.",
+    "We're on a sleep schedule. If I leave now, the whole thing falls apart. The entire structure.",
+    "I need to sterilise bottles. There are more bottles than you would think.",
+    "The baby has reflux. I have sympathy reflux. Neither of us is going anywhere.",
+    "The baby will only sleep on me. I have tried everything. This is my life now. I have made peace with it.",
+    "Bedtime routine takes ninety minutes minimum. By the time it's done, it is functionally tomorrow.",
+    "The baby looked at me in a way I interpreted as 'please stay.' I trust the baby.",
+    "I haven't slept properly since before the bris. I am not safe to operate a vehicle or attend gatherings.",
+    "I went to put the baby down and she woke up. Starting again. Please don't wait.",
+    "We're sleep training. Every book says something different. None of it is working. We are fine. We are not fine.",
+    "The baby has a doctor's appointment. And a follow-up. And a follow-up to the follow-up.",
+    "The baby did something very funny and I need to send the video to fourteen family WhatsApp groups first.",
+    "I fell asleep at 8:30pm. I'm sorry. This is apparently who I am now.",
+    "I have a small child, a large month end, and very little sleep. I don't have your event as well.",
+    "I'm reading a parenting book that contradicts everything I've been doing for the past four months.",
+    "It's month end AND the baby has a cold. I'm outnumbered on multiple fronts simultaneously.",
+    "I need to be in bed by 9pm. This is a sentence I never imagined saying and yet here we are.",
+
+    // Shul / Jewish / Betar / Chabad household
+    "It's Shabbos. Was Shabbos. Will shortly be Shabbos-adjacent.",
+    "Kiddush at Sydenham ran long. These things happen. Especially when there's cholent involved.",
+    "Sydenham shul has a function tonight. There is always a function.",
+    "It's a yom tov. Or erev yom tov. Or motzei yom tov. The Jewish calendar does not take requests.",
+    "I promised my wife I'd be home for Shabbos. I'm currently still at the office. I'm not winning this.",
+    "We're hosting for Shabbos and I haven't done the Woolies run yet and it's Thursday at 6pm.",
+    "It's Elul. I'm doing a cheshbon hanefesh. The accounting this month is spiritual in nature.",
+    "The rabbi's drosha went long. I'm not going to be the person who walks out on the rabbi.",
+    "We're making a kiddush for the baby's milestone. I can't remember which one. My wife knows.",
+    "I have minyan tomorrow morning at shul and if I come tonight I will definitely not make minyan.",
+    "It's sefira and I'm genuinely not certain what we're allowed to do. I'm erring on the side of staying home.",
+    "I'm in a heated debate about Jabotinsky's position on the Partition Plan. We are not done.",
+    "I'm a Betar man. We don't retreat. Except from social events. That we do fairly regularly.",
+    "My wife keeps the Chabad minhag. I do not keep the Chabad minhag. We are navigating the overlap. Tonight is complicated.",
+    "There's a farbrengen at my wife's because her family is Chabad. I'm there but I'm also not. It's complicated.",
+    "Jabotinsky said 'In blood and fire Judea fell, in blood and fire Judea shall rise.' He said nothing about being available on a Friday night.",
+    "King David Linksfield taught me discipline, Zionism, and how to avoid situations I'm not prepared for. I'm applying all three tonight.",
+    "I attended King David. We were trained to feel guilty about missing davening, not dinners. I'm fine.",
+
+    // General mundane
+    "My wife and I are three episodes from the end of something on Netflix. We've been three episodes from the end for two weeks. Tonight.",
+    "The car needs a service and if I don't do it this week it'll be month end again before I get back to it.",
+    "I promised myself I'd exercise. I will not exercise. But I need to maintain the intention.",
+    "I'm trying to understand what the baby's cry means. I've been studying it for twenty minutes. No conclusions.",
+    "I forgot to RSVP and now it's the day of the event and I'm too embarrassed to just show up.",
+    "I have an early meeting and I need to sleep and I only have enough time to do one of those things.",
+    "My mother-in-law is visiting. I cannot elaborate further.",
+    "I told my wife I'd handle bath time. Bath time is longer than you would ever imagine.",
+    "I'm prepping for a client meeting and yes I am aware it is Saturday.",
+    "I've been awake since 4am. Everything I do from this point is technically overtime.",
+    "I was ready to come and then someone sent a WhatsApp that required a response and it escalated.",
+    "I have a spreadsheet I have been 'almost done with' for six hours.",
+    "I'm a CA(SA) with a baby, a Betar membership, a Chabad-adjacent household, and it is month end. Choose one. I have all of them.",
+    "It's just a very accountant kind of night. You wouldn't understand unless you've reconciled something.",
+    "I graduated from UJ. We were trained to work hard and show up late. I'm honouring the tradition.",
+  ];
+
+  let lastIndex = -1;
+  let totalGenerated = 0;
+
+  function generate() {
+    let idx;
+    do { idx = Math.floor(Math.random() * excuses.length); } while (idx === lastIndex);
+    lastIndex = idx;
+    totalGenerated++;
+
+    const el = document.getElementById('excuseText');
+    const icon = document.getElementById('btnIcon');
+
+    el.classList.add('fading');
+    icon.classList.add('spin');
+
+    setTimeout(() => {
+      el.textContent = excuses[idx];
+      el.classList.remove('fading');
+      icon.classList.remove('spin');
+      document.getElementById('copyBtn').textContent = '📎 Copy';
+      document.getElementById('copyBtn').classList.remove('copied');
+      updateCounter();
+    }, 200);
+  }
+
+  function copyExcuse() {
+    const text = document.getElementById('excuseText').textContent;
+    if (text === 'Click the button to receive your excuse.') return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📎 Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function updateCounter() {
+    const el = document.getElementById('counter');
+    const lines = [
+      `${totalGenerated} excuse${totalGenerated > 1 ? 's' : ''} generated. Evan is still not coming.`,
+      `${totalGenerated} generated. He really does mean well.`,
+      `${totalGenerated} excuses in. It's probably still month end.`,
+      `${totalGenerated} generated. The baby is still awake.`,
+    ];
+    el.textContent = lines[Math.min(totalGenerated - 1, lines.length - 1)];
+  }
+
+  setTimeout(generate, 300);
+</script>
+</body>
+</html>

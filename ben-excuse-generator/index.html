@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Prof Ben Rosman — Excuse Generator</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --card: #12121a;
+      --border: #1e1e2e;
+      --gold: #f5c542;
+      --gold2: #e8a800;
+      --text: #e8e8f0;
+      --muted: #7070a0;
+      --accent: #6c63ff;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      background-image:
+        radial-gradient(ellipse 80% 40% at 50% -10%, rgba(108, 99, 255, 0.15), transparent),
+        radial-gradient(ellipse 60% 30% at 90% 110%, rgba(245, 197, 66, 0.08), transparent);
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 640px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #f5c542, #e8a800);
+      color: #0a0a0f;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3rem);
+      line-height: 1.15;
+      margin-bottom: 0.6rem;
+      background: linear-gradient(135deg, #e8e8f0, #a0a0c8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    h1 em {
+      font-style: italic;
+      background: linear-gradient(135deg, #f5c542, #e8a800);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .credentials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-top: 1.2rem;
+    }
+
+    .cred {
+      background: var(--border);
+      border: 1px solid #2a2a3e;
+      color: var(--muted);
+      font-size: 0.68rem;
+      padding: 0.25rem 0.6rem;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: 0 0 0 1px rgba(108,99,255,0.08), 0 20px 60px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1.5rem;
+    }
+
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--gold), transparent);
+      opacity: 0.6;
+    }
+
+    .quote-mark {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: 0.6;
+      color: var(--gold);
+      opacity: 0.25;
+      position: absolute;
+      top: 1.5rem;
+      left: 1.5rem;
+    }
+
+    .excuse-text {
+      font-size: clamp(1rem, 2.5vw, 1.2rem);
+      line-height: 1.7;
+      color: var(--text);
+      min-height: 5rem;
+      padding: 0.5rem 0;
+      position: relative;
+      z-index: 1;
+      transition: opacity 0.2s ease;
+    }
+
+    .excuse-text.fading { opacity: 0; }
+
+    .from {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-style: italic;
+      border-top: 1px solid var(--border);
+      padding-top: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .from::before {
+      content: '🤖';
+      font-size: 1rem;
+      font-style: normal;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+      max-width: 640px;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .btn-generate {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent), #9b8fff);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      box-shadow: 0 4px 20px rgba(108,99,255,0.3);
+    }
+
+    .btn-generate:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(108,99,255,0.45);
+    }
+
+    .btn-generate:active { transform: translateY(0); }
+
+    .btn-copy {
+      background: var(--card);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 1.2rem;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      white-space: nowrap;
+    }
+
+    .btn-copy:hover { border-color: var(--gold); }
+    .btn-copy.copied { color: #4caf50; border-color: #4caf50; }
+
+    .counter {
+      color: var(--muted);
+      font-size: 0.75rem;
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 0.72rem;
+      text-align: center;
+      opacity: 0.5;
+      max-width: 480px;
+    }
+
+    .spin {
+      display: inline-block;
+      animation: spin 0.4s linear;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="badge">⭐ TIME 100 Most Influential in AI — 2025</div>
+  <h1>Prof Ben Rosman<br>Couldn't Make It Because…<em>™</em></h1>
+  <p class="subtitle">Your one-stop source for world-class excuses from a world-class AI researcher who is genuinely, always, extremely busy.</p>
+  <div class="credentials">
+    <span class="cred">🎓 Wits University</span>
+    <span class="cred">🤖 RAIL Lab</span>
+    <span class="cred">🧠 MIND Institute Director</span>
+    <span class="cred">🌍 Deep Learning Indaba</span>
+    <span class="cred">🦁 Lelapa AI CSO</span>
+    <span class="cred">📍 Edinburgh PhD</span>
+    <span class="cred">🌐 CIFAR Azrieli Scholar</span>
+    <span class="cred">📰 Nat Geo Explorer</span>
+  </div>
+</header>
+
+<div class="card" id="excuseCard">
+  <div class="quote-mark">"</div>
+  <p class="excuse-text" id="excuseText">Click the button to receive your excuse.</p>
+  <div class="from">— Prof Benjamin Rosman, who does actually like you, theoretically</div>
+</div>
+
+<div class="actions">
+  <button class="btn-generate" onclick="generate()">
+    <span id="btnIcon">🎲</span> Generate Excuse
+  </button>
+  <button class="btn-copy" id="copyBtn" onclick="copyExcuse()">📋 Copy</button>
+</div>
+
+<p class="counter" id="counter"></p>
+
+<footer>
+  Made with love for Ben, who has 119 papers, 47 countries, and zero free weekends.<br>
+  No robots were harmed in the making of this generator.
+</footer>
+
+<script>
+  const excuses = [
+    "My reinforcement learning agent just converged — on the policy of never leaving the lab. I'm studying it.",
+    "The Deep Learning Indaba doesn't coordinate itself across 47 African countries. Someone has to reply to 1,400 emails and that someone is, unfortunately, me.",
+    "I'm finalising a paper with 23 co-authors from 11 countries and we've been blocked for three weeks on author ordering.",
+    "TIME magazine called again. Apparently being in the top 100 most influential AI people comes with follow-up obligations.",
+    "My robot learned to open doors. It keeps opening my office door to remind me I have a deadline. I cannot escape.",
+    "The MIND Institute doesn't run itself — someone has to think about machine intelligence and right now that's a full-time job.",
+    "I'm teaching a robot to reuse skills. It learned to carry coffee AND dodge social invitations simultaneously. I may have trained it too well.",
+    "National Geographic wants photos. Do you have any idea how long it takes to photograph a Markov Decision Process in the wild?",
+    "CIFAR called. Being the first African scholar in Learning in Machines and Brains, it turns out, comes with a lot of homework.",
+    "InkubaLM needs me. 0.4 billion parameters and it still can't decline a meeting gracefully — unlike me.",
+    "I'm delivering a keynote in a timezone that shouldn't exist. We're not going to talk about the jet lag.",
+    "My PhD supervisor from Edinburgh emailed. Twelve years later, he still has questions about my thesis. So do I, frankly.",
+    "I'm building AI for Africans, by Africans. That sentence alone should buy me at least two Saturday nights.",
+    "My h-index is 22 and there's a paper under review right now. Every hour I spend away from my desk feels like a citation slipping away.",
+    "The RAIL Lab robots have opinions about their training reward. There's been a disagreement. I'm mediating.",
+    "I co-founded something. I always seem to be co-founding something. This time it is technically a continent-wide AI movement.",
+    "I have a student defending their thesis this week, next week, and — checking calendar — most of the weeks after that too.",
+    "Google gave me a research award and they do check in. The bar they set is unreasonably high and I respect that.",
+    "I'm establishing Africa's AI future and I only have the one pair of hands, the one brain, and — if I'm lucky — four hours of sleep.",
+    "The autonomous agent I trained to manage my social calendar has learned the optimal policy is to decline everything. It's technically correct.",
+    "I'm debugging a reward function that accidentally learned to optimise for isolation. We have a lot in common. Therapy is ongoing.",
+    "One of my 119 papers has a typo I only just noticed. I haven't slept.",
+    "I'm presenting at a conference that is simultaneously in three cities due to a scheduling error I didn't cause but am somehow responsible for fixing.",
+    "The transfer learning isn't transferring. I'm going to be here a while.",
+    "My MSc student discovered something genuinely interesting at 9pm on a Friday. You understand.",
+    "I'm on a panel about the future of AI in Africa. The future, I have been told, starts tonight.",
+    "My Wits students need me. 847 of them, specifically, with an exam next Tuesday.",
+    "I'm a National Geographic Explorer. Geographically speaking, I am currently exploring somewhere that has no mobile signal.",
+    "The hierarchical skill discovery algorithm found a skill I didn't ask for. It is the skill of double-booking myself.",
+    "I'm finishing a grant proposal that will fund the next generation of African AI researchers. Your event will still be fun without me, I promise.",
+    "There's a robot in my lab that has never seen sunlight. I feel we have a shared responsibility to each other.",
+    "I need to update my Google Scholar page. Do you know how long that takes when you have 1,431 citations?",
+    "I'm co-running the world's largest AI summer school. 'Summer' is a loose term when you're doing it across an entire continent.",
+    "I accidentally started four new research collaborations this week and they all have kickoff calls tonight.",
+    "I was going to come but then I had an idea. I'm writing it down. The idea is long.",
+    "I'm reviewing 47 grant proposals. Each one will shape the future of AI in Africa. Your dinner will not.",
+    "There's a Zoom call with 12 timezones represented and I am somehow expected to be coherent in all of them.",
+    "My PhD student's model exploded at 11pm. Not metaphorically. The GPU literally overheated. We are managing.",
+    "I'm moderating a panel on AI ethics where at least three panellists fundamentally disagree with each other and one of them is me.",
+    "I received an invitation to review a paper and, like a fool, I said yes.",
+    "My lab's newest robot has learned to say no. I trained it myself. I'm a little proud and also stuck at the lab.",
+    "I have three papers under review, two under revision, and one I've been 'almost done with' since 2022.",
+    "I'm bootstrapping machine intelligence for an entire continent. I didn't say it would be quick.",
+    "I've been double-booked in Nairobi and Cape Town simultaneously. I am working on a hierarchical solution.",
+    "My reinforcement learning agent found a shortcut I didn't anticipate. So did my schedule, and it led here.",
+    "I promised my MSc student I'd read their chapter tonight. I have now promised this four Fridays in a row. Tonight is the night.",
+    "I agreed in 2021 to be on an organising committee for something that is, it turns out, now happening.",
+    "I'm writing a recommendation letter. It will be glowing. It was also due yesterday.",
+    "My student found a critical bug in their results two days before submission. We are in the lab. We are calm. We are lying.",
+    "I'm giving a TED-style talk somewhere. I cannot confirm the country until I land.",
+    "I've accepted an award on behalf of African AI and the acceptance speech needs to be worthy. I am still on the first sentence.",
+    "I'm in a 'quick sync' that started 90 minutes ago and has not yet reached item one on the agenda.",
+    "I tried to come but my model converged to the local optimum of not attending. I trust the model.",
+    "I'm co-authoring something with someone who writes very slowly and I, in a plot twist, am that person tonight.",
+    "My neural network keeps predicting I will be late. At some point I have to trust my own architecture.",
+    "There's a PhD student in my lab who only comes alive at 10pm. We are currently in peak hours.",
+    "I'm mentoring the next generation of African AI researchers and every single one of them emailed today.",
+    "I've been asked to comment on a major AI policy document. I have reached page four. It has been three days.",
+    "I am technically in your timezone but my calendar is still running on Edinburgh time from my PhD. Old habits.",
+    "I'm on a call about the ethics of autonomous systems and the irony of skipping your event is not lost on me.",
+    "Someone asked a question about sparse reward functions three hours ago and we are still going. You wouldn't understand.",
+    "There's a preprint I should have posted six months ago. Tonight is the night. I have said this before.",
+    "I'm calibrating the boundary between work and life. The model has not yet converged.",
+    "I got distracted by a fascinating edge case in temporal logic. I cannot in good conscience walk away from it.",
+    "My collaborator in Tokyo just woke up with questions. I am the only one who can answer them. Arguably.",
+    "I've been asked to review a Nature paper and I don't want to be the reviewer I always complain about.",
+    "I'm giving a guest lecture to 300 students whose futures, statistically speaking, depend on me being prepared.",
+    "I have six browser tabs open and closing any of them feels like losing a thought I've been growing for weeks.",
+    "I'm somewhere between Johannesburg and Nairobi on a plane that has no Wi-Fi, which means I'm catching up on reading, which means I'm working.",
+    "My robot just passed a milestone I've been chasing for two years. I'm celebrating. In the lab. Alone. With the robot.",
+  ];
+
+  let lastIndex = -1;
+  let totalGenerated = 0;
+
+  function generate() {
+    let idx;
+    do { idx = Math.floor(Math.random() * excuses.length); } while (idx === lastIndex);
+    lastIndex = idx;
+    totalGenerated++;
+
+    const el = document.getElementById('excuseText');
+    const icon = document.getElementById('btnIcon');
+
+    el.classList.add('fading');
+    icon.classList.add('spin');
+
+    setTimeout(() => {
+      el.textContent = excuses[idx];
+      el.classList.remove('fading');
+      icon.classList.remove('spin');
+      document.getElementById('copyBtn').textContent = '📋 Copy';
+      document.getElementById('copyBtn').classList.remove('copied');
+      updateCounter();
+    }, 200);
+  }
+
+  function copyExcuse() {
+    const text = document.getElementById('excuseText').textContent;
+    if (text === 'Click the button to receive your excuse.') return;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '✅ Copied!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
+    });
+  }
+
+  function updateCounter() {
+    const el = document.getElementById('counter');
+    el.textContent = totalGenerated === 1
+      ? 'Excuse #1 generated. One down, 118 papers to go.'
+      : `${totalGenerated} excuses generated. Ben is still not coming.`;
+  }
+
+  // Auto-generate on load for fun
+  setTimeout(generate, 300);
+</script>
+</body>
+</html>
