@@ -33,48 +33,20 @@ type State = {
   currentIndex: number
   answers: AnswerRecord[]
   selected: string | null
-  timeLeft: number
   error: string | null
 }
 
 type Action =
   | { type: 'LOADED'; questions: ProcessedQ[] }
   | { type: 'SELECT'; answer: string; timeTaken: number }
-  | { type: 'TICK' }
-  | { type: 'TIMEOUT'; timeTaken: number }
   | { type: 'NEXT' }
   | { type: 'SUBMITTING' }
   | { type: 'ERROR'; msg: string }
 
-const TIME_PER_Q = 25
-
 function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'LOADED':
-      return { ...state, status: 'playing', questions: action.questions, timeLeft: TIME_PER_Q }
-
-    case 'TICK':
-      if (state.status !== 'playing') return state
-      if (state.timeLeft <= 1) return state
-      return { ...state, timeLeft: state.timeLeft - 1 }
-
-    case 'TIMEOUT': {
-      const q = state.questions[state.currentIndex]
-      const record: AnswerRecord = {
-        question_text: q.question,
-        category: q.category,
-        difficulty: q.difficulty,
-        correct_answer: q.correct_answer,
-        player_answer: '',
-        is_correct: false,
-        time_taken_ms: action.timeTaken,
-        explanation: q.explanation,
-        image: q.image,
-      }
-      const answers = [...state.answers, record]
-      const isLast = state.currentIndex >= state.questions.length - 1
-      return { ...state, status: isLast ? 'finished' : 'revealed', selected: null, answers }
-    }
+      return { ...state, status: 'playing', questions: action.questions }
 
     case 'SELECT': {
       if (state.status !== 'playing') return state
@@ -97,7 +69,7 @@ function reducer(state: State, action: Action): State {
     case 'NEXT': {
       const nextIndex = state.currentIndex + 1
       if (nextIndex >= state.questions.length) return { ...state, status: 'finished' }
-      return { ...state, status: 'playing', currentIndex: nextIndex, selected: null, timeLeft: TIME_PER_Q }
+      return { ...state, status: 'playing', currentIndex: nextIndex, selected: null }
     }
 
     case 'SUBMITTING':
@@ -117,7 +89,6 @@ const init: State = {
   currentIndex: 0,
   answers: [],
   selected: null,
-  timeLeft: TIME_PER_Q,
   error: null,
 }
 
@@ -138,7 +109,6 @@ function QuizPlay() {
   const router = useRouter()
   const [state, dispatch] = useReducer(reducer, init)
   const questionStartRef = useRef<number>(Date.now())
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   const category = searchParams.get('category') || ''
   const difficulty = searchParams.get('difficulty') || ''
@@ -168,41 +138,16 @@ function QuizPlay() {
       .catch(() => dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' }))
   }, [amount, category, difficulty, quizType])
 
-  // Countdown timer
-  useEffect(() => {
-    if (state.status !== 'playing') {
-      if (timerRef.current) clearInterval(timerRef.current)
-      return
-    }
-    timerRef.current = setInterval(() => {
-      dispatch({ type: 'TICK' })
-    }, 1000)
-    return () => { if (timerRef.current) clearInterval(timerRef.current) }
-  }, [state.status, state.currentIndex])
-
-  // Auto-timeout when timeLeft hits 0
-  useEffect(() => {
-    if (state.status === 'playing' && state.timeLeft === 1) {
-      const timeTaken = Date.now() - questionStartRef.current
-      dispatch({ type: 'TIMEOUT', timeTaken })
-    }
-  }, [state.timeLeft, state.status])
-
-  // Auto-advance after reveal
-  useEffect(() => {
-    if (state.status !== 'revealed') return
-    const t = setTimeout(() => {
-      dispatch({ type: 'NEXT' })
-      questionStartRef.current = Date.now()
-    }, 1800)
-    return () => clearTimeout(t)
-  }, [state.status, state.currentIndex])
-
   const handleAnswer = useCallback((option: string) => {
     if (state.status !== 'playing') return
     const timeTaken = Date.now() - questionStartRef.current
     dispatch({ type: 'SELECT', answer: option, timeTaken })
   }, [state.status])
+
+  const handleNext = useCallback(() => {
+    dispatch({ type: 'NEXT' })
+    questionStartRef.current = Date.now()
+  }, [])
 
   async function handleSubmit() {
     dispatch({ type: 'SUBMITTING' })
@@ -294,7 +239,8 @@ function QuizPlay() {
 
   const q = state.questions[state.currentIndex]
   const progress = ((state.currentIndex) / state.questions.length) * 100
-  const timerPct = (state.timeLeft / TIME_PER_Q) * 100
+  const isRevealed = state.status === 'revealed'
+  const isLastQuestion = state.currentIndex + 1 >= state.questions.length
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
@@ -302,22 +248,11 @@ function QuizPlay() {
       <div className="border-b border-gray-800 px-6 py-3 flex items-center justify-between">
         <span className="text-gray-400 text-sm">{state.currentIndex + 1} / {state.questions.length}</span>
         <span className="text-xs text-gray-500 truncate max-w-xs">{q.category}</span>
-        <span className={`text-sm font-mono font-bold ${state.timeLeft <= 5 ? 'text-red-400 animate-pulse' : 'text-gray-400'}`}>
-          {state.timeLeft}s
-        </span>
       </div>
 
       {/* Progress bar */}
       <div className="h-1 bg-gray-800">
         <div className="h-1 bg-brand-500 transition-all duration-300" style={{ width: `${progress}%` }} />
-      </div>
-
-      {/* Timer bar */}
-      <div className="h-0.5 bg-gray-800">
-        <div
-          className={`h-0.5 transition-all duration-1000 ${state.timeLeft <= 5 ? 'bg-red-500' : 'bg-green-500'}`}
-          style={{ width: `${timerPct}%` }}
-        />
       </div>
 
       <div className="flex-1 flex flex-col items-center justify-center p-6">
@@ -336,16 +271,21 @@ function QuizPlay() {
                 <img
                   src={q.image}
                   alt="Quiz question"
-                  className="h-40 w-auto rounded-lg border border-gray-700 object-cover shadow-lg"
+                  className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg"
                 />
               </div>
             )}
             <p className="text-lg font-semibold text-white leading-snug">{q.question}</p>
+
+            {isRevealed && q.explanation && (
+              <div className="mt-4 p-3 bg-blue-950/40 border border-blue-800/50 rounded-lg">
+                <p className="text-sm text-blue-200 leading-relaxed">{q.explanation}</p>
+              </div>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {q.options.map((option, i) => {
-              const isRevealed = state.status === 'revealed'
               const isCorrect = option === q.correct_answer
               const isSelected = option === state.selected
 
@@ -370,8 +310,15 @@ function QuizPlay() {
             })}
           </div>
 
-          {state.status === 'revealed' && state.selected === null && (
-            <p className="text-center text-gray-500 text-sm mt-4">⏱ Time's up!</p>
+          {isRevealed && (
+            <div className="mt-6 flex justify-end">
+              <button
+                onClick={handleNext}
+                className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors text-base"
+              >
+                {isLastQuestion ? 'See results →' : 'Next →'}
+              </button>
+            </div>
           )}
         </div>
       </div>
