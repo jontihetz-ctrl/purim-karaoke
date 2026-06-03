@@ -260,41 +260,24 @@ def scrape_post_page(page, post_url: str, group_url: str) -> int:
         if time_el:
             post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or ""
 
-        # Images — find the primary document image.
-        # Look for photo links first (the actual posted image), then fall
-        # back to large scontent img tags.
+        # Images — collect all scontent images, filter tiny icons.
+        # save_post will keep only the first (primary document image).
         images = []
         seen_srcs = set()
-
-        # Strategy 1: images inside photo anchor links (the posted photo)
-        photo_links = page.query_selector_all("a[href*='/photo/'], a[href*='photo_id=']")
-        for link in photo_links:
-            img = link.query_selector("img")
-            if not img:
-                continue
+        for img in page.query_selector_all("img"):
             src = img.get_attribute("src") or ""
-            if "scontent" in src and src not in seen_srcs:
-                seen_srcs.add(src)
-                images.append({"url": src})
-
-        # Strategy 2: fallback — large scontent images that aren't tiny icons
-        if not images:
-            for img in page.query_selector_all("img"):
-                src = img.get_attribute("src") or ""
-                if not src or "scontent" not in src or src in seen_srcs:
+            if not src or "scontent" not in src or src in seen_srcs:
+                continue
+            if "emoji" in src or "static" in src:
+                continue
+            try:
+                w = int(img.get_attribute("width") or 0)
+                if 0 < w < 100:
                     continue
-                if "emoji" in src or "static" in src:
-                    continue
-                try:
-                    w = int(img.get_attribute("width") or 0)
-                    h = int(img.get_attribute("height") or 0)
-                    # Skip profile pictures (typically square and small)
-                    if 0 < w < 200 or 0 < h < 200:
-                        continue
-                except Exception:
-                    pass
-                seen_srcs.add(src)
-                images.append({"url": src})
+            except Exception:
+                pass
+            seen_srcs.add(src)
+            images.append({"url": src})
 
         if not images:
             return 0
