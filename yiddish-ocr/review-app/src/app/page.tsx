@@ -28,23 +28,31 @@ export default function ReviewPage() {
   const [decisions, setDecisions] = useState<Decision[]>([]);
   const [imgError, setImgError] = useState(false);
   const [transcription, setTranscription] = useState("");
+  const [loadError, setLoadError] = useState("");
 
   // Load items and saved progress
   useEffect(() => {
     fetch("/pending.json")
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.json();
+      })
       .then((data: Item[]) => {
         setItems(data);
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-          const savedDecisions: Decision[] = JSON.parse(saved);
-          setDecisions(savedDecisions);
-          // Resume from where we left off
-          const reviewedIds = new Set(savedDecisions.filter(d => d.action !== "skip").map((d) => d.queue_id));
-          const nextUnreviewed = data.findIndex((item) => !reviewedIds.has(item.queue_id));
-          setIdx(nextUnreviewed >= 0 ? nextUnreviewed : data.length);
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) {
+            const savedDecisions: Decision[] = JSON.parse(saved);
+            setDecisions(savedDecisions);
+            const reviewedIds = new Set(savedDecisions.filter(d => d.action !== "skip").map((d) => d.queue_id));
+            const nextUnreviewed = data.findIndex((item) => !reviewedIds.has(item.queue_id));
+            setIdx(nextUnreviewed >= 0 ? nextUnreviewed : data.length);
+          }
+        } catch {
+          // localStorage unavailable — start fresh
         }
-      });
+      })
+      .catch((e) => setLoadError(String(e)));
   }, []);
 
   const current = items[idx];
@@ -96,10 +104,20 @@ export default function ReviewPage() {
   const rejected = decisions.filter((d) => d.action === "reject").length;
   const total = decisions.filter((d) => d.action !== "skip").length;
 
+  if (loadError) {
+    return (
+      <div className="min-h-screen bg-[#111] text-[#eee] flex flex-col items-center justify-center gap-3">
+        <p className="text-red-400">Failed to load review items</p>
+        <p className="text-gray-600 text-sm">{loadError}</p>
+        <button onClick={() => window.location.reload()} className="px-4 py-2 bg-[#333] rounded text-sm">Retry</button>
+      </div>
+    );
+  }
+
   if (!items.length) {
     return (
       <div className="min-h-screen bg-[#111] text-[#eee] flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-gray-500">Loading 165 items...</p>
       </div>
     );
   }
