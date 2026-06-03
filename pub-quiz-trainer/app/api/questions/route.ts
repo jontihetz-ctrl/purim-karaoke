@@ -19,6 +19,9 @@ export async function GET(req: NextRequest) {
   if (type === 'places') {
     return NextResponse.json({ questions: generateImageQuestions(amount, 'places') })
   }
+  if (type === 'artworks') {
+    return NextResponse.json({ questions: generateImageQuestions(amount, 'artworks') })
+  }
 
   try {
     const questions = await fetchQuestions(amount, category || undefined, difficulty || undefined, type === 'boolean' ? 'boolean' : 'multiple')

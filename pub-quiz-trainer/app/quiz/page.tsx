@@ -5,11 +5,12 @@ import Link from 'next/link'
 import { CATEGORIES, DIFFICULTIES } from '@/types'
 
 const QUIZ_TYPES = [
-  { id: 'multiple', label: 'Multiple Choice', emoji: '🧠', desc: 'Classic 4-option questions' },
-  { id: 'boolean', label: 'True / False',     emoji: '✅', desc: 'Quick-fire true or false' },
-  { id: 'flags',   label: 'Flag Quiz',         emoji: '🚩', desc: 'Identify country flags' },
-  { id: 'faces',   label: 'Famous Faces',      emoji: '🤩', desc: 'Who is this person?' },
-  { id: 'places',  label: 'Famous Places',     emoji: '📍', desc: 'Where is this landmark?' },
+  { id: 'multiple',  label: 'Multiple Choice',  emoji: '🧠', desc: 'Classic 4-option questions' },
+  { id: 'boolean',   label: 'True / False',      emoji: '✅', desc: 'Quick-fire true or false' },
+  { id: 'flags',     label: 'Flag Quiz',          emoji: '🚩', desc: 'Identify country flags' },
+  { id: 'faces',     label: 'Famous Faces',       emoji: '🤩', desc: 'Who is this person?' },
+  { id: 'places',    label: 'Famous Places',      emoji: '📍', desc: 'Where is this landmark?' },
+  { id: 'artworks',  label: 'Famous Artworks',    emoji: '🎨', desc: 'Name this painting' },
 ]
 
 export default function QuizSetupPage() {
@@ -19,7 +20,7 @@ export default function QuizSetupPage() {
   const [difficulty, setDifficulty] = useState('')
   const [amount, setAmount] = useState('10')
 
-  const isFlagsOrBool = ['flags', 'boolean', 'faces', 'places'].includes(quizType)
+  const isFlagsOrBool = ['flags', 'boolean', 'faces', 'places', 'artworks'].includes(quizType)
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -90,8 +91,8 @@ export default function QuizSetupPage() {
             </div>
           )}
 
-          {/* Difficulty — hidden for flags */}
-          {quizType !== 'flags' && (
+          {/* Difficulty — hidden for image-based types */}
+          {!['flags', 'faces', 'places', 'artworks'].includes(quizType) && (
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-3">Difficulty</label>
               <div className="flex gap-2">
