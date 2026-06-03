@@ -129,7 +129,7 @@ export async function POST() {
       const daysAgo = rand(1, 60)
       const sessionDate = new Date(Date.now() - daysAgo * 86400000).toISOString()
 
-      const { data: session } = await supabase.from('quiz_sessions').insert({
+      const { data: session, error: sessErr } = await supabase.from('quiz_sessions').insert({
         player_id: player.id,
         team_id: TEAM_ID,
         category: cat,
@@ -137,8 +137,8 @@ export async function POST() {
         total_questions: qCount,
         correct_count: correctCount,
         completed_at: sessionDate,
-        created_at: sessionDate,
       }).select().single()
+      if (sessErr) { results.push(`Session err (${player.name}/${cat}): ${sessErr.message}`); continue }
 
       if (session) {
         const rows = generateAnswers(session.id, player.id, cat, diff, qCount)
