@@ -15,13 +15,40 @@ MIN_TEXT_LEN = 40
 
 import re
 
-# Patterns that indicate a thank-you / follow-up by the image poster, not a translation
+# Patterns that indicate a thank-you / follow-up, not a translation
 THANKYOU_RE = re.compile(
-    r'^.{0,60}('
-    r'thank\s+you|thanks\s+so\s+much|thank\s+u\b|merci\b|danke\b|gracias\b'
+    r'^.{0,80}('
+    r'thank\s+you|thanks\s+so\s+much|thank\s+u\b|thanks\s+a\s+(million|lot|bunch)'
+    r'|merci\b|danke\b|gracias\b'
     r'|marking\s+as\s+solved|marked\s+as\s+solved|\bSOLVED\b'
     r'|bumping\b'
-    r'|you\'?re?\s+welcome'
+    r"|you['']?\s*r?e?\s+welcome|you\s+are\s+(very\s+)?welcome"
+    r'|my\s+pleasure'
+    r'|glad\s+to\s+help|h?lad\s+to\s+help|happy\s+to\s+help'
+    r'|\bprego\b'
+    r'|no\s+worries'
+    r'|nie\s+ma\s+za\s+co'
+    r')',
+    re.IGNORECASE,
+)
+
+# Patterns that clearly indicate discussion/meta, not translations
+NON_TRANSLATION_RE = re.compile(
+    r'(?:'
+    r'working\s+on\s+it'
+    r'|i\s+will\s+(start|translate)\b'
+    r'|clearer\s+image'
+    r'|\bdownload\s+of\s+.{0,25}image'
+    r"|here.{0,3}s\s+(a\s+)?crop\b"
+    r'|\bhere\s+is\s+the\s+(full\s+register|index|second\s+page)'
+    r'|indexed\s+information\s+(available|next\s+to)'
+    r'|did\s+you\s+see\s+my\s+(comment|post|reply|message|question)'
+    r'|did\s+you\s+try\s+these'
+    r'|please.{0,20}edit.{0,20}your\s+post'
+    r'|please\s+change\s+your\s+heading'
+    r'|will\s+post\s+tomorrow\s+for\s+a\s+translation'
+    r'|chatgpt'
+    r"|\bi\s+feel\s+like\s+i.{0,5}ve\s+seen\s+this"
     r')',
     re.IGNORECASE,
 )
@@ -64,11 +91,16 @@ def generate():
 
     items = []
     filtered_thankyou = 0
+    filtered_nontranslation = 0
     for row in rows:
         queue_id, image_id, image_file, cdn_url, transcription, language, script, commenter, source, post_url, post_date, post_author = row
-        # Skip obvious thank-you/follow-up messages (not translations)
+        # Skip thank-you / acknowledgement messages
         if THANKYOU_RE.search(transcription):
             filtered_thankyou += 1
+            continue
+        # Skip clear non-translation discussion / meta comments
+        if NON_TRANSLATION_RE.search(transcription):
+            filtered_nontranslation += 1
             continue
         # Use local image if available, otherwise null (review app shows FB link)
         local_path = IMAGES_DIR / image_file if image_file else None
@@ -88,7 +120,7 @@ def generate():
         })
 
     OUT.write_text(json.dumps(items, indent=2, ensure_ascii=False))
-    print(f"Written {len(items)} items → {OUT} (filtered {filtered_thankyou} thank-yous)")
+    print(f"Written {len(items)} items → {OUT} (filtered {filtered_thankyou} thank-yous, {filtered_nontranslation} non-translations)")
 
     langs = {}
     for item in items:
