@@ -170,6 +170,7 @@ export default function ReviewPage() {
               src={current.image_url}
               alt="postcard"
               className="max-w-full rounded-lg border border-[#333]"
+              referrerPolicy="no-referrer"
               onError={() => setImgError(true)}
             />
           )}
