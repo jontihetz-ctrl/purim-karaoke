@@ -4,13 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 type Item = {
   queue_id: number;
   image_id: number;
-  image_url: string;
+  image_url: string | null;
+  fb_photo_url: string | null;
+  post_url: string | null;
   commenter: string;
   language: string;
   script: string;
   transcription: string;
   source: string;
-  post_text: string;
   post_date: string;
 };
 
@@ -160,11 +161,7 @@ export default function ReviewPage() {
       <div className="flex flex-1 overflow-hidden">
         {/* Image */}
         <div className="w-1/2 border-r border-[#333] overflow-auto p-4 flex flex-col gap-3">
-          {imgError ? (
-            <div className="bg-[#1c1c1c] rounded-lg p-8 text-center text-gray-500">
-              Image not available
-            </div>
-          ) : (
+          {current.image_url && !imgError ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
               src={current.image_url}
@@ -173,19 +170,23 @@ export default function ReviewPage() {
               referrerPolicy="no-referrer"
               onError={() => setImgError(true)}
             />
-          )}
-          {current.post_text && (
-            <div>
-              <label className="text-[10px] uppercase tracking-widest text-gray-500 block mb-1">
-                Post caption
-              </label>
-              <div className="bg-[#1c1c1c] rounded p-2 text-xs text-gray-400 whitespace-pre-wrap">
-                {current.post_text.slice(0, 400)}
-              </div>
+          ) : (
+            <div className="bg-[#1c1c1c] rounded-lg p-8 text-center flex flex-col gap-4 items-center justify-center min-h-[200px]">
+              <p className="text-gray-500 text-sm">Image not cached locally</p>
+              {(current.fb_photo_url || current.post_url) && (
+                <a
+                  href={current.fb_photo_url || current.post_url || ""}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-4 py-2 bg-[#1877f2] hover:bg-[#1665d8] text-white rounded-lg text-sm font-medium"
+                >
+                  View on Facebook →
+                </a>
+              )}
             </div>
           )}
           <div className="text-xs text-gray-600">
-            Source: {current.source} · {current.commenter || "—"}
+            {current.commenter || "—"} · <a href={current.post_url || ""} target="_blank" rel="noreferrer" className="underline opacity-50 hover:opacity-100">post</a>
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 """
-Download FB images by intercepting network responses while loading post pages.
-The browser is on facebook.com with cookies, so CDN requests succeed.
-Saves to review-app/public/images/ with stable post-based filenames.
+Download FB post images by navigating directly to the CDN URLs stored in DB.
+Uses Playwright with cookies so the browser session provides auth.
+The CDN URLs in images.url were collected via fix_image_urls.py (correct photo-link selector).
 """
 
 import hashlib
@@ -15,7 +15,6 @@ OUT_DIR = Path(__file__).parent.parent / "review-app" / "public" / "images"
 OUT_DIR.mkdir(parents=True, exist_ok=True)
 COOKIES_FILE = Path(__file__).parent / "fb_cookies.json"
 
-# Known placeholder checksum — skip these
 PLACEHOLDER_MD5 = "5a1f51fea0d264a17f750c899402162f"
 
 
@@ -36,7 +35,7 @@ def load_cookies():
     return out
 
 
-def make_browser(pw):
+def make_context(pw):
     browser = pw.chromium.launch(
         headless=True,
         args=["--no-sandbox", "--disable-blink-features=AutomationControlled"],
@@ -49,9 +48,7 @@ def make_browser(pw):
         ignore_https_errors=True,
     )
     ctx.add_cookies(load_cookies())
-    page = ctx.new_page()
-    page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
-    return browser, ctx, page
+    return browser, ctx
 
 
 def stable_filename(post_id: str) -> str:
@@ -59,50 +56,35 @@ def stable_filename(post_id: str) -> str:
     return f"fb_{short}.jpg"
 
 
-def is_placeholder(data: bytes) -> bool:
+def is_bad(data: bytes | None) -> bool:
+    if not data or len(data) < 10000:
+        return True
     return hashlib.md5(data).hexdigest() == PLACEHOLDER_MD5
 
 
-def download_via_interception(page, post_url: str, dest: Path) -> bool:
-    """Load the post page, intercept the document photo response."""
-    captured = {}
-
-    def on_response(response):
-        url = response.url
-        if "scontent" not in url or "/t39.30808" not in url:
-            return
-        if "/t39.30808-1/" in url:  # skip profile pics (small format)
-            return
-        try:
-            body = response.body()
-            if len(body) > 10000 and not is_placeholder(body):
-                # Keep the largest image we capture
-                if "best" not in captured or len(body) > len(captured["best"]):
-                    captured["best"] = body
-        except Exception:
-            pass
-
-    page.on("response", on_response)
+def download_url(ctx, url: str) -> bytes | None:
+    """Navigate directly to a CDN image URL and capture response bytes."""
+    page = ctx.new_page()
     try:
-        page.goto(post_url, wait_until="domcontentloaded", timeout=25000)
-        page.wait_for_timeout(2000)
-    except Exception:
-        pass
+        response = page.goto(url, wait_until="load", timeout=20000)
+        if response and response.ok:
+            ct = response.headers.get("content-type", "")
+            if "image" in ct:
+                return response.body()
+        return None
+    except Exception as e:
+        print(f"    Error: {e}")
+        return None
     finally:
-        page.remove_listener("response", on_response)
-
-    if "best" in captured:
-        dest.write_bytes(captured["best"])
-        return True
-    return False
+        page.close()
 
 
-def download_all():
+def download_all(force: bool = False):
     from playwright.sync_api import sync_playwright
 
     conn = get_conn()
     rows = conn.execute("""
-        SELECT i.id, i.filename, p.id as post_id, p.post_url
+        SELECT i.id, i.filename, i.url, p.id AS post_id, p.post_url
         FROM images i JOIN posts p ON p.id = i.post_id
         WHERE p.source = 'facebook'
         ORDER BY i.id
@@ -110,63 +92,65 @@ def download_all():
     conn.close()
 
     todo = []
-    for img_id, old_fname, post_id, post_url in rows:
+    for img_id, old_fname, cdn_url, post_id, post_url in rows:
         fname = stable_filename(post_id)
         dest = OUT_DIR / fname
-        needs_update = old_fname != fname
-
-        if dest.exists() and not is_placeholder(dest.read_bytes()):
-            if needs_update:
+        if not force and dest.exists() and not is_bad(dest.read_bytes()):
+            # Update DB filename if it changed
+            if old_fname != fname:
                 conn = get_conn()
                 conn.execute("UPDATE images SET filename=? WHERE id=?", (fname, img_id))
                 conn.commit()
                 conn.close()
-            continue  # already have good image
+            continue
+        todo.append((img_id, fname, cdn_url, post_id, post_url))
 
-        todo.append((img_id, fname, post_id, post_url))
-
-    print(f"{len(todo)} images need downloading ({len(rows) - len(todo)} already good)")
+    print(f"{len(todo)} images to download ({len(rows) - len(todo)} already good)")
     if not todo:
         return
 
     ok = fail = 0
 
     with sync_playwright() as pw:
-        browser, ctx, page = make_browser(pw)
+        browser, ctx = make_context(pw)
 
-        if "login" in page.goto("https://www.facebook.com/", wait_until="domcontentloaded", timeout=20000).url:
-            print("Session expired — re-export cookies")
-            browser.close()
-            return
-
-        for i, (img_id, fname, post_id, post_url) in enumerate(todo):
+        for i, (img_id, fname, cdn_url, post_id, post_url) in enumerate(todo):
             dest = OUT_DIR / fname
-            success = download_via_interception(page, post_url, dest)
+            data = download_url(ctx, cdn_url)
 
-            if success:
+            if not is_bad(data):
+                dest.write_bytes(data)
                 conn = get_conn()
                 conn.execute("UPDATE images SET filename=? WHERE id=?", (fname, img_id))
                 conn.commit()
                 conn.close()
                 ok += 1
-                print(f"  [{i+1}/{len(todo)}] {fname} ({dest.stat().st_size//1024}KB) — {post_url[-45:]}")
+                print(f"  [{i+1}/{len(todo)}] {fname} ({len(data)//1024}KB)")
             else:
                 fail += 1
-                print(f"  [{i+1}/{len(todo)}] FAIL — {post_url[-45:]}")
+                sz = len(data) if data else 0
+                print(f"  [{i+1}/{len(todo)}] FAIL ({sz}B) — CDN URL expired, need re-scrape")
 
-            time.sleep(random.uniform(0.5, 1.0))
+            time.sleep(random.uniform(0.3, 0.6))
 
-            if (i + 1) % 20 == 0:
-                print("  Refreshing browser...")
+            if (i + 1) % 25 == 0:
                 browser.close()
-                browser, ctx, page = make_browser(pw)
+                browser, ctx = make_context(pw)
 
         browser.close()
 
     print(f"\nDone. Downloaded: {ok}, Failed: {fail}")
-    total = sum(p.stat().st_size for p in OUT_DIR.glob("fb_*.jpg")) // 1024
-    print(f"Total size: {total}KB ({total//1024}MB)")
+    good = [p for p in OUT_DIR.glob("fb_*.jpg") if not is_bad(p.read_bytes())]
+    total = sum(p.stat().st_size for p in good) // 1024
+    print(f"Good images: {len(good)}, total {total}KB")
+
+    if fail > 0:
+        print("\nSome CDN URLs have expired. Run fix_image_urls.py first to refresh them, then re-run this script.")
 
 
 if __name__ == "__main__":
-    download_all()
+    import argparse
+    p = argparse.ArgumentParser()
+    p.add_argument("--force", action="store_true", help="Re-download even if file exists")
+    args = p.parse_args()
+    download_all(force=args.force)
