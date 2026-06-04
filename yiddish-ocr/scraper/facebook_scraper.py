@@ -260,24 +260,24 @@ def scrape_post_page(page, post_url: str, group_url: str) -> int:
         if time_el:
             post_date = time_el.get_attribute("title") or time_el.get_attribute("data-utime") or ""
 
-        # Images — collect all scontent images, filter tiny icons.
-        # save_post will keep only the first (primary document image).
+        # Images — find the actual document photo.
+        # On Facebook, the posted image is always inside an <a> linking to
+        # /photo/?fbid=... The profile pictures and stories thumbnails are not.
         images = []
         seen_srcs = set()
-        for img in page.query_selector_all("img"):
+
+        photo_links = page.query_selector_all("a[href*='/photo/?fbid='], a[href*='/photo/']")
+        for link in photo_links:
+            href = link.get_attribute("href") or ""
+            if "/stories/" in href:
+                continue
+            img = link.query_selector("img")
+            if not img:
+                continue
             src = img.get_attribute("src") or ""
-            if not src or "scontent" not in src or src in seen_srcs:
-                continue
-            if "emoji" in src or "static" in src:
-                continue
-            try:
-                w = int(img.get_attribute("width") or 0)
-                if 0 < w < 100:
-                    continue
-            except Exception:
-                pass
-            seen_srcs.add(src)
-            images.append({"url": src})
+            if "scontent" in src and src not in seen_srcs:
+                seen_srcs.add(src)
+                images.append({"url": src})
 
         if not images:
             return 0
