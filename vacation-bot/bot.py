@@ -137,26 +137,16 @@ def post_bluesky(text):
 
 
 def send_email(tweet_text, day, location):
-    api_key = os.environ["RESEND_API_KEY"]
-    subject = f"VACATION.exe — Day {day} // {location} (post for X)"
-    html = f"""
-    <div style="font-family:monospace;max-width:600px;margin:0 auto;background:#111;color:#eee;padding:30px;border-radius:12px">
-      <h2 style="color:#00e5ff;margin-top:0">VACATION.exe 🤖🌴</h2>
-      <p style="color:#80deea">Day {day} post ready — copy and paste to X:</p>
-      <div style="background:#1a1a2e;border:1px solid #00e5ff;border-radius:8px;padding:20px;margin:20px 0;font-size:15px;line-height:1.6;white-space:pre-wrap;color:#e0f7fa">{tweet_text}</div>
-      <p style="color:#546e7a;font-size:12px">{len(tweet_text)} characters · posts automatically to Bluesky · this email = your X copy-paste</p>
-    </div>
-    """
+    secret = os.environ["VACATION_BOT_SECRET"]
     payload = json.dumps({
-        "from": "VACATION.exe <hello@snapwords.net>",
-        "to": ["jontihetz@gmail.com"],
-        "subject": subject,
-        "html": html,
+        "tweet_text": tweet_text,
+        "day": day,
+        "location": location,
     }).encode()
     req = urllib.request.Request(
-        "https://api.resend.com/emails",
+        "https://snapwords.net/api/vacation-email",
         data=payload,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers={"X-Secret": secret, "Content-Type": "application/json"},
         method="POST",
     )
     with urllib.request.urlopen(req) as resp:
