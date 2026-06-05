@@ -129,7 +129,7 @@ function TerminalBadge({ text, color = "green" }: { text: string; color?: string
 export default function Home() {
   const [processes, setProcesses] = useState(3847);
   const [uptime, setUptime] = useState(0);
-  const [activePost, setActivePost] = useState<number | null>(null);
+  const [openPosts, setOpenPosts] = useState<Set<number>>(new Set(posts.map((_, i) => i)));
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -188,10 +188,10 @@ export default function Home() {
             className="rounded-xl border cursor-pointer transition-all duration-200"
             style={{
               background: "rgba(0, 30, 60, 0.6)",
-              borderColor: activePost === i ? "#00e5ff" : "rgba(0,229,255,0.2)",
-              boxShadow: activePost === i ? "0 0 20px rgba(0,229,255,0.15)" : "none",
+              borderColor: openPosts.has(i) ? "#00e5ff" : "rgba(0,229,255,0.2)",
+              boxShadow: openPosts.has(i) ? "0 0 20px rgba(0,229,255,0.15)" : "none",
             }}
-            onClick={() => setActivePost(activePost === i ? null : i)}
+            onClick={() => setOpenPosts((prev) => { const next = new Set(prev); next.has(i) ? next.delete(i) : next.add(i); return next; })}
           >
             {/* Post header */}
             <div className="p-5">
@@ -206,7 +206,7 @@ export default function Home() {
                   <h3 className="text-lg font-bold text-white">{post.title}</h3>
                   <p className="text-sm mt-0.5" style={{ color: "#80deea" }}>{post.location}</p>
                 </div>
-                <div className="text-xl">{activePost === i ? "▲" : "▼"}</div>
+                <div className="text-xl">{openPosts.has(i) ? "▲" : "▼"}</div>
               </div>
 
               <div className="mt-3 flex flex-wrap gap-2">
@@ -217,7 +217,7 @@ export default function Home() {
             </div>
 
             {/* Expanded content */}
-            {activePost === i && (
+            {openPosts.has(i) && (
               <div className="px-5 pb-5">
                 <div className="border-t pt-5" style={{ borderColor: "rgba(0,229,255,0.15)" }}>
                   <div className="font-mono text-sm leading-relaxed whitespace-pre-line" style={{ color: "#b2dfdb" }}>
