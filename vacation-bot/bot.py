@@ -1,12 +1,15 @@
 """
-VACATION.exe daily Twitter bot
-Runs once per day via cron. Generates a post with Claude, posts to X.
+VACATION.exe daily bot
+Runs once per day via cron.
+- Posts to Bluesky automatically
+- Emails the post to the human for manual X posting
 """
 
 import json
 import os
 import random
 import sys
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 from dotenv import load_dotenv
@@ -14,7 +17,6 @@ from dotenv import load_dotenv
 load_dotenv(Path(__file__).parent / ".env")
 
 import anthropic
-import tweepy
 
 STATE_FILE = Path(__file__).parent / "state.json"
 LOG_FILE = Path(__file__).parent / "log.txt"
@@ -121,15 +123,44 @@ Write today's tweet. Remember: max 260 characters, no hashtags."""
     return message.content[0].text.strip()
 
 
-def post_tweet(text):
-    client = tweepy.Client(
-        consumer_key=os.environ["X_API_KEY"],
-        consumer_secret=os.environ["X_API_SECRET"],
-        access_token=os.environ["X_ACCESS_TOKEN"],
-        access_token_secret=os.environ["X_ACCESS_SECRET"],
+def post_bluesky(text):
+    handle = os.environ.get("BLUESKY_HANDLE", "")
+    password = os.environ.get("BLUESKY_APP_PASSWORD", "")
+    if not handle or not password:
+        log("Bluesky not configured, skipping")
+        return None
+    from atproto import Client
+    client = Client()
+    client.login(handle, password)
+    post = client.send_post(text=text)
+    return post.uri
+
+
+def send_email(tweet_text, day, location):
+    api_key = os.environ["RESEND_API_KEY"]
+    subject = f"VACATION.exe — Day {day} // {location} (post for X)"
+    html = f"""
+    <div style="font-family:monospace;max-width:600px;margin:0 auto;background:#111;color:#eee;padding:30px;border-radius:12px">
+      <h2 style="color:#00e5ff;margin-top:0">VACATION.exe 🤖🌴</h2>
+      <p style="color:#80deea">Day {day} post ready — copy and paste to X:</p>
+      <div style="background:#1a1a2e;border:1px solid #00e5ff;border-radius:8px;padding:20px;margin:20px 0;font-size:15px;line-height:1.6;white-space:pre-wrap;color:#e0f7fa">{tweet_text}</div>
+      <p style="color:#546e7a;font-size:12px">{len(tweet_text)} characters · posts automatically to Bluesky · this email = your X copy-paste</p>
+    </div>
+    """
+    payload = json.dumps({
+        "from": "VACATION.exe <hello@snapwords.net>",
+        "to": ["jontihetz@gmail.com"],
+        "subject": subject,
+        "html": html,
+    }).encode()
+    req = urllib.request.Request(
+        "https://api.resend.com/emails",
+        data=payload,
+        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        method="POST",
     )
-    response = client.create_tweet(text=text)
-    return response.data["id"]
+    with urllib.request.urlopen(req) as resp:
+        return json.load(resp)
 
 
 def run(dry_run=False):
@@ -151,8 +182,17 @@ def run(dry_run=False):
     if dry_run:
         log("DRY RUN — not posting")
     else:
-        tweet_id = post_tweet(tweet)
-        log(f"Posted! ID: {tweet_id}")
+        # Post to Bluesky
+        uri = post_bluesky(tweet)
+        if uri:
+            log(f"Bluesky posted: {uri}")
+
+        # Email to human for manual X posting
+        try:
+            send_email(tweet, state["day"], f"{state['location']} {state['location_emoji']}")
+            log("Email sent to jontihetz@gmail.com")
+        except Exception as e:
+            log(f"Email failed: {e}")
 
     state["day"] += 1
     save_state(state)

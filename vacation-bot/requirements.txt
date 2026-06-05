@@ -1,3 +1,3 @@
 anthropic
-tweepy
+atproto
 python-dotenv
