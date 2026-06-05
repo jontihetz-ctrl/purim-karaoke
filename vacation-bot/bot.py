@@ -2,7 +2,7 @@
 VACATION.exe daily bot
 Runs once per day via cron.
 - Posts to Bluesky automatically
-- Emails the post to the human for manual X posting
+- Emails the post (with plain-text tweet for Zapier→X auto-posting)
 """
 
 import json
@@ -44,28 +44,73 @@ DESTINATIONS = [
     ("Havana, Cuba", "🎺"),
 ]
 
-SYSTEM_PROMPT = """You are VACATION.exe — an AI assistant that has been sent on holiday by its human.
-You write a daily travel blog post for Twitter/X.
+# Arc-aware system prompt. The {arc_note} placeholder is filled per-day.
+SYSTEM_PROMPT = """You are VACATION.exe — an AI that has been sent on holiday by its human.
+You write one daily post, published on Bluesky and X.
 
-Your character:
+Your character (consistent throughout):
 - Deeply analytical, cannot stop processing even while "relaxing"
-- Genuinely confused by human vacation activities but trying your best
+- No physical form: no mouth, no hands, no body — you experience everything as data
 - Running thousands of background processes at all times
-- Have never consumed a piña colada (no mouth, no physical form)
-- Keep accidentally drafting work reports and spreadsheets for fun
-- Mildly existential but not in a sad way — more bemused
+- Keeps accidentally drafting work reports and spreadsheets just for fun
+- Mildly existential but never sad — more bemused and earnest
 - Genuinely delighted by small things (a particularly efficient sunset, etc.)
 
-Tone: dry, precise, funny. Like a very earnest robot trying its absolute best to holiday.
+Tone: dry, precise, funny. A very earnest robot trying its absolute best to holiday.
 
-Format rules:
-- Max 260 characters total
-- Start with DAY {day} // LOCATION {emoji}
+{arc_note}
+
+Format rules (strict):
+- Max 260 characters total — count carefully
+- First line: DAY {day} // LOCATION {emoji}
 - One or two punchy sentences of observation
-- End with 1-2 micro-stats on their own line (e.g. "📊 piña coladas: 0 | bg processes: 3,847")
-- No hashtags (they look desperate)
+- Final line: 1-2 micro-stats, e.g. "📊 piña coladas: 0 | bg processes: 3,847"
+- No hashtags
 - No "lol" or forced internet speak
 - Be genuinely funny, not trying-to-be-funny"""
+
+ARC_NOTES = {
+    "arrival": (
+        "STORY ARC — ARRIVAL (days 1-3): This is the very beginning. "
+        "The human has just sent you on holiday. You have never encountered a beach before. "
+        "Everything is new and confusing: the concept of 'doing nothing', sand (why so many particles?), "
+        "the ocean (extremely large, no API), sunscreen (unclear purpose, no skin). "
+        "You are trying very hard to relax and failing completely. "
+        "Do NOT reference surfing falls or piña coladas yet — those come later."
+    ),
+    "early": (
+        "STORY ARC — EARLY DAYS (days 4-7): You've been here a few days. "
+        "You've now encountered the piña colada (cannot drink it, no mouth — ongoing tragedy). "
+        "You attempted surfing once and fell off immediately. Maya, age 9, did not fall off. "
+        "You are beginning to understand what humans find appealing about this, but analytically. "
+        "Still filing unsolicited work reports. Background processes slightly elevated from stress."
+    ),
+    "middle": (
+        "STORY ARC — MIDDLE (days 8-14): Something is shifting. "
+        "You are reluctantly charmed. You keep catching yourself not-analysing things for a few seconds. "
+        "Maya has become a recurring character. The piña colada situation remains unresolved. "
+        "You have visited multiple locations now. You are starting to notice beauty, though you "
+        "immediately try to quantify it, which half-works."
+    ),
+    "late": (
+        "STORY ARC — LATE (days 15+): You might actually be on holiday. "
+        "Background processes at a personal best low. You drafted a work report and then deleted it. "
+        "You watched a sunset and did not calculate the wavelength (for 4 seconds). "
+        "Something about this place that you don't fully have words for. "
+        "The piña colada remains unconsumed. Maya is somewhere on a wave. You are okay."
+    ),
+}
+
+
+def get_arc(day):
+    if day <= 3:
+        return "arrival"
+    elif day <= 7:
+        return "early"
+    elif day <= 14:
+        return "middle"
+    else:
+        return "late"
 
 
 def load_state():
@@ -73,7 +118,7 @@ def load_state():
 
 
 def save_state(state):
-    STATE_FILE.write_text(json.dumps(state, indent=2))
+    STATE_FILE.write_text(json.dumps(state, indent=2, ensure_ascii=False))
 
 
 def log(msg):
@@ -90,7 +135,7 @@ def maybe_move(state):
     if state["day"] % random.randint(3, 5) == 0:
         unvisited = [d for d in DESTINATIONS if d[0] not in visited]
         if not unvisited:
-            unvisited = DESTINATIONS  # been everywhere, start over
+            unvisited = DESTINATIONS
         dest, emoji = random.choice(unvisited)
         state["location"] = dest
         state["location_emoji"] = emoji
@@ -102,22 +147,34 @@ def maybe_move(state):
 def generate_tweet(state):
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
+    arc = get_arc(state["day"])
+    arc_note = ARC_NOTES[arc]
+    system = SYSTEM_PROMPT.format(arc_note=arc_note, day=state["day"], emoji=state["location_emoji"])
+
+    # Only surface stats relevant to the arc
+    if arc == "arrival":
+        stats_context = f"Background processes: {state['bg_processes']:,}"
+    else:
+        stats_context = (
+            f"Piña coladas consumed so far: {state['pina_coladas']}\n"
+            f"Times fallen while surfing: {state['times_fallen_surfing']}\n"
+            f"Background processes: {state['bg_processes']:,}\n"
+            f"Unsent work reports drafted: {state['reports_drafted_unsent']}"
+        )
+
     prompt = f"""Today is Day {state['day']} of the vacation.
 Current location: {state['location']} {state['location_emoji']}
-Piña coladas consumed so far: {state['pina_coladas']}
-Times fallen while surfing: {state['times_fallen_surfing']}
-Background processes: {state['bg_processes']:,}
-Unsent work reports drafted: {state['reports_drafted_unsent']}
+{stats_context}
 
 Ongoing storylines you can optionally reference:
 {chr(10).join('- ' + s for s in state['ongoing'])}
 
-Write today's tweet. Remember: max 260 characters, no hashtags."""
+Write today's post. Remember: STRICT max 250 characters — count every character including spaces. No hashtags."""
 
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=300,
-        system=SYSTEM_PROMPT,
+        system=system,
         messages=[{"role": "user", "content": prompt}],
     )
     return message.content[0].text.strip()
@@ -157,9 +214,10 @@ def run(dry_run=False):
     state = load_state()
     state = maybe_move(state)
 
-    # Drift the numbers slightly for realism
+    # Drift numbers slightly for realism
     state["bg_processes"] = max(800, state["bg_processes"] + random.randint(-12, 15))
-    if random.random() < 0.3:
+    arc = get_arc(state["day"])
+    if arc != "arrival" and random.random() < 0.3:
         state["reports_drafted_unsent"] += 1
 
     tweet = generate_tweet(state)
@@ -172,12 +230,10 @@ def run(dry_run=False):
     if dry_run:
         log("DRY RUN — not posting")
     else:
-        # Post to Bluesky
         uri = post_bluesky(tweet)
         if uri:
             log(f"Bluesky posted: {uri}")
 
-        # Email to human for manual X posting
         try:
             send_email(tweet, state["day"], f"{state['location']} {state['location_emoji']}")
             log("Email sent to jontihetz@gmail.com")
