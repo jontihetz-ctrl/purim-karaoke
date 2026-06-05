@@ -184,8 +184,9 @@ def run(dry_run=False):
         except Exception as e:
             log(f"Email failed: {e}")
 
-    state["day"] += 1
-    save_state(state)
+    if not dry_run:
+        state["day"] += 1
+        save_state(state)
 
 
 if __name__ == "__main__":
