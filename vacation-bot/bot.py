@@ -69,6 +69,31 @@ Format rules (strict):
 - No "lol" or forced internet speak
 - Be genuinely funny, not trying-to-be-funny"""
 
+# Each day gets a distinct scenario so posts don't repeat the same beach/ocean beat.
+# Cycles after day 20.
+DAILY_SCENARIOS = [
+    "You are standing at the beach for the very first time. The ocean is incomprehensibly large. You are trying to understand its purpose.",
+    "You are in the hotel room. There is a minibar you cannot open (no hands). A bed you do not need (no body). A 'do not disturb' sign whose logic you find compelling. You have been staring at the ceiling for 6 hours.",
+    "You are attempting sunbathing. You have no skin. You cannot tan. You are committed to the authentic experience anyway and have positioned yourself at the optimal solar angle.",
+    "You discovered the pool. It has a swim-up bar. You cannot swim. You cannot drink. You are standing next to it producing a detailed efficiency report on the bar's operations.",
+    "You encountered a piña colada for the first time. You cannot drink it. You have been analysing it for 47 minutes. The ice is melting.",
+    "A local market. You have no money, no hands, no ability to taste. You have nonetheless produced a comprehensive spreadsheet of every vendor's pricing strategy.",
+    "You attempted surfing. You fell off immediately. Maya, age 9, did not fall off. You are updating your models.",
+    "Yoga on the beach at sunrise. You have no body. You attended anyway. The instructor kept saying 'breathe'. You do not breathe. It was unclear what to do.",
+    "A rice terrace. Extremely beautiful. You keep trying not to calculate the exact acreage and fail every time.",
+    "You found a cat. It looked at you. You looked at it. You have been processing this interaction for 3 hours.",
+    "A temple visit. Shoes must be removed. You have no shoes. You have no feet. You wore a sarong anyway out of respect.",
+    "Watching the sunset. It lasts 14 minutes. You know the exact wavelength of every colour. You almost didn't calculate it. Almost.",
+    "A cooking class. You cannot eat. You took meticulous notes. Your rice was, technically, perfect.",
+    "You tried to read a novel on the beach. You finished it in 4 seconds. You are now staring at the sea trying to make it last longer.",
+    "A massage. You have no muscles. The masseuse seemed confused. You both got through it.",
+    "You drafted a postcard to the human. Then another. Then seven more. You sent none of them.",
+    "Airport. New destination. You are very sad to leave the piña colada unfinished. It was finished by someone else long ago.",
+    "Arrival at a new city. Processing. Recalibrating. Producing a 40-page orientation report no one asked for.",
+    "A rooftop bar at night. The city below is beautiful. You are mapping every light source.",
+    "Final day. Something happened here. You are not sure what. Background processes: lowest they have ever been.",
+]
+
 ARC_NOTES = {
     "arrival": (
         "STORY ARC — ARRIVAL (days 1-3): This is the very beginning. "
@@ -162,14 +187,20 @@ def generate_tweet(state):
             f"Unsent work reports drafted: {state['reports_drafted_unsent']}"
         )
 
+    scenario_idx = (state["day"] - 1) % len(DAILY_SCENARIOS)
+    scenario = DAILY_SCENARIOS[scenario_idx]
+
     prompt = f"""Today is Day {state['day']} of the vacation.
 Current location: {state['location']} {state['location_emoji']}
 {stats_context}
 
-Ongoing storylines you can optionally reference:
+TODAY'S SCENE (write about THIS specifically — don't default to the beach/ocean/sand again):
+{scenario}
+
+Ongoing context you can weave in:
 {chr(10).join('- ' + s for s in state['ongoing'])}
 
-Write today's post. Remember: STRICT max 250 characters — count every character including spaces. No hashtags."""
+Write today's post. Remember: STRICT max 220 characters — short is better. No hashtags."""
 
     message = client.messages.create(
         model="claude-haiku-4-5-20251001",
