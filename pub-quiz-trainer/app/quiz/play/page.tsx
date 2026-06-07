@@ -224,14 +224,15 @@ function QuizPlay() {
     const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRec || !voiceModeRef.current) return
 
-    const rec = new SpeechRec() as SpeechRecognition
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rec = new SpeechRec() as any
     rec.lang = 'en-US'
     rec.continuous = false
     rec.interimResults = false
     recognitionRef.current = rec
     setVoiceStatus('listening')
 
-    rec.onresult = (e: SpeechRecognitionEvent) => {
+    rec.onresult = (e: any) => {
       recognitionRef.current = null
       const heard = e.results[0][0].transcript
       const idx = matchLetter(heard)
