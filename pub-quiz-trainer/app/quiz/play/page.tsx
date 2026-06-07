@@ -12,9 +12,8 @@ const MINI_BATCH = 5
 // Equal weight across all image types — one of each per pick
 const IMAGE_TYPES = ['flags', 'places', 'faces', 'artworks']
 const KNOWLEDGE_TYPES = ['multiple']
-// One entry per category — no weighting, full variety
+// One entry per category — every question has an explicit category in stats
 const CATEGORY_POOL = [
-  '',    // any (OpenTDB picks randomly)
   '9',   // General Knowledge
   '10',  // Books
   '11',  // Film
