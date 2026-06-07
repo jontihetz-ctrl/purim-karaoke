@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingBottom="6dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="🧠 QuizIQ"
+            android:textSize="10sp"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/widget_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="10sp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/widget_question"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="Loading question…"
+        android:textSize="12sp"
+        android:lineSpacingMultiplier="1.2"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="6dp">
+
+        <Button
+            android:id="@+id/btn_a"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:text="A"
+            android:textSize="11sp"
+            android:padding="0dp"/>
+
+        <Button
+            android:id="@+id/btn_b"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:text="B"
+            android:textSize="11sp"
+            android:padding="0dp"/>
+
+        <Button
+            android:id="@+id/btn_c"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginEnd="2dp"
+            android:layout_marginStart="2dp"
+            android:text="C"
+            android:textSize="11sp"
+            android:padding="0dp"/>
+
+        <Button
+            android:id="@+id/btn_d"
+            android:layout_width="0dp"
+            android:layout_height="32dp"
+            android:layout_weight="1"
+            android:layout_marginStart="2dp"
+            android:text="D"
+            android:textSize="11sp"
+            android:padding="0dp"/>
+    </LinearLayout>
+</LinearLayout>

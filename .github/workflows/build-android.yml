@@ -1,0 +1,75 @@
+name: Build Android APK
+
+on:
+  push:
+    branches: [claude/connect-vps-cdZCs, main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: pub-quiz-trainer/package-lock.json
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses || true
+
+      - name: Install dependencies
+        working-directory: pub-quiz-trainer
+        run: npm ci
+
+      - name: Create placeholder web dir
+        working-directory: pub-quiz-trainer
+        run: mkdir -p out && echo '<html></html>' > out/index.html
+
+      - name: Add Android platform
+        working-directory: pub-quiz-trainer
+        run: npx cap add android
+
+      - name: Sync Capacitor assets
+        working-directory: pub-quiz-trainer
+        run: npx cap sync android
+
+      - name: Inject widget files
+        working-directory: pub-quiz-trainer
+        run: |
+          JAVA_DIR=android/app/src/main/java/com/quiziq/app
+          RES_DIR=android/app/src/main/res
+          mkdir -p "$RES_DIR/layout" "$RES_DIR/xml"
+          cp android-extras/res/layout/quiz_widget.xml "$RES_DIR/layout/"
+          cp android-extras/res/xml/quiz_widget_info.xml "$RES_DIR/xml/"
+          cp android-extras/java/QuizWidget.java "$JAVA_DIR/"
+          python3 android-extras/patch_manifest.py android/app/src/main/AndroidManifest.xml
+
+      - name: Make Gradle wrapper executable
+        working-directory: pub-quiz-trainer/android
+        run: chmod +x gradlew
+
+      - name: Build debug APK
+        working-directory: pub-quiz-trainer/android
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: QuizIQ-debug-${{ github.sha }}
+          path: pub-quiz-trainer/android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 30
