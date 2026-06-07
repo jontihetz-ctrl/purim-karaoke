@@ -9,9 +9,19 @@ import type { TriviaQuestion } from '@/types'
 const PREFETCH_AT = 5
 const MINI_BATCH = 5
 
-const IMAGE_TYPES = ['flags', 'faces', 'places', 'artworks']
+// Artworks appear less often (1/8) to avoid painting fatigue
+const IMAGE_TYPES = ['flags', 'flags', 'places', 'places', 'faces', 'faces', 'flags', 'artworks']
 const KNOWLEDGE_TYPES = ['multiple', 'multiple', 'boolean']
-const CATEGORY_POOL = ['', '9', '10', '11', '12', '14', '15', '17', '21', '22', '23', '25', '27']
+// Sports/Geography/History weighted double; added Mythology, Celebrities, Politics, Vehicles
+const CATEGORY_POOL = [
+  '', '9',                          // General Knowledge
+  '10', '11', '12', '14', '15',    // Entertainment
+  '17', '18', '20',                 // Science, Computers, Mythology
+  '21', '21',                       // Sports (weighted)
+  '22', '22',                       // Geography (weighted)
+  '23', '23',                       // History (weighted)
+  '24', '26', '27', '28',           // Politics, Celebrities, Animals, Vehicles
+]
 const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
 
 function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
@@ -156,6 +166,27 @@ function matchLetter(heard: string): number {
   return -1
 }
 
+function matchAnswerText(heard: string, options: string[]): number {
+  const h = heard.trim().toLowerCase().replace(/[^a-z0-9\s]/g, '')
+  // True/False shorthand
+  if (/^(true|yes|correct|right|yeah)$/.test(h)) {
+    const ti = options.findIndex(o => o.toLowerCase() === 'true')
+    if (ti >= 0) return ti
+  }
+  if (/^(false|no|wrong|nope|incorrect)$/.test(h)) {
+    const fi = options.findIndex(o => o.toLowerCase() === 'false')
+    if (fi >= 0) return fi
+  }
+  for (let i = 0; i < options.length; i++) {
+    const opt = options[i].toLowerCase().replace(/[^a-z0-9\s]/g, '')
+    if (h === opt) return i
+    // Heard text contains or is contained by option (min 4 chars to avoid false matches)
+    if (opt.length >= 4 && h.includes(opt.slice(0, Math.min(opt.length, 7)))) return i
+    if (h.length >= 4 && opt.includes(h.slice(0, Math.min(h.length, 7)))) return i
+  }
+  return -1
+}
+
 export default function QuizPlayPage() {
   return <Suspense fallback={<Spinner />}><QuizPlay /></Suspense>
 }
@@ -195,6 +226,15 @@ function QuizPlay() {
   const savingRef = useRef(false)
   const answersRef = useRef(state.answers)
   answersRef.current = state.answers
+
+  // IP-based country for localised questions
+  const countryRef = useRef<string>('')
+  useEffect(() => {
+    fetch('/api/local-questions?detect=1')
+      .then(r => r.json())
+      .then(d => { countryRef.current = d.country || '' })
+      .catch(() => {})
+  }, []) // eslint-disable-line
 
   // Voice mode
   const [voiceMode, setVoiceMode] = useState(false)
@@ -242,7 +282,8 @@ function QuizPlay() {
     rec.onresult = (e: any) => {
       recognitionRef.current = null
       const heard = e.results[0][0].transcript
-      const idx = matchLetter(heard)
+      let idx = matchLetter(heard)
+      if (idx < 0) idx = matchAnswerText(heard, options)
       if (idx >= 0 && idx < options.length && stateRef.current.status === 'playing') {
         dispatch({ type: 'SELECT', answer: options[idx], timeTaken: Date.now() - questionStartRef.current })
         setVoiceStatus('idle')
@@ -317,13 +358,22 @@ function QuizPlay() {
   useEffect(() => { if (!voiceMode) stopAllVoice() }, [voiceMode])
   useEffect(() => () => stopAllVoice(), []) // eslint-disable-line
 
-  // Batch loading — 3 knowledge mini-batches + 1 image mini-batch, shuffled
+  // Batch loading — 4 knowledge + 1 image + local questions, shuffled
   async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
     try {
-      const imageType = pick(IMAGE_TYPES)
-      const types = [pick(KNOWLEDGE_TYPES), pick(KNOWLEDGE_TYPES), pick(KNOWLEDGE_TYPES), imageType]
-      const results = await Promise.all(types.map(t => fetch(miniBatchUrl(t)).then(r => r.json())))
-      const allQs = results.flatMap(d => d.questions ? d.questions.map(processQ) : [])
+      const safe = (p: Promise<Response>) => p.then(r => r.json()).catch(() => ({ questions: [] }))
+      const fetches = [
+        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
+        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
+        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
+        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
+        safe(fetch(miniBatchUrl(pick(IMAGE_TYPES)))),
+        countryRef.current
+          ? safe(fetch(`/api/local-questions?country=${encodeURIComponent(countryRef.current)}`))
+          : Promise.resolve({ questions: [] }),
+      ]
+      const results = await Promise.all(fetches)
+      const allQs = results.flatMap((d: any) => d.questions ? d.questions.map(processQ) : [])
       for (let i = allQs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [allQs[i], allQs[j]] = [allQs[j], allQs[i]]
