@@ -6,21 +6,25 @@ import { decodeHtml, buildOptions } from '@/lib/trivia'
 import { accuracyColor } from '@/lib/stats'
 import type { TriviaQuestion } from '@/types'
 
-const BATCH_SIZE = 20
 const PREFETCH_AT = 5
+const MINI_BATCH = 5
 
-const TYPE_POOL = ['multiple', 'multiple', 'multiple', 'boolean', 'flags', 'faces', 'places', 'artworks']
+const IMAGE_TYPES = ['flags', 'faces', 'places', 'artworks']
+const KNOWLEDGE_TYPES = ['multiple', 'multiple', 'boolean']
 const CATEGORY_POOL = ['', '9', '10', '11', '12', '14', '15', '17', '21', '22', '23', '25', '27']
 const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
 
-function randomBatchUrl(): string {
-  const type = TYPE_POOL[Math.floor(Math.random() * TYPE_POOL.length)]
+function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
+
+function miniBatchUrl(type: string): string {
   const isKnowledge = type === 'multiple' || type === 'boolean'
-  const cat = isKnowledge ? CATEGORY_POOL[Math.floor(Math.random() * CATEGORY_POOL.length)] : ''
-  const diff = isKnowledge ? DIFFICULTY_POOL[Math.floor(Math.random() * DIFFICULTY_POOL.length)] : ''
-  const p = new URLSearchParams({ amount: String(BATCH_SIZE), type })
-  if (cat) p.set('category', cat)
-  if (diff) p.set('difficulty', diff)
+  const p = new URLSearchParams({ amount: String(MINI_BATCH), type })
+  if (isKnowledge) {
+    const cat = pick(CATEGORY_POOL)
+    const diff = pick(DIFFICULTY_POOL)
+    if (cat) p.set('category', cat)
+    if (diff) p.set('difficulty', diff)
+  }
   return `/api/questions?${p}`
 }
 
@@ -310,11 +314,18 @@ function QuizPlay() {
   useEffect(() => { if (!voiceMode) stopAllVoice() }, [voiceMode])
   useEffect(() => () => stopAllVoice(), []) // eslint-disable-line
 
-  // Batch loading
+  // Batch loading — 3 knowledge mini-batches + 1 image mini-batch, shuffled
   async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
     try {
-      const data = await fetch(randomBatchUrl()).then(r => r.json())
-      onLoad(data.questions ? data.questions.map(processQ) : [])
+      const imageType = pick(IMAGE_TYPES)
+      const types = [pick(KNOWLEDGE_TYPES), pick(KNOWLEDGE_TYPES), pick(KNOWLEDGE_TYPES), imageType]
+      const results = await Promise.all(types.map(t => fetch(miniBatchUrl(t)).then(r => r.json())))
+      const allQs = results.flatMap(d => d.questions ? d.questions.map(processQ) : [])
+      for (let i = allQs.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [allQs[i], allQs[j]] = [allQs[j], allQs[i]]
+      }
+      onLoad(allQs.length ? allQs : [])
     } catch { onLoad([]) }
   }
 
