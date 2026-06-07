@@ -9,8 +9,12 @@ import type { TriviaQuestion } from '@/types'
 const PREFETCH_AT = 5
 const MINI_BATCH = 5
 
-// Equal weight across all image types — one of each per pick
-const IMAGE_TYPES = ['flags', 'places', 'faces', 'artworks']
+// All image types — equal weight, one picked per batch
+const IMAGE_TYPES = [
+  'flags', 'places', 'faces', 'artworks',
+  'sports', 'music', 'film', 'leaders',
+  'royals', 'comedians', 'inventors', 'tv', 'fashion',
+]
 const KNOWLEDGE_TYPES = ['multiple']
 // One entry per category — every question has an explicit category in stats
 const CATEGORY_POOL = [
