@@ -152,6 +152,28 @@ export default function QuizPlayPage() {
   return <Suspense fallback={<Spinner />}><QuizPlay /></Suspense>
 }
 
+// Handles image load errors gracefully — hides if broken, no broken-icon flash
+function QuizImage({ src, className }: { src: string; className?: string }) {
+  const [errored, setErrored] = useState(false)
+  if (errored) {
+    return (
+      <div className={`flex items-center justify-center border border-dashed border-gray-700 rounded-lg bg-gray-900/50 h-48 ${className ?? ''}`}>
+        <span className="text-gray-600 text-sm">Image unavailable</span>
+      </div>
+    )
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt="Quiz question"
+      className={className}
+      onError={() => setErrored(true)}
+      loading="eager"
+    />
+  )
+}
+
 function Spinner({ text = 'Loading…' }: { text?: string }) {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center">
@@ -384,7 +406,7 @@ function QuizPlay() {
               <div key={i} className="px-4 py-4 flex items-start gap-3">
                 <span className="mt-0.5 flex-shrink-0 text-lg">{a.is_correct ? '✅' : '❌'}</span>
                 <div className="min-w-0 flex-1">
-                  {a.image && <div className="mb-2"><img src={a.image} alt="" className="h-16 w-auto rounded object-cover" /></div>}
+                  {a.image && <div className="mb-2"><img src={a.image} alt="" className="h-16 w-auto rounded object-cover" onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} /></div>}
                   <p className="text-sm text-white leading-snug font-medium">{a.question_text}</p>
                   {!a.is_correct && a.player_answer && <p className="text-xs text-red-400 mt-1">Your answer: {a.player_answer}</p>}
                   {!a.is_correct && <p className="text-xs text-green-400 mt-0.5 font-semibold">✓ {a.correct_answer}</p>}
@@ -473,8 +495,11 @@ function QuizPlay() {
 
             {q.image && (
               <div className="flex justify-center mb-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={q.image} alt="Quiz question" className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg" />
+                <QuizImage
+                  key={`q-${state.currentIndex}`}
+                  src={q.image}
+                  className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg"
+                />
               </div>
             )}
             <p className="text-lg font-semibold text-white leading-snug">{q.question}</p>
