@@ -159,6 +159,20 @@ function processQ(q: TriviaQuestion & { explanation?: string }): ProcessedQ {
 }
 
 function wikiUrl(t: string) { return `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}` }
+
+// Extract a searchable noun phrase from a question when the answer itself is
+// too generic (a number, year, or very short word) to look up on Wikipedia.
+function questionToSearchTerm(question: string): string {
+  // Strip leading "In what year", "How many", "What number", etc.
+  const cleaned = question
+    .replace(/^(in what year|how many|what number|which number|how old|in which year)[^a-z]*/i, '')
+    .replace(/\?$/, '')
+    .trim()
+  // Take the first meaningful chunk (up to 5 words) as the search term
+  const words = cleaned.split(/\s+/).slice(0, 6).join(' ')
+  return words || question.slice(0, 60)
+}
+
 function truncate(text: string, n = 2) {
   const s = text.match(/[^.!?]+[.!?]+(\s|$)/g) || []
   return s.length ? s.slice(0, n).join('').trim() : text.slice(0, 280)
@@ -421,10 +435,16 @@ function QuizPlay() {
     const ans = q.correct_answer
     if (ans === 'True' || ans === 'False') return
 
+    // If the answer is a number, year, or very short word (≤4 chars), searching
+    // Wikipedia for it would return the number's own page, not the topic.
+    // Instead, strip the question down to its most searchable noun phrase.
+    const isBarren = /^\d+$/.test(ans.trim()) || ans.trim().length <= 4
+    const searchTerm = isBarren ? questionToSearchTerm(q.question) : ans
+
     const ctrl = new AbortController()
     wikiAbortRef.current = ctrl
     setWikiSummary('loading')
-    fetch(wikiUrl(ans), { signal: ctrl.signal })
+    fetch(wikiUrl(searchTerm), { signal: ctrl.signal })
       .then(r => r.json())
       .then(data => setWikiSummary(data.extract && data.type !== 'disambiguation' ? truncate(data.extract) : 'idle'))
       .catch(() => setWikiSummary('idle'))
