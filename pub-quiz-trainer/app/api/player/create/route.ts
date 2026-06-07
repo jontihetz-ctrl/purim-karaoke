@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getEffectiveUser } from '@/lib/supabase/server'
 
 export async function POST(req: NextRequest) {
-  const { userId, db } = await getEffectiveUser()
+  let userId: string, db: Awaited<ReturnType<typeof getEffectiveUser>>['db']
+  try { ({ userId, db } = await getEffectiveUser()) }
+  catch { return NextResponse.json({ error: 'Not authenticated' }, { status: 401 }) }
 
   const { display_name } = await req.json()
   if (!display_name?.trim()) return NextResponse.json({ error: 'Display name required' }, { status: 400 })

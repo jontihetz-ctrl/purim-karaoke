@@ -11,7 +11,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, session_id: session_id ?? null })
   }
 
-  const { userId, db } = await getEffectiveUser()
+  let userId: string, db: Awaited<ReturnType<typeof getEffectiveUser>>['db']
+  try { ({ userId, db } = await getEffectiveUser()) }
+  catch { return NextResponse.json({ error: 'Not authenticated' }, { status: 401 }) }
 
   let { data: profile } = await db
     .from('quiz_players')
