@@ -409,6 +409,78 @@ const FAMOUS_FACES: ImageQuestion[] = [
     category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
     explanation: 'Wolfgang Amadeus Mozart (1756–1791) was a child prodigy who composed over 800 works in his short 35-year life, including symphonies, operas, chamber music, and concertos.'
   },
+  {
+    image: wp('Hawking_in_Cambridge.jpg'),
+    question: 'Who is this famous theoretical physicist?',
+    correct_answer: 'Stephen Hawking',
+    incorrect_answers: ['Roger Penrose', 'Brian Cox', 'Carl Sagan'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'easy',
+    explanation: 'Stephen Hawking (1942–2018) at Cambridge, where he spent most of his career. His book "A Brief History of Time" sold over 25 million copies. He held the Lucasian Professorship of Mathematics at Cambridge — the same chair once held by Isaac Newton.'
+  },
+  {
+    image: wp('Malala_Yousafzai_2015.jpg'),
+    question: 'Who is this Nobel Peace Prize laureate and education activist?',
+    correct_answer: 'Malala Yousafzai',
+    incorrect_answers: ['Greta Thunberg', 'Nadia Murad', 'Aung San Suu Kyi'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Malala Yousafzai (born 1997) is a Pakistani education activist who survived being shot in the head by the Taliban at 15. She became the youngest person to win the Nobel Peace Prize in 2014, at age 17.'
+  },
+  {
+    image: wp('Greta_Thunberg_4.jpg'),
+    question: 'Who is this Swedish climate activist?',
+    correct_answer: 'Greta Thunberg',
+    incorrect_answers: ['Malala Yousafzai', 'Emma González', 'Vanessa Nakate'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Greta Thunberg (born 2003) began striking outside the Swedish parliament at 15 to demand action on climate change. She sparked the global School Strike for Climate movement, addressed world leaders at the UN and was named Time magazine\'s Person of the Year in 2019.'
+  },
+  {
+    image: wp('Carl_Sagan_Planetary_Society.jpg'),
+    question: 'Who is this astronomer and science communicator who presented Cosmos?',
+    correct_answer: 'Carl Sagan',
+    incorrect_answers: ['Neil deGrasse Tyson', 'Richard Feynman', 'Stephen Hawking'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Carl Sagan (1934–1996) was an American astronomer and science communicator who co-wrote and presented the TV series Cosmos in 1980, watched by 500 million people. He was instrumental in sending messages about humanity into space on the Voyager probes.'
+  },
+  {
+    image: wp('Neil_deGrasse_Tyson_2017.jpg'),
+    question: 'Who is this astrophysicist and science communicator?',
+    correct_answer: 'Neil deGrasse Tyson',
+    incorrect_answers: ['Michio Kaku', 'Brian Greene', 'Lawrence Krauss'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Neil deGrasse Tyson (born 1958) is an American astrophysicist who became one of the most popular science communicators in the world. He hosted the 2014 reboot of Cosmos and is director of the Hayden Planetarium in New York.'
+  },
+  {
+    image: wp('Jane_Goodall_2019.jpg'),
+    question: 'Who is this pioneering primatologist and conservationist?',
+    correct_answer: 'Jane Goodall',
+    incorrect_answers: ['Dian Fossey', 'Biruté Galdikas', 'Cynthia Moss'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Dame Jane Goodall (born 1934) is a British primatologist who spent decades studying chimpanzees in Gombe Stream National Park, Tanzania, beginning in 1960. Her discovery that chimps use tools changed our understanding of the distinction between humans and animals.'
+  },
+  {
+    image: wp('David_Hume.jpg'),
+    question: 'Who is this Scottish Enlightenment philosopher?',
+    correct_answer: 'David Hume',
+    incorrect_answers: ['John Locke', 'Immanuel Kant', 'Adam Smith'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'hard',
+    explanation: 'David Hume (1711–1776) was a Scottish Enlightenment philosopher, historian and economist. His empiricist philosophy and skepticism of causation and religion were hugely influential. Immanuel Kant credited Hume with waking him from his "dogmatic slumber".'
+  },
+  {
+    image: wp('Sigmund_Freud_LIFE.jpg'),
+    question: 'Who is the founder of psychoanalysis?',
+    correct_answer: 'Sigmund Freud',
+    incorrect_answers: ['Carl Jung', 'Alfred Adler', 'Wilhelm Wundt'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Sigmund Freud (1856–1939) was an Austrian neurologist who founded psychoanalysis. His theories about the unconscious mind, repression and dream analysis transformed psychology and culture, even though many of his specific claims have since been challenged.'
+  },
+  {
+    image: wp('Karl_Marx.jpg'),
+    question: 'Who co-wrote The Communist Manifesto?',
+    correct_answer: 'Karl Marx',
+    incorrect_answers: ['Friedrich Engels', 'Vladimir Lenin', 'Leon Trotsky'],
+    category: 'Famous Faces', type: 'multiple', difficulty: 'medium',
+    explanation: 'Karl Marx (1818–1883) was a German philosopher and economist whose critique of capitalism in Das Kapital and the Communist Manifesto (1848, with Engels) became the theoretical basis for communism. Few thinkers have more profoundly shaped modern history.'
+  },
 ]
 
 const FAMOUS_PLACES: ImageQuestion[] = [
@@ -772,6 +844,118 @@ const FAMOUS_PLACES: ImageQuestion[] = [
     category: 'Famous Places', type: 'multiple', difficulty: 'medium',
     explanation: 'Ha Long Bay in northeast Vietnam contains over 1,600 limestone islands and islets. A UNESCO World Heritage Site since 1994. "Ha Long" means "descending dragon" — legend says a dragon created the islands.'
   },
+  {
+    image: wp('Basilica_di_San_Marco_interior.jpg'),
+    question: 'Where is this ornate Byzantine basilica?',
+    correct_answer: 'Venice, Italy',
+    incorrect_answers: ['Istanbul, Turkey', 'Rome, Italy', 'Athens, Greece'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'St Mark\'s Basilica in Venice was built in 1063 to house the relics of St Mark the Evangelist. Its Byzantine architecture, golden mosaics and four bronze horses (looted from Constantinople in 1204) make it one of the most magnificent churches in the world.'
+  },
+  {
+    image: wp('Colosseum_Rome_aerial.jpg'),
+    question: 'Where is this ancient arena seen from above?',
+    correct_answer: 'Rome, Italy',
+    incorrect_answers: ['Athens, Greece', 'Carthage, Tunisia', 'Ephesus, Turkey'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Colosseum (Flavian Amphitheatre) in Rome could hold 50,000–80,000 spectators. It hosted over 400 years of gladiatorial contests and public spectacles. Today it is Italy\'s most visited tourist attraction.'
+  },
+  {
+    image: wp('New_York_City_collage_2.jpg'),
+    question: 'Which city\'s iconic skyline is this?',
+    correct_answer: 'New York City, USA',
+    incorrect_answers: ['Chicago, USA', 'Hong Kong, China', 'Toronto, Canada'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'New York City is the most populous city in the United States, with 8.3 million residents. Its iconic skyline, featuring the Empire State Building and One World Trade Center, is one of the most recognisable in the world.'
+  },
+  {
+    image: wp('Hermitage_Museum_from_Palace_Square.jpg'),
+    question: 'Where is this Winter Palace?',
+    correct_answer: 'St Petersburg, Russia',
+    incorrect_answers: ['Moscow, Russia', 'Prague, Czech Republic', 'Vienna, Austria'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Winter Palace in St Petersburg (now the Hermitage Museum) was the official residence of Russian emperors from 1732 to 1917. The Hermitage is one of the world\'s largest and oldest art museums, with over 3 million items in its collection.'
+  },
+  {
+    image: wp('Pompeii-Excavations.jpg'),
+    question: 'Where are these ancient ruins preserved under volcanic ash?',
+    correct_answer: 'Pompeii, Italy',
+    incorrect_answers: ['Herculaneum, Italy', 'Ostia Antica, Italy', 'Paestum, Italy'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Pompeii was a thriving Roman city destroyed by the eruption of Vesuvius in 79 AD. The ash preserved the city remarkably, creating a unique snapshot of Roman life. It was rediscovered in 1748 and is one of the world\'s most important archaeological sites.'
+  },
+  {
+    image: wp('Galapagos_Islands.jpg'),
+    question: 'Which island archipelago inspired Darwin\'s theory of evolution?',
+    correct_answer: 'Galápagos Islands, Ecuador',
+    incorrect_answers: ['Canary Islands, Spain', 'Azores, Portugal', 'Cape Verde Islands'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Galápagos Islands in the Pacific Ocean belong to Ecuador. Charles Darwin\'s visit in 1835 and his observations of unique species — including finches and giant tortoises — were crucial to developing his theory of evolution by natural selection.'
+  },
+  {
+    image: wp('CN_Tower_-_viewed_from_inside_Rogers_Centre.jpg'),
+    question: 'Where is this communication and observation tower?',
+    correct_answer: 'Toronto, Canada',
+    incorrect_answers: ['Vancouver, Canada', 'Montreal, Canada', 'Seattle, USA'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The CN Tower in Toronto stands 553m tall and was the world\'s tallest free-standing structure from 1976 to 2010. It has a revolving restaurant and a glass floor at 342m. Over 2 million people visit it annually.'
+  },
+  {
+    image: wp('Potala_Palace_3.jpg'),
+    question: 'Where is this magnificent Himalayan palace?',
+    correct_answer: 'Lhasa, Tibet',
+    incorrect_answers: ['Kathmandu, Nepal', 'Thimphu, Bhutan', 'Shimla, India'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Potala Palace in Lhasa was the winter residence of the Dalai Lama. Built in the 7th century and expanded in the 17th century, it stands on a hill 3,700m above sea level. It contains 999 rooms and is now a UNESCO World Heritage Site and museum.'
+  },
+  {
+    image: wp('Yellowstone_Grand_Prismatic_Spring.jpg'),
+    question: 'Where is this spectacularly colourful hot spring?',
+    correct_answer: 'Yellowstone, USA',
+    incorrect_answers: ['New Zealand', 'Iceland', 'Kenya'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Grand Prismatic Spring in Yellowstone National Park is the largest hot spring in the USA and the third largest in the world. Its rainbow colours — blue, green, yellow, orange, red — are caused by heat-loving bacteria (thermophiles) in the surrounding water.'
+  },
+  {
+    image: wp('Ayers_Rock_Uluru.jpg'),
+    question: 'What is the Aboriginal name of this sacred Australian monolith?',
+    correct_answer: 'Uluru',
+    incorrect_answers: ['Kata Tjuta', 'Nourlangie', 'Murujuga'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Uluru (formerly known as Ayers Rock) in Australia\'s Northern Territory is one of the world\'s largest monoliths at 348m high and 9.4km around. Sacred to the Anangu people for over 10,000 years, climbing was permanently banned in 2019.'
+  },
+  {
+    image: wp('Colosseum_in_Rome-April_2007-1-_copie_2B.jpg'),
+    question: 'What is this ancient Roman landmark?',
+    correct_answer: 'The Colosseum',
+    incorrect_answers: ['The Pantheon', 'The Forum', 'Circus Maximus'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Colosseum is the largest ancient amphitheatre ever built. Construction began under Emperor Vespasian in AD 72 and was completed under Titus in AD 80. It could hold between 50,000 and 80,000 spectators.'
+  },
+  {
+    image: wp('Athenian_Agora.jpg'),
+    question: 'Where is this ancient marketplace that was the heart of Athenian democracy?',
+    correct_answer: 'Athens, Greece',
+    incorrect_answers: ['Rome, Italy', 'Ephesus, Turkey', 'Corinth, Greece'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Ancient Agora of Athens was the civic centre of the city, where citizens gathered to discuss politics, philosophy and commerce. Socrates taught here, and the first democratic institutions were developed in the buildings surrounding it.'
+  },
+  {
+    image: wp('Patagonia_-_Torres_del_Paine.jpg'),
+    question: 'Where are these distinctive granite peaks?',
+    correct_answer: 'Patagonia, Chile',
+    incorrect_answers: ['Patagonia, Argentina', 'New Zealand', 'Norway'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Torres del Paine ("Towers of Paine") in southern Chile is one of South America\'s most spectacular national parks, featuring jagged granite peaks, glaciers and turquoise lakes. The three iconic Torres rise 2,800m above sea level.'
+  },
+  {
+    image: wp('Amalfi_coast.jpg'),
+    question: 'Where is this dramatic clifftop coastal road?',
+    correct_answer: 'Amalfi Coast, Italy',
+    incorrect_answers: ['Cinque Terre, Italy', 'Côte d\'Azur, France', 'Costa Brava, Spain'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Amalfi Coast (Costiera Amalfitana) in southern Italy is a UNESCO World Heritage Site famous for its dramatic cliffs, colourful villages perched above the sea, and hairpin coastal road. The town of Amalfi was once a major maritime republic.'
+  },
 ]
 
 const FAMOUS_ARTWORKS: ImageQuestion[] = [
@@ -1054,6 +1238,118 @@ const FAMOUS_ARTWORKS: ImageQuestion[] = [
     incorrect_answers: ['Paul Gauguin', 'Paul Cézanne', 'Henri de Toulouse-Lautrec'],
     category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
     explanation: 'Van Gogh painted over 30 self-portraits between 1885 and 1889 — partly because he could not afford models. This 1889 version, painted just before he entered the Saint-Paul-de-Mausole asylum, is one of his most famous.'
+  },
+  {
+    image: wp('Waterhouse-Lady_of_Shalott.jpg'),
+    question: 'What is this Pre-Raphaelite painting?',
+    correct_answer: 'The Lady of Shalott',
+    incorrect_answers: ['Ophelia', 'The Awakening of Adonis', 'Echo and Narcissus'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Lady of Shalott (1888) by John William Waterhouse depicts the tragic Arthurian maiden who must weave and view the world only through a mirror. Based on Tennyson\'s poem, it is one of the most popular Victorian paintings.'
+  },
+  {
+    image: wp('Hokusai_36_Fuji_47_Kanagawa.jpg'),
+    question: 'Who created this iconic Japanese woodblock print of a giant wave?',
+    correct_answer: 'Katsushika Hokusai',
+    incorrect_answers: ['Hiroshige', 'Utamaro', 'Yoshitoshi'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Katsushika Hokusai (1760–1849) created The Great Wave off Kanagawa as part of his "Thirty-six Views of Mount Fuji" series. Hokusai is arguably the most internationally famous Japanese artist and is said to have held 30 different names during his lifetime.'
+  },
+  {
+    image: wp('Diego_Velázquez_-_Las_Hilanderas_o_la_fábula_de_Aracne.jpg'),
+    question: 'What is this Velázquez painting depicting women spinning?',
+    correct_answer: 'The Spinners (Las Hilanderas)',
+    incorrect_answers: ['Las Meninas', 'The Surrender of Breda', 'The Water Seller of Seville'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Spinners (c.1655–1660) by Diego Velázquez depicts women weaving in the Royal Tapestry Factory. The background shows the myth of Arachne. It is one of Velázquez\'s most sophisticated works in terms of technique and layered meaning.'
+  },
+  {
+    image: wp('Johannes_Vermeer_-_The_Milkmaid_-_Google_Art_Project.jpg'),
+    question: 'What is this painting by Vermeer?',
+    correct_answer: 'The Milkmaid',
+    incorrect_answers: ['Girl with a Pearl Earring', 'Woman Reading a Letter', 'The Lacemaker'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Milkmaid (c.1658–1661) by Johannes Vermeer depicts a kitchen maid pouring milk, rendered with extraordinary light and texture. It is housed at the Rijksmuseum in Amsterdam and is one of the most admired paintings in Western art.'
+  },
+  {
+    image: wp('William_Blake_-_The_Ancient_of_Days.jpg'),
+    question: 'What is this visionary painting by William Blake?',
+    correct_answer: 'The Ancient of Days',
+    incorrect_answers: ['Nebuchadnezzar', 'Newton', 'Elijah in the Fiery Chariot'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Ancient of Days (1794) by William Blake depicts the Creator (Urizen) reaching down with a compass to measure the world. Blake was a poet, painter and printmaker who worked in a unique visionary style. It was his favourite of his own works.'
+  },
+  {
+    image: wp('Raphael_-_School_of_Athens_-_Restored.jpg'),
+    question: 'What is this famous fresco by Raphael?',
+    correct_answer: 'The School of Athens',
+    incorrect_answers: ['The Disputation of the Sacrament', 'The Transfiguration', 'Parnassus'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The School of Athens (1509–1511) by Raphael is a fresco in the Vatican\'s Apostolic Palace. It depicts ancient Greek philosophers including Plato, Aristotle, Socrates and Pythagoras. Plato\'s face is a portrait of Leonardo da Vinci.'
+  },
+  {
+    image: wp('Edward_Munch_-_The_Sick_Child_-_NG.M.00839-31_-_Nasjonalmuseet.jpg'),
+    question: 'Who painted this emotionally raw Norwegian painting?',
+    correct_answer: 'Edvard Munch',
+    incorrect_answers: ['Gustav Klimt', 'Egon Schiele', 'Käthe Kollwitz'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Sick Child (1885–1886) by Edvard Munch depicts a pale girl looking toward the light while a grief-stricken woman bows her head. It was inspired by the death of his sister Sophie from tuberculosis. Munch considered it his breakthrough work.'
+  },
+  {
+    image: wp('El_Greco_-_The_Burial_of_the_Count_of_Orgaz.jpg'),
+    question: 'What is this famous Spanish Renaissance masterpiece?',
+    correct_answer: 'The Burial of the Count of Orgaz',
+    incorrect_answers: ['The Assumption of the Virgin', 'Christ Healing the Blind', 'The Adoration of the Shepherds'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Burial of the Count of Orgaz (1586) by El Greco is considered his masterpiece. It depicts a miraculous burial attended by St Augustine and St Stephen and is divided into earthly and heavenly realms. It has never left the church in Toledo for which it was painted.'
+  },
+  {
+    image: wp('The_yellow_house_Vincent_van_Gogh.jpg'),
+    question: 'What is this painting by Van Gogh?',
+    correct_answer: 'The Yellow House',
+    incorrect_answers: ['The Night Café', 'Café Terrace at Night', 'Starry Night over the Rhône'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Yellow House (1888) by Van Gogh depicts the house in Arles where he lived and hoped to establish an artists\' colony with Gauguin. The right-hand studio became Van Gogh\'s bedroom, made famous by "Bedroom in Arles".'
+  },
+  {
+    image: wp('Paul_Gauguin_-_D\'où_venons-nous_?_Que_sommes-nous_?_Où_allons-nous_?_(1898).jpg'),
+    question: 'What is this large philosophical Gauguin painting?',
+    correct_answer: 'Where Do We Come From? What Are We? Where Are We Going?',
+    incorrect_answers: ['Spirit of the Dead Watching', 'The Vision After the Sermon', 'Nevermore'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Where Do We Come From? (1897–1898) by Paul Gauguin is his most ambitious painting, created in Tahiti. Despairing at poverty and illness, Gauguin painted it as a final statement before a failed suicide attempt. It now hangs in the Boston Museum of Fine Arts.'
+  },
+  {
+    image: wp('J._M._W._Turner_-_Snow_Storm_-_Steam-Boat_off_a_Harbour\'s_Mouth_(Tate_Britain).jpg'),
+    question: 'What is this atmospheric Turner painting?',
+    correct_answer: 'Snow Storm: Steam-Boat off a Harbour\'s Mouth',
+    incorrect_answers: ['Rain, Steam and Speed', 'The Fighting Temeraire', 'Norham Castle, Sunrise'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Snow Storm: Steam-Boat off a Harbour\'s Mouth (1842) by J.M.W. Turner is a revolutionary proto-Impressionist work. Turner claimed he had himself lashed to the ship\'s mast for four hours to experience the storm — which may not be true but makes a good story.'
+  },
+  {
+    image: wp('James_McNeill_Whistler_-_Symphony_in_White,_No._1-_The_White_Girl_-_Google_Art_Project.jpg'),
+    question: 'What is this Whistler painting of a woman in white?',
+    correct_answer: 'Symphony in White, No. 1: The White Girl',
+    incorrect_answers: ['Whistler\'s Mother', 'Harmony in Grey and Green', 'Gold and Brown'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Symphony in White, No. 1: The White Girl (1862) by James McNeill Whistler was rejected by the Royal Academy and the Paris Salon before becoming a sensation at the 1863 Salon des Refusés. It depicts Joanna Hiffernan, Whistler\'s companion and muse.'
+  },
+  {
+    image: wp('Pieter_Bruegel_the_Elder_-_The_Tower_of_Babel_(Vienna)_-_Google_Art_Project.jpg'),
+    question: 'What is this Bruegel painting of a massive spiral tower?',
+    correct_answer: 'The Tower of Babel',
+    incorrect_answers: ['The Fall of Icarus', 'The Dutch Proverbs', 'Haymaking'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Tower of Babel (1563) by Pieter Bruegel the Elder depicts the biblical story of humanity\'s failed attempt to build a tower to heaven. Bruegel painted three versions; this one, the largest, hangs in the Kunsthistorisches Museum in Vienna.'
+  },
+  {
+    image: wp('Johannes_Vermeer_-_Young_Woman_with_a_Water_Pitcher.jpg'),
+    question: 'What is this Vermeer painting in the Metropolitan Museum?',
+    correct_answer: 'Young Woman with a Water Pitcher',
+    incorrect_answers: ['Girl with a Pearl Earring', 'Woman Reading a Letter', 'The Milkmaid'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Young Woman with a Water Pitcher (c.1662) by Johannes Vermeer is a masterpiece of luminous daylight and quiet domesticity. It was purchased in 1887 by Henry Marquand and donated to New York\'s Metropolitan Museum of Art.'
   },
 ]
 
@@ -1919,6 +2215,14 @@ const WORLD_LEADERS: ImageQuestion[] = [
     category: 'World Leaders', type: 'multiple', difficulty: 'medium',
     explanation: 'Sir Keir Starmer (born 1962) became the UK\'s Prime Minister in July 2024 after Labour\'s landslide election victory. A former Director of Public Prosecutions, he was knighted in 2014 for services to law and criminal justice.'
   },
+  {
+    image: wp('Theresa_May_official_cabinet_portrait.jpg'),
+    question: 'Who is this former UK Prime Minister?',
+    correct_answer: 'Theresa May',
+    incorrect_answers: ['Boris Johnson', 'David Cameron', 'Gordon Brown'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Theresa May (born 1956) served as UK Prime Minister from 2016 to 2019, becoming the second female PM after Margaret Thatcher. She oversaw much of the Brexit negotiations after the 2016 referendum result but resigned after Parliament repeatedly rejected her withdrawal agreement.'
+  },
 ]
 
 // ── ROYALS ──────────────────────────────────────────────────────────────────
@@ -2074,6 +2378,14 @@ const ROYALS: ImageQuestion[] = [
     incorrect_answers: ['Empress Elizabeth', 'Empress Anna', 'Sophia Alekseyevna'],
     category: 'Royals', type: 'multiple', difficulty: 'medium',
     explanation: 'Catherine the Great (1729–1796) ruled Russia for 34 years, overseeing a golden age of culture and territorial expansion. German-born, she came to power by overthrowing her husband Peter III. She was a prolific writer and an enthusiastic patron of the arts.'
+  },
+  {
+    image: wp('Emperor_Hirohito_of_Japan.jpg'),
+    question: 'Who was the Emperor of Japan during World War II?',
+    correct_answer: 'Emperor Hirohito',
+    incorrect_answers: ['Emperor Meiji', 'Emperor Taisho', 'Emperor Akihito'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Emperor Hirohito (1901–1989) reigned from 1926 until his death — the longest reign of any Japanese emperor. His reign covered Japan\'s militaristic era and WWII; he announced Japan\'s surrender in 1945, the first time most Japanese had heard his voice.'
   },
 ]
 
@@ -2231,6 +2543,14 @@ const COMEDIANS: ImageQuestion[] = [
     category: 'Comedians', type: 'multiple', difficulty: 'medium',
     explanation: 'Miranda Hart (born 1972) is a British comedian and actress best known for her BBC sitcom Miranda (2009–2015), which she wrote and starred in. She also appeared in Call the Midwife and co-starred with Melissa McCarthy in Spy.'
   },
+  {
+    image: wp('Jack_Black_2011.jpg'),
+    question: 'Who is this comedic actor and rock musician?',
+    correct_answer: 'Jack Black',
+    incorrect_answers: ['Will Ferrell', 'Seth Rogen', 'Jonah Hill'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Jack Black (born 1969) is an American comedian, actor and musician known for School of Rock, Kung Fu Panda and Jumanji. He is also one half of the comedy rock duo Tenacious D, with partner Kyle Gass.'
+  },
 ]
 
 // ── INVENTORS & SCIENTISTS (tech focus) ─────────────────────────────────────
@@ -2387,6 +2707,14 @@ const INVENTORS: ImageQuestion[] = [
     category: 'Inventors', type: 'multiple', difficulty: 'medium',
     explanation: 'Guglielmo Marconi (1874–1937) was an Italian inventor who developed long-distance radio transmission and established the first transatlantic radio signal in 1901. He won the Nobel Prize in Physics in 1909 and his technology saved many lives at sea, including after the Titanic sinking.'
   },
+  {
+    image: wp('Charles_Babbage_by_Antoine_Claudet_c1847-51-crop.jpg'),
+    question: 'Who designed the first mechanical computer, the Difference Engine?',
+    correct_answer: 'Charles Babbage',
+    incorrect_answers: ['Ada Lovelace', 'Alan Turing', 'George Boole'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Charles Babbage (1791–1871) designed the first mechanical computer — the Difference Engine — in the 1820s and later planned the more advanced Analytical Engine. Though never fully built in his lifetime, his designs were correct. He also invented the cowcatcher for trains.'
+  },
 ]
 
 // ── TV PERSONALITIES ─────────────────────────────────────────────────────────
@@ -2431,6 +2759,126 @@ const TV_PERSONALITIES: ImageQuestion[] = [
     category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
     explanation: 'Ellen DeGeneres (born 1958) hosted The Ellen DeGeneres Show from 2003 to 2022, winning numerous Daytime Emmy Awards. She was one of the first openly gay celebrities in Hollywood, coming out in 1997 on her sitcom Ellen.'
   },
+  {
+    image: wp('James_May_2017.jpg'),
+    question: 'Who is this British TV presenter known for car shows?',
+    correct_answer: 'James May',
+    incorrect_answers: ['Jeremy Clarkson', 'Richard Hammond', 'Chris Evans'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'James May (born 1963) is a British broadcaster known for co-presenting Top Gear and The Grand Tour with Jeremy Clarkson and Richard Hammond. He is also known for educational TV programmes and his interest in science and engineering.'
+  },
+  {
+    image: wp('Jeremy_Clarkson_2019.jpg'),
+    question: 'Who is this controversial British TV presenter?',
+    correct_answer: 'Jeremy Clarkson',
+    incorrect_answers: ['James May', 'Richard Hammond', 'Jason Statham'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jeremy Clarkson (born 1960) is a British journalist and TV presenter who made Top Gear the most-watched factual TV programme in the world, with an audience of 350 million in 170 countries. He now presents The Grand Tour on Amazon Prime.'
+  },
+  {
+    image: wp('Bear_Grylls_2010.jpg'),
+    question: 'Who is this British adventurer and survival expert?',
+    correct_answer: 'Bear Grylls',
+    incorrect_answers: ['Ray Mears', 'Les Stroud', 'Ed Stafford'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Bear Grylls (born 1974) is a British adventurer and TV presenter best known for Man vs. Wild (Running Wild). At 23, he became one of the youngest people to climb Everest — just 18 months after breaking his back in three places in a parachuting accident.'
+  },
+  {
+    image: wp('Simon_Cowell_2017.jpg'),
+    question: 'Who is this TV talent show judge?',
+    correct_answer: 'Simon Cowell',
+    incorrect_answers: ['Sharon Osbourne', 'Louis Walsh', 'Piers Morgan'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Simon Cowell (born 1959) is a British music and TV mogul who created the talent show format for The X Factor, American Idol and Britain\'s Got Talent. He has launched the careers of artists including One Direction, Leona Lewis and Susan Boyle.'
+  },
+  {
+    image: wp('Ryan_Seacrest_2015_(cropped).jpg'),
+    question: 'Who is this American Idol host?',
+    correct_answer: 'Ryan Seacrest',
+    incorrect_answers: ['Ryan Reynolds', 'Carson Daly', 'Nick Cannon'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ryan Seacrest (born 1974) is an American radio personality and TV presenter who has hosted American Idol since 2002. He earns an estimated $75 million per year across his various hosting and production roles.'
+  },
+  {
+    image: wp('Jonathan_Ross_2010.jpg'),
+    question: 'Who is this British chat show host?',
+    correct_answer: 'Jonathan Ross',
+    incorrect_answers: ['Graham Norton', 'Alan Carr', 'James Corden'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jonathan Ross (born 1960) is a British broadcaster who hosted The Jonathan Ross Show for the BBC from 1987 to 2010 and for ITV from 2011 to 2020. He is known for his wit, celebrity interviews, and enthusiasm for pop culture.'
+  },
+  {
+    image: wp('Graham_Norton_2013.jpg'),
+    question: 'Who hosts this popular British chat show?',
+    correct_answer: 'Graham Norton',
+    incorrect_answers: ['Jonathan Ross', 'Alan Carr', 'James Corden'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Graham Norton (born 1963) is an Irish-British comedian and chat show host. The Graham Norton Show has been running since 2007 and is famous for its celebrity-packed red sofa. He has won seven BAFTA Television Awards for Best Entertainment Performance.'
+  },
+  {
+    image: wp('Jamie_Oliver_2014.jpg'),
+    question: 'Who is this celebrity chef?',
+    correct_answer: 'Jamie Oliver',
+    incorrect_answers: ['Gordon Ramsay', 'Heston Blumenthal', 'Nigella Lawson'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Jamie Oliver (born 1975) is a British chef who rose to fame with The Naked Chef in 1999. His campaign to improve school meals in the UK led to a £280 million government investment in school food. He has sold over 46 million cookbooks worldwide.'
+  },
+  {
+    image: wp('Nigella_Lawson_2017.jpg'),
+    question: 'Who is this British celebrity cook?',
+    correct_answer: 'Nigella Lawson',
+    incorrect_answers: ['Delia Smith', 'Mary Berry', 'Nadiya Hussain'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Nigella Lawson (born 1960) is a British food writer and TV cook known for her sensual presenting style and approachable recipes. Her 1998 cookbook How to Eat was a bestseller and launched her TV career with Nigella Bites.'
+  },
+  {
+    image: wp('Mary_Berry_2017.jpg'),
+    question: 'Who is this beloved British baking judge?',
+    correct_answer: 'Mary Berry',
+    incorrect_answers: ['Prue Leith', 'Nigella Lawson', 'Delia Smith'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Dame Mary Berry (born 1935) is a British food writer and television presenter who was a judge on The Great British Bake Off from 2010 to 2016. She has written over 75 cookbooks and is a national institution known for her warm demeanour and impeccable baking standards.'
+  },
+  {
+    image: wp('John_Oliver_2018.jpg'),
+    question: 'Who hosts Last Week Tonight on HBO?',
+    correct_answer: 'John Oliver',
+    incorrect_answers: ['Trevor Noah', 'Samantha Bee', 'Seth Meyers'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'John Oliver (born 1977) is a British-American comedian who hosts Last Week Tonight with John Oliver on HBO. Formerly a contributor to The Daily Show, he is known for long-form comedic journalism on serious topics.'
+  },
+  {
+    image: wp('Stephen_Colbert_2019.jpg'),
+    question: 'Who is the host of The Late Show on CBS?',
+    correct_answer: 'Stephen Colbert',
+    incorrect_answers: ['Seth Meyers', 'Jimmy Kimmel', 'John Oliver'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Stephen Colbert (born 1964) hosted the satirical Colbert Report on Comedy Central for nine years before taking over CBS\'s Late Show in 2015. He is known for his quick wit, political satire and ability to conduct serious interviews.'
+  },
+  {
+    image: wp('Ant_and_Dec_2015_(cropped).jpg'),
+    question: 'Who are this famous British presenting duo?',
+    correct_answer: 'Ant & Dec',
+    incorrect_answers: ['Dick & Dom', 'Lenny Henry & Dawn French', 'Lee & Herring'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Ant McPartlin (born 1975) and Declan Donnelly (born 1975) are a British presenting duo who have worked together since appearing in children\'s TV series SMTV Live. They have won the National Television Award for Most Popular Presenter 21 consecutive times.'
+  },
+  {
+    image: wp('Phil_Collins_2010.jpg'),
+    question: 'Who is this musician and former drummer of Genesis?',
+    correct_answer: 'Phil Collins',
+    incorrect_answers: ['Peter Gabriel', 'Mike Rutherford', 'Tony Banks'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Phil Collins (born 1951) is a British singer-songwriter and drummer, best known as the lead vocalist of Genesis and his hugely successful solo career. He holds the distinction of being the only artist to have performed at both Live Aid venues on the same day in 1985.'
+  },
+  {
+    image: wp('Noel_Fielding_2019.jpg'),
+    question: 'Who is this British comedian and The Great British Bake Off host?',
+    correct_answer: 'Noel Fielding',
+    incorrect_answers: ['Matt Lucas', 'Julian Barratt', 'Rich Fulcher'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Noel Fielding (born 1973) is a British comedian, artist and TV presenter known for The Mighty Boosh, 8 Out of 10 Cats Does Countdown and his role as co-host of The Great British Bake Off from 2017 onwards.'
+  },
 ]
 
 // ── FASHION & DESIGN ─────────────────────────────────────────────────────────
@@ -2474,6 +2922,126 @@ const FASHION_ICONS: ImageQuestion[] = [
     incorrect_answers: ['Eva Longoria', 'Kate Moss', 'Stella McCartney'],
     category: 'Fashion Icons', type: 'multiple', difficulty: 'easy',
     explanation: 'Victoria Beckham (born 1974) rose to fame as "Posh Spice" in the Spice Girls before launching a successful fashion label in 2008. Her brand has won multiple British Fashion Awards and is stocked in high-end boutiques worldwide.'
+  },
+  {
+    image: wp('Kate_Moss_2009.jpg'),
+    question: 'Who is this British supermodel?',
+    correct_answer: 'Kate Moss',
+    incorrect_answers: ['Naomi Campbell', 'Cara Delevingne', 'Lily Cole'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Kate Moss (born 1974) rose to fame at 14 and became one of the defining faces of 1990s fashion. She popularised "heroin chic" and inspired the "waif" look. She has appeared on the cover of Vogue over 30 times.'
+  },
+  {
+    image: wp('Gianni_Versace_1994.jpg'),
+    question: 'Who is this iconic Italian fashion designer?',
+    correct_answer: 'Gianni Versace',
+    incorrect_answers: ['Giorgio Armani', 'Valentino Garavani', 'Roberto Cavalli'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Gianni Versace (1946–1997) founded the Versace fashion house in 1978, known for bold, colourful designs and its iconic Medusa logo. He was shot dead outside his Miami mansion. His sister Donatella took over the brand after his death.'
+  },
+  {
+    image: wp('Giorgio_Armani_2016.jpg'),
+    question: 'Who is this Italian fashion designer?',
+    correct_answer: 'Giorgio Armani',
+    incorrect_answers: ['Gianni Versace', 'Valentino Garavani', 'Prada'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Giorgio Armani (born 1934) founded his fashion house in 1975 and is known for his elegant, understated style. He dressed Richard Gere in American Gigolo (1980), transforming Hollywood\'s attitude to fashion. His empire is worth over $9 billion.'
+  },
+  {
+    image: wp('Stella_McCartney_2019.jpg'),
+    question: 'Who is this British sustainable fashion designer?',
+    correct_answer: 'Stella McCartney',
+    incorrect_answers: ['Vivienne Westwood', 'Victoria Beckham', 'Phoebe Philo'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Stella McCartney (born 1971), daughter of Beatle Paul McCartney, is a pioneering sustainable fashion designer who does not use leather or fur in her collections. Her brand is one of the most successful in British fashion.'
+  },
+  {
+    image: wp('Vivienne_Westwood_2014.jpg'),
+    question: 'Who is this iconic British punk fashion designer?',
+    correct_answer: 'Vivienne Westwood',
+    incorrect_answers: ['Stella McCartney', 'Mary Quant', 'Zandra Rhodes'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Dame Vivienne Westwood (1941–2022) was a British fashion designer who is largely credited with bringing modern punk and new wave fashions into the mainstream in the 1970s. She was a fierce environmental activist and was made a Dame in 2006.'
+  },
+  {
+    image: wp('Claudia_Schiffer_2009.jpg'),
+    question: 'Who is this German supermodel?',
+    correct_answer: 'Claudia Schiffer',
+    incorrect_answers: ['Heidi Klum', 'Eva Herzigova', 'Nadja Auermann'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Claudia Schiffer (born 1970) was discovered in a Düsseldorf nightclub at 17 and became one of the world\'s most in-demand supermodels in the 1990s. She has appeared on over 1,000 magazine covers and was a Chanel muse for Karl Lagerfeld.'
+  },
+  {
+    image: wp('Heidi_Klum_2013.jpg'),
+    question: 'Who is this German supermodel and TV personality?',
+    correct_answer: 'Heidi Klum',
+    incorrect_answers: ['Claudia Schiffer', 'Eva Herzigova', 'Elle Macpherson'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Heidi Klum (born 1973) is a German model, TV host and businesswoman. She was the first German model on the cover of the Sports Illustrated Swimsuit Issue and created and hosted the reality competition Project Runway for 16 seasons.'
+  },
+  {
+    image: wp('Tyra_Banks_2019.jpg'),
+    question: 'Who is this model and TV host who created America\'s Next Top Model?',
+    correct_answer: 'Tyra Banks',
+    incorrect_answers: ['Naomi Campbell', 'Heidi Klum', 'Cindy Crawford'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Tyra Banks (born 1973) is an American model, actress and TV personality. She was the first Black model on the cover of the Sports Illustrated Swimsuit Issue (1997) and the first Black woman on the cover of GQ. She created the reality show America\'s Next Top Model.'
+  },
+  {
+    image: wp('Yves_Saint_Laurent_2011.jpg'),
+    question: 'Who is this legendary French fashion designer?',
+    correct_answer: 'Yves Saint Laurent',
+    incorrect_answers: ['Coco Chanel', 'Christian Dior', 'Hubert de Givenchy'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'hard',
+    explanation: 'Yves Saint Laurent (1936–2008) was one of the greatest French fashion designers of the 20th century. He is credited with introducing the tuxedo suit for women and made ready-to-wear fashion fashionable. His partnership with Pierre Bergé lasted 50 years.'
+  },
+  {
+    image: wp('Christian_Dior_1954.jpg'),
+    question: 'Who founded the influential Paris fashion house that bears his name?',
+    correct_answer: 'Christian Dior',
+    incorrect_answers: ['Coco Chanel', 'Hubert de Givenchy', 'Pierre Cardin'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Christian Dior (1905–1957) founded his fashion house in 1946 and launched the "New Look" in 1947 — nipped waists and full skirts that transformed post-war fashion. He revitalised Paris as the fashion capital and invented the concept of licensed products.'
+  },
+  {
+    image: wp('Donatella_Versace_2019.jpg'),
+    question: 'Who is this Italian fashion designer and Versace Creative Director?',
+    correct_answer: 'Donatella Versace',
+    incorrect_answers: ['Miuccia Prada', 'Silvia Venturini Fendi', 'Alberta Ferretti'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Donatella Versace (born 1955) took over as creative director of Versace following the murder of her brother Gianni in 1997. She is known for her platinum blonde hair and dramatic personal style, and has maintained Versace as one of the world\'s most recognised luxury brands.'
+  },
+  {
+    image: wp('Anna_Wintour_2019.jpg'),
+    question: 'Who is the long-serving editor-in-chief of American Vogue?',
+    correct_answer: 'Anna Wintour',
+    incorrect_answers: ['Grace Coddington', 'Carine Roitfeld', 'Franca Sozzani'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Anna Wintour (born 1949) has edited American Vogue since 1988 and is arguably the most powerful figure in global fashion. Known for her signature bob, dark sunglasses and chilly demeanour, she is thought to be the inspiration for "The Devil Wears Prada".'
+  },
+  {
+    image: wp('Linda_Evangelista_2013.jpg'),
+    question: 'Who is this Canadian supermodel who famously said she wouldn\'t get out of bed for less than $10,000 a day?',
+    correct_answer: 'Linda Evangelista',
+    incorrect_answers: ['Naomi Campbell', 'Cindy Crawford', 'Christy Turlington'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'hard',
+    explanation: 'Linda Evangelista (born 1965) is a Canadian model considered one of the most successful models of the late 1980s–1990s, famous for her changing hairstyles and the quote about "$10,000 a day". She was part of the iconic Trinity of supermodels with Naomi Campbell and Christy Turlington.'
+  },
+  {
+    image: wp('Gigi_Hadid_2017.jpg'),
+    question: 'Who is this American model and fashion icon?',
+    correct_answer: 'Gigi Hadid',
+    incorrect_answers: ['Bella Hadid', 'Kendall Jenner', 'Emily Ratajkowski'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Gigi Hadid (born 1995) is an American model who was named International Model of the Year by the British Fashion Council in 2016. She has appeared on the cover of Vogue many times and walked for virtually every major fashion house.'
+  },
+  {
+    image: wp('Christy_Turlington_1994.jpg'),
+    question: 'Who is this American supermodel?',
+    correct_answer: 'Christy Turlington',
+    incorrect_answers: ['Naomi Campbell', 'Cindy Crawford', 'Linda Evangelista'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'hard',
+    explanation: 'Christy Turlington (born 1969) is an American model who was one of the three original supermodels of the late 1980s–1990s (with Naomi Campbell and Linda Evangelista). She appeared on the first Sports Illustrated cover not featuring swimwear in 1994 and now runs a maternal health charity.'
   },
 ]
 
