@@ -9,32 +9,40 @@ import type { TriviaQuestion } from '@/types'
 const PREFETCH_AT = 5
 const MINI_BATCH = 5
 
-// Artworks appear less often (1/8) to avoid painting fatigue
-const IMAGE_TYPES = ['flags', 'flags', 'places', 'places', 'faces', 'faces', 'flags', 'artworks']
-const KNOWLEDGE_TYPES = ['multiple', 'multiple', 'boolean']
-// Sports/Geography/History weighted double; added Mythology, Celebrities, Politics, Vehicles
+// Equal weight across all image types — one of each per pick
+const IMAGE_TYPES = ['flags', 'places', 'faces', 'artworks']
+const KNOWLEDGE_TYPES = ['multiple']
+// One entry per category — no weighting, full variety
 const CATEGORY_POOL = [
-  '', '9',                          // General Knowledge
-  '10', '11', '12', '14', '15',    // Entertainment
-  '17', '18', '20',                 // Science, Computers, Mythology
-  '21', '21',                       // Sports (weighted)
-  '22', '22',                       // Geography (weighted)
-  '23', '23',                       // History (weighted)
-  '24', '26', '27', '28',           // Politics, Celebrities, Animals, Vehicles
+  '',    // any (OpenTDB picks randomly)
+  '9',   // General Knowledge
+  '10',  // Books
+  '11',  // Film
+  '12',  // Music
+  '14',  // Television
+  '15',  // Video Games
+  '17',  // Science & Nature
+  '18',  // Computers
+  '20',  // Mythology
+  '21',  // Sports
+  '22',  // Geography
+  '23',  // History
+  '24',  // Politics
+  '25',  // Art
+  '26',  // Celebrities
+  '27',  // Animals
+  '28',  // Vehicles
 ]
 const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
 
 function pick<T>(arr: T[]): T { return arr[Math.floor(Math.random() * arr.length)] }
 
-function miniBatchUrl(type: string): string {
-  const isKnowledge = type === 'multiple' || type === 'boolean'
+function miniBatchUrl(type: string, category?: string): string {
   const p = new URLSearchParams({ amount: String(MINI_BATCH), type })
-  if (isKnowledge) {
-    const cat = pick(CATEGORY_POOL)
-    const diff = pick(DIFFICULTY_POOL)
-    if (cat) p.set('category', cat)
-    if (diff) p.set('difficulty', diff)
-  }
+  const cat = category ?? pick(CATEGORY_POOL)
+  const diff = pick(DIFFICULTY_POOL)
+  if (cat) p.set('category', cat)
+  if (diff) p.set('difficulty', diff)
   return `/api/questions?${p}`
 }
 
@@ -362,11 +370,14 @@ function QuizPlay() {
   async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
     try {
       const safe = (p: Promise<Response>) => p.then(r => r.json()).catch(() => ({ questions: [] }))
+      // Shuffle the category pool and take 4 distinct categories so each batch
+      // covers different ground rather than independently picking at random.
+      const shuffledCats = [...CATEGORY_POOL].sort(() => Math.random() - 0.5)
       const fetches = [
-        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
-        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
-        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
-        safe(fetch(miniBatchUrl(pick(KNOWLEDGE_TYPES)))),
+        safe(fetch(miniBatchUrl('multiple', shuffledCats[0]))),
+        safe(fetch(miniBatchUrl('multiple', shuffledCats[1]))),
+        safe(fetch(miniBatchUrl('multiple', shuffledCats[2]))),
+        safe(fetch(miniBatchUrl('multiple', shuffledCats[3]))),
         safe(fetch(miniBatchUrl(pick(IMAGE_TYPES)))),
         countryRef.current
           ? safe(fetch(`/api/local-questions?country=${encodeURIComponent(countryRef.current)}`))
