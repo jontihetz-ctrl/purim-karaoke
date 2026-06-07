@@ -1,9 +1,29 @@
 'use client'
 import { Suspense, useEffect, useReducer, useRef, useCallback, useState } from 'react'
-import { useSearchParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { decodeHtml, buildOptions } from '@/lib/trivia'
 import { accuracyColor } from '@/lib/stats'
 import type { TriviaQuestion } from '@/types'
+
+const BATCH_SIZE = 20
+const PREFETCH_AT = 5
+
+// Weighted type pool: multiple choice appears more often (larger question bank)
+const TYPE_POOL = ['multiple', 'multiple', 'multiple', 'boolean', 'flags', 'faces', 'places', 'artworks']
+const CATEGORY_POOL = ['', '9', '10', '11', '12', '14', '15', '17', '21', '22', '23', '25', '27']
+const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
+
+function randomBatchUrl(): string {
+  const type = TYPE_POOL[Math.floor(Math.random() * TYPE_POOL.length)]
+  const isKnowledge = type === 'multiple' || type === 'boolean'
+  const category = isKnowledge ? CATEGORY_POOL[Math.floor(Math.random() * CATEGORY_POOL.length)] : ''
+  const difficulty = isKnowledge ? DIFFICULTY_POOL[Math.floor(Math.random() * DIFFICULTY_POOL.length)] : ''
+  const params = new URLSearchParams({ amount: String(BATCH_SIZE), type })
+  if (category) params.set('category', category)
+  if (difficulty) params.set('difficulty', difficulty)
+  return `/api/questions?${params}`
+}
 
 interface ProcessedQ {
   question: string
@@ -28,18 +48,22 @@ interface AnswerRecord {
 }
 
 type State = {
-  status: 'loading' | 'playing' | 'revealed' | 'finished' | 'submitting' | 'error'
+  status: 'loading' | 'playing' | 'revealed' | 'waiting_more' | 'finished' | 'submitting' | 'error'
   questions: ProcessedQ[]
   currentIndex: number
   answers: AnswerRecord[]
   selected: string | null
   error: string | null
+  fetchingMore: boolean
 }
 
 type Action =
   | { type: 'LOADED'; questions: ProcessedQ[] }
   | { type: 'SELECT'; answer: string; timeTaken: number }
   | { type: 'NEXT' }
+  | { type: 'MORE_LOADING' }
+  | { type: 'MORE_LOADED'; questions: ProcessedQ[] }
+  | { type: 'FINISH' }
   | { type: 'SUBMITTING' }
   | { type: 'ERROR'; msg: string }
 
@@ -68,9 +92,26 @@ function reducer(state: State, action: Action): State {
 
     case 'NEXT': {
       const nextIndex = state.currentIndex + 1
-      if (nextIndex >= state.questions.length) return { ...state, status: 'finished' }
+      if (nextIndex >= state.questions.length) {
+        return { ...state, status: 'waiting_more', currentIndex: nextIndex, selected: null }
+      }
       return { ...state, status: 'playing', currentIndex: nextIndex, selected: null }
     }
+
+    case 'MORE_LOADING':
+      return { ...state, fetchingMore: true }
+
+    case 'MORE_LOADED': {
+      const merged = [...state.questions, ...action.questions]
+      if (state.status === 'waiting_more') {
+        return { ...state, fetchingMore: false, questions: merged, status: 'playing' }
+      }
+      return { ...state, fetchingMore: false, questions: merged }
+    }
+
+    case 'FINISH':
+      if (state.answers.length === 0) return state
+      return { ...state, status: 'finished' }
 
     case 'SUBMITTING':
       return { ...state, status: 'submitting' }
@@ -90,18 +131,19 @@ const init: State = {
   answers: [],
   selected: null,
   error: null,
+  fetchingMore: false,
 }
 
-export default function QuizPlayPage() {
-  return <Suspense fallback={<LoadingScreen />}><QuizPlay /></Suspense>
-}
-
-function LoadingScreen() {
-  return (
-    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-      <div className="text-center"><div className="text-4xl mb-4 animate-pulse">🎯</div><p className="text-gray-400">Loading…</p></div>
-    </div>
-  )
+function processQuestion(q: TriviaQuestion & { explanation?: string }): ProcessedQ {
+  return {
+    question: decodeHtml(q.question),
+    category: decodeHtml(q.category),
+    difficulty: q.difficulty,
+    correct_answer: decodeHtml(q.correct_answer),
+    options: buildOptions(q),
+    image: q.image,
+    explanation: q.explanation,
+  }
 }
 
 function wikiUrl(title: string): string {
@@ -114,45 +156,65 @@ function truncate(text: string, maxSentences = 2): string {
   return sentences.slice(0, maxSentences).join('').trim()
 }
 
+export default function QuizPlayPage() {
+  return <Suspense fallback={<Spinner />}><QuizPlay /></Suspense>
+}
+
+function Spinner({ text = 'Loading…' }: { text?: string }) {
+  return (
+    <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+      <div className="text-center">
+        <div className="text-4xl mb-4 animate-pulse">🎯</div>
+        <p className="text-gray-400">{text}</p>
+      </div>
+    </div>
+  )
+}
+
 function QuizPlay() {
-  const searchParams = useSearchParams()
   const router = useRouter()
   const [state, dispatch] = useReducer(reducer, init)
   const questionStartRef = useRef<number>(Date.now())
   const [wikiSummary, setWikiSummary] = useState<'idle' | 'loading' | string>('idle')
   const wikiAbortRef = useRef<AbortController | null>(null)
 
-  const category = searchParams.get('category') || ''
-  const difficulty = searchParams.get('difficulty') || ''
-  const amount = searchParams.get('amount') || '10'
-  const quizType = searchParams.get('type') || 'multiple'
+  async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
+    try {
+      const res = await fetch(randomBatchUrl())
+      const data = await res.json()
+      if (data.questions) onLoad(data.questions.map(processQuestion))
+      else onLoad([])
+    } catch {
+      onLoad([])
+    }
+  }
 
+  // Initial load
   useEffect(() => {
-    const params = new URLSearchParams({ amount, type: quizType })
-    if (category) params.set('category', category)
-    if (difficulty) params.set('difficulty', difficulty)
-    fetch(`/api/questions?${params}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data.error) { dispatch({ type: 'ERROR', msg: data.error }); return }
-        const questions: ProcessedQ[] = data.questions.map((q: TriviaQuestion & { explanation?: string }) => ({
-          question: decodeHtml(q.question),
-          category: decodeHtml(q.category),
-          difficulty: q.difficulty,
-          correct_answer: decodeHtml(q.correct_answer),
-          options: buildOptions(q),
-          image: q.image,
-          explanation: q.explanation,
-        }))
-        dispatch({ type: 'LOADED', questions })
-        questionStartRef.current = Date.now()
-      })
-      .catch(() => dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' }))
-  }, [amount, category, difficulty, quizType])
+    loadBatch(questions => {
+      if (questions.length === 0) {
+        dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' })
+        return
+      }
+      dispatch({ type: 'LOADED', questions })
+      questionStartRef.current = Date.now()
+    })
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Fetch Wikipedia summary on reveal (for questions without built-in explanation)
+  // Background-fetch more when running low
   useEffect(() => {
-    if (state.status === 'playing') {
+    if (state.fetchingMore) return
+    if (state.status === 'loading' || state.status === 'finished' || state.status === 'submitting' || state.status === 'error') return
+    const remaining = state.questions.length - state.currentIndex - 1
+    if (remaining > PREFETCH_AT) return
+
+    dispatch({ type: 'MORE_LOADING' })
+    loadBatch(questions => dispatch({ type: 'MORE_LOADED', questions }))
+  }, [state.currentIndex, state.questions.length, state.fetchingMore, state.status]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Wikipedia fact on reveal
+  useEffect(() => {
+    if (state.status === 'playing' || state.status === 'waiting_more') {
       setWikiSummary('idle')
       wikiAbortRef.current?.abort()
       return
@@ -160,11 +222,7 @@ function QuizPlay() {
     if (state.status !== 'revealed') return
 
     const q = state.questions[state.currentIndex]
-
-    // Image questions have rich explanations already
     if (q.explanation) return
-
-    // Boolean answers ("True"/"False") don't map to useful Wikipedia articles
     const answer = q.correct_answer
     if (answer === 'True' || answer === 'False') return
 
@@ -175,11 +233,8 @@ function QuizPlay() {
     fetch(wikiUrl(answer), { signal: ctrl.signal })
       .then(r => r.json())
       .then(data => {
-        if (data.extract && data.type !== 'disambiguation') {
-          setWikiSummary(truncate(data.extract, 2))
-        } else {
-          setWikiSummary('idle')
-        }
+        if (data.extract && data.type !== 'disambiguation') setWikiSummary(truncate(data.extract, 2))
+        else setWikiSummary('idle')
       })
       .catch(() => setWikiSummary('idle'))
 
@@ -188,8 +243,7 @@ function QuizPlay() {
 
   const handleAnswer = useCallback((option: string) => {
     if (state.status !== 'playing') return
-    const timeTaken = Date.now() - questionStartRef.current
-    dispatch({ type: 'SELECT', answer: option, timeTaken })
+    dispatch({ type: 'SELECT', answer: option, timeTaken: Date.now() - questionStartRef.current })
   }, [state.status])
 
   const handleNext = useCallback(() => {
@@ -202,22 +256,13 @@ function QuizPlay() {
     const res = await fetch('/api/quiz/complete', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: state.answers, category: category || null, difficulty: difficulty || null }),
+      body: JSON.stringify({ answers: state.answers, category: null, difficulty: null }),
     })
     if (res.ok) router.push('/dashboard')
     else dispatch({ type: 'ERROR', msg: 'Failed to save results.' })
   }
 
-  if (state.status === 'loading') {
-    return (
-      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-4xl mb-4 animate-pulse">🎯</div>
-          <p className="text-gray-400">Loading questions…</p>
-        </div>
-      </div>
-    )
-  }
+  if (state.status === 'loading') return <Spinner text="Loading questions…" />
 
   if (state.status === 'error') {
     return (
@@ -225,13 +270,15 @@ function QuizPlay() {
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-4">😬</div>
           <p className="text-red-400 mb-6">{state.error}</p>
-          <button onClick={() => router.push('/quiz')} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
+          <button onClick={() => router.push('/')} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
             Try again
           </button>
         </div>
       </div>
     )
   }
+
+  if (state.status === 'waiting_more') return <Spinner text="Loading more questions…" />
 
   if (state.status === 'finished' || state.status === 'submitting') {
     const correct = state.answers.filter(a => a.is_correct).length
@@ -247,7 +294,7 @@ function QuizPlay() {
           <h1 className="text-3xl font-bold mb-2" style={{ color: accuracyColor(acc) }}>{acc}%</h1>
           <p className="text-gray-400 mb-8">{correct} of {total} correct</p>
 
-          <div className="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800 mb-8 text-left">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl divide-y divide-gray-800 mb-8 text-left max-h-[55vh] overflow-y-auto">
             {state.answers.map((a, i) => (
               <div key={i} className="px-4 py-4 flex items-start gap-3">
                 <span className="mt-0.5 flex-shrink-0 text-lg">{a.is_correct ? '✅' : '❌'}</span>
@@ -273,37 +320,64 @@ function QuizPlay() {
             ))}
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={state.status === 'submitting'}
-            className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-bold py-4 rounded-xl transition-colors"
-          >
-            {state.status === 'submitting' ? 'Saving…' : 'Save results & view stats →'}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => router.push('/quiz/play')}
+              className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-semibold py-3 rounded-xl transition-colors"
+            >
+              Keep playing
+            </button>
+            <button
+              onClick={handleSubmit}
+              disabled={state.status === 'submitting'}
+              className="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-colors"
+            >
+              {state.status === 'submitting' ? 'Saving…' : 'Save & stats →'}
+            </button>
+          </div>
         </div>
       </div>
     )
   }
 
   const q = state.questions[state.currentIndex]
-  const progress = ((state.currentIndex) / state.questions.length) * 100
   const isRevealed = state.status === 'revealed'
-  const isLastQuestion = state.currentIndex + 1 >= state.questions.length
-
+  const correct = state.answers.filter(a => a.is_correct).length
+  const total = state.answers.length
   const factText = q.explanation || (typeof wikiSummary === 'string' && wikiSummary !== 'idle' && wikiSummary !== 'loading' ? wikiSummary : null)
 
   return (
     <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* Top bar */}
-      <div className="border-b border-gray-800 px-6 py-3 flex items-center justify-between">
-        <span className="text-gray-400 text-sm">{state.currentIndex + 1} / {state.questions.length}</span>
-        <span className="text-xs text-gray-500 truncate max-w-xs">{q.category}</span>
+      <div className="border-b border-gray-800 px-4 py-3 flex items-center justify-between">
+        <span className="font-bold text-sm">🧠 QuizIQ</span>
+        <div className="flex items-center gap-2">
+          {total > 0 && (
+            <span className="text-xs text-gray-400 hidden sm:block">{total} answered · {correct} correct</span>
+          )}
+          <Link
+            href="/dashboard"
+            className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors"
+          >
+            📊 Stats
+          </Link>
+          {total > 0 && (
+            <button
+              onClick={() => dispatch({ type: 'FINISH' })}
+              className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              Finish
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Progress bar */}
-      <div className="h-1 bg-gray-800">
-        <div className="h-1 bg-brand-500 transition-all duration-300" style={{ width: `${progress}%` }} />
-      </div>
+      {/* Score strip (mobile) */}
+      {total > 0 && (
+        <div className="sm:hidden px-4 py-1.5 bg-gray-900/60 border-b border-gray-800/60 text-xs text-gray-400 text-center">
+          {total} answered · {correct} correct
+        </div>
+      )}
 
       <div className="flex-1 flex flex-col items-center justify-center p-6">
         <div className="w-full max-w-2xl">
@@ -314,7 +388,9 @@ function QuizPlay() {
                 q.difficulty === 'medium' ? 'bg-yellow-900/50 text-yellow-400' :
                 'bg-red-900/50 text-red-400'
               }`}>{q.difficulty}</span>
+              <span className="text-xs text-gray-500 truncate">{q.category}</span>
             </div>
+
             {q.image && (
               <div className="flex justify-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -347,14 +423,12 @@ function QuizPlay() {
             {q.options.map((option, i) => {
               const isCorrect = option === q.correct_answer
               const isSelected = option === state.selected
-
               let cls = 'border border-gray-700 bg-gray-900 text-gray-300 hover:border-brand-500 hover:bg-brand-500/10'
               if (isRevealed) {
                 if (isCorrect) cls = 'border-green-500 bg-green-500/20 text-green-300'
-                else if (isSelected && !isCorrect) cls = 'border-red-500 bg-red-500/20 text-red-300'
+                else if (isSelected) cls = 'border-red-500 bg-red-500/20 text-red-300'
                 else cls = 'border-gray-800 bg-gray-900/50 text-gray-500'
               }
-
               return (
                 <button
                   key={i}
@@ -375,7 +449,7 @@ function QuizPlay() {
                 onClick={handleNext}
                 className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors text-base"
               >
-                {isLastQuestion ? 'See results →' : 'Next →'}
+                Next →
               </button>
             </div>
           )}
