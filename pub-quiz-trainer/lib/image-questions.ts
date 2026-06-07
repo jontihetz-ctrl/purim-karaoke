@@ -150,7 +150,7 @@ const FAMOUS_FACES: ImageQuestion[] = [
     explanation: 'Margaret Thatcher (1925–2013) was UK Prime Minister 1979–1990, the first woman to hold the role. Known as "The Iron Lady", her free-market economic policies became known as Thatcherism.'
   },
   {
-    image: wp('Mao_Zedong_1963_(cropped).jpg'),
+    image: wp('Face_detail,_Mao_Zedong_with_cap_(cropped).jpg'),
     question: 'Who is this?',
     correct_answer: 'Mao Zedong',
     incorrect_answers: ['Zhou Enlai', 'Deng Xiaoping', 'Chiang Kai-shek'],
@@ -477,7 +477,7 @@ const FAMOUS_PLACES: ImageQuestion[] = [
     explanation: 'The Statue of Liberty was a gift from France, dedicated in 1886. The full name is "Liberty Enlightening the World." It stands 93m tall including the base. Sculptor: Frédéric Auguste Bartholdi.'
   },
   {
-    image: wp('Big_Ben_2023.jpg'),
+    image: wp('Big_Ben_Elizabeth_Tower_London_2023_01_Detail.jpg'),
     question: 'Where is this landmark?',
     correct_answer: 'London, England',
     incorrect_answers: ['Edinburgh, Scotland', 'Dublin, Ireland', 'Amsterdam, Netherlands'],
@@ -549,7 +549,7 @@ const FAMOUS_PLACES: ImageQuestion[] = [
     explanation: 'Christ the Redeemer stands 30m tall (38m with the pedestal) atop Corcovado Mountain overlooking Rio. Completed in 1931, it is one of the New Seven Wonders of the World.'
   },
   {
-    image: wp('Hagia_Sophia_from_the_Bosphorus_2.JPG'),
+    image: wp('Hagia_Sophia_Mars_2013.jpg'),
     question: 'Where is this landmark?',
     correct_answer: 'Istanbul, Turkey',
     incorrect_answers: ['Cairo, Egypt', 'Tehran, Iran', 'Athens, Greece'],
