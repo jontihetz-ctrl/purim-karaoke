@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     {
       cookies: {
         getAll() { return req.cookies.getAll() },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
           cookiesToSet.forEach(({ name, value, options }) => {
             // Update req.cookies so subsequent getAll() reads see the new tokens.
             req.cookies.set(name, value)
