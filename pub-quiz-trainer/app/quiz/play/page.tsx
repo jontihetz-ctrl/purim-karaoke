@@ -66,6 +66,7 @@ type Action =
   | { type: 'LOADED'; questions: ProcessedQ[] }
   | { type: 'SELECT'; answer: string; timeTaken: number }
   | { type: 'NEXT' }
+  | { type: 'SKIP' }
   | { type: 'MORE_LOADING' }
   | { type: 'MORE_LOADED'; questions: ProcessedQ[] }
   | { type: 'FINISH' }
@@ -97,6 +98,13 @@ function reducer(state: State, action: Action): State {
       const next = state.currentIndex + 1
       if (next >= state.questions.length) return { ...state, status: 'waiting_more', currentIndex: next, selected: null }
       return { ...state, status: 'playing', currentIndex: next, selected: null }
+    }
+
+    case 'SKIP': {
+      if (state.status !== 'playing') return state
+      const qs = state.questions.filter((_, i) => i !== state.currentIndex)
+      if (state.currentIndex >= qs.length) return { ...state, questions: qs, status: 'waiting_more' }
+      return { ...state, questions: qs }
     }
 
     case 'MORE_LOADING':
@@ -156,23 +164,16 @@ export default function QuizPlayPage() {
   return <Suspense fallback={<Spinner />}><QuizPlay /></Suspense>
 }
 
-// Handles image load errors gracefully — hides if broken, no broken-icon flash
-function QuizImage({ src, className }: { src: string; className?: string }) {
+function QuizImage({ src, className, onSkip }: { src: string; className?: string; onSkip?: () => void }) {
   const [errored, setErrored] = useState(false)
-  if (errored) {
-    return (
-      <div className={`flex items-center justify-center border border-dashed border-gray-700 rounded-lg bg-gray-900/50 h-48 ${className ?? ''}`}>
-        <span className="text-gray-600 text-sm">Image unavailable</span>
-      </div>
-    )
-  }
+  if (errored) return null
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
       src={src}
       alt="Quiz question"
       className={className}
-      onError={() => setErrored(true)}
+      onError={() => { setErrored(true); onSkip?.() }}
       loading="eager"
     />
   )
@@ -512,6 +513,7 @@ function QuizPlay() {
                   key={`q-${state.currentIndex}`}
                   src={q.image}
                   className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg"
+                  onSkip={state.status === 'playing' ? () => dispatch({ type: 'SKIP' }) : undefined}
                 />
               </div>
             )}

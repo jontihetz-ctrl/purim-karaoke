@@ -572,6 +572,206 @@ const FAMOUS_PLACES: ImageQuestion[] = [
     category: 'Famous Places', type: 'multiple', difficulty: 'easy',
     explanation: 'The Leaning Tower of Pisa began tilting during construction in 1173 due to soft ground. Galileo allegedly used it to demonstrate that objects of different masses fall at the same speed.'
   },
+  {
+    image: wp('Burj_Khalifa.jpg'),
+    question: 'Where is this skyscraper?',
+    correct_answer: 'Dubai, UAE',
+    incorrect_answers: ['Shanghai, China', 'Kuala Lumpur, Malaysia', 'New York, USA'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Burj Khalifa, completed in 2010, stands 828m tall — the world\'s tallest building. It has 163 floors and was built in just 6 years. On a clear day you can see it from 95km away.'
+  },
+  {
+    image: wp('Alhambra_granada_spain.jpg'),
+    question: 'Where is this Moorish palace?',
+    correct_answer: 'Granada, Spain',
+    incorrect_answers: ['Seville, Spain', 'Córdoba, Spain', 'Toledo, Spain'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Alhambra was built in the 13th–14th centuries as a palace complex for the Nasrid sultans. Its name means "the red one" in Arabic. After the Reconquista in 1492, it became a royal palace for the Spanish monarchs.'
+  },
+  {
+    image: wp('Forbidden_City_from_the_Corner_Tower.jpg'),
+    question: 'Where is this imperial palace?',
+    correct_answer: 'Beijing, China',
+    incorrect_answers: ['Tokyo, Japan', 'Seoul, South Korea', 'Kyoto, Japan'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Forbidden City was the Chinese imperial palace from 1420 to 1912. It has 980 buildings and covers 72 hectares. For 500 years, commoners were forbidden to enter — hence the name.'
+  },
+  {
+    image: wp('Mont_Saint-Michel_3,_Avranches,_Normandy,_France_-_July_2011.jpg'),
+    question: 'Where is this tidal island abbey?',
+    correct_answer: 'Normandy, France',
+    incorrect_answers: ['Cornwall, England', 'Brittany, France', 'Galicia, Spain'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'hard',
+    explanation: 'Mont Saint-Michel is a tidal island commune in Normandy, France. The abbey atop it was founded in 708 AD. At high tide it becomes an island; at low tide a causeway connects it to the mainland.'
+  },
+  {
+    image: wp('Oia-Santorini.jpg'),
+    question: 'Where is this whitewashed island village?',
+    correct_answer: 'Santorini, Greece',
+    incorrect_answers: ['Mykonos, Greece', 'Ibiza, Spain', 'Capri, Italy'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'Santorini (Thira) is a volcanic island in the Aegean. The iconic blue-domed churches and white buildings of Oia are one of the most photographed scenes in the world. The island may have inspired the Atlantis legend.'
+  },
+  {
+    image: wp('Notre-Dame_de_Paris_2013-07-24.jpg'),
+    question: 'Where is this cathedral?',
+    correct_answer: 'Paris, France',
+    incorrect_answers: ['Lyon, France', 'Brussels, Belgium', 'Cologne, Germany'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'Notre-Dame de Paris was built 1163–1345. In April 2019 a catastrophic fire destroyed its spire and much of the roof. Reconstruction began immediately; the cathedral reopened in December 2024.'
+  },
+  {
+    image: wp('Tower_bridge_London_Twilight_-_November_2012.jpg'),
+    question: 'Where is this bridge?',
+    correct_answer: 'London, England',
+    incorrect_answers: ['Edinburgh, Scotland', 'Dublin, Ireland', 'Manchester, England'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'Tower Bridge was built 1886–1894 across the Thames. Despite its Victorian Gothic appearance, it uses a steel frame. Its two bascules can rise to 86° to allow tall ships to pass.'
+  },
+  {
+    image: wp('Edinburgh_castle_from_princes_street.JPG'),
+    question: 'Where is this castle?',
+    correct_answer: 'Edinburgh, Scotland',
+    incorrect_answers: ['Stirling, Scotland', 'Cardiff, Wales', 'Dublin, Ireland'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Edinburgh Castle sits on a volcanic rock that has been a fortress since the 12th century. It houses the Scottish Crown Jewels and the Stone of Destiny, on which Scottish kings were traditionally crowned.'
+  },
+  {
+    image: wp('Uluru,_2013.jpg'),
+    question: 'Where is this sandstone monolith?',
+    correct_answer: 'Northern Territory, Australia',
+    incorrect_answers: ['Western Australia', 'New South Wales, Australia', 'South Australia'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Uluru (Ayers Rock) is a massive sandstone monolith 348m high and 9.4km around. Sacred to the Anangu Aboriginal people for over 10,000 years. Climbing was banned permanently in 2019.'
+  },
+  {
+    image: wp('Trevi_Fountain,_Rome,_Italy_2_-_May_2007.jpg'),
+    question: 'Where is this famous fountain?',
+    correct_answer: 'Rome, Italy',
+    incorrect_answers: ['Naples, Italy', 'Florence, Italy', 'Venice, Italy'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Trevi Fountain, completed in 1762, is the largest Baroque fountain in Rome at 26m high. The tradition of throwing a coin over your left shoulder with your right hand to ensure a return to Rome generates ~€1.5 million a year.'
+  },
+  {
+    image: wp('Niagara_Falls_2010.jpg'),
+    question: 'Where are these waterfalls?',
+    correct_answer: 'USA/Canada border',
+    incorrect_answers: ['Argentina/Brazil border', 'Zambia/Zimbabwe border', 'Venezuela'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'Niagara Falls sits on the border of Ontario, Canada and New York, USA. The three falls together form the highest flow rate of any waterfall in the world. About 6 million cubic feet of water fall per minute.'
+  },
+  {
+    image: wp('Fuji_san_from_Honshu_ridge.jpg'),
+    question: 'Where is this volcanic mountain?',
+    correct_answer: 'Honshu, Japan',
+    incorrect_answers: ['South Korea', 'Taiwan', 'Philippines'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'Mount Fuji is Japan\'s highest peak at 3,776m and last erupted in 1707. It is a UNESCO World Heritage Site and a symbol of Japan. Approximately 200,000 people climb it each year.'
+  },
+  {
+    image: wp('Table_Mountain_DanielaC.jpg'),
+    question: 'Where is this flat-topped mountain?',
+    correct_answer: 'Cape Town, South Africa',
+    incorrect_answers: ['Nairobi, Kenya', 'Addis Ababa, Ethiopia', 'Windhoek, Namibia'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Table Mountain stands 1,085m above Cape Town. Its flat top is often covered by a "tablecloth" of orographic cloud. A cable car has operated to the summit since 1929. One of the New Seven Wonders of Nature.'
+  },
+  {
+    image: wp('Palace_of_Versailles,_December_2007_001.jpg'),
+    question: 'Where is this royal palace?',
+    correct_answer: 'Versailles, France',
+    incorrect_answers: ['Vienna, Austria', 'Madrid, Spain', 'Munich, Germany'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Palace of Versailles was the principal residence of French kings from Louis XIV to Louis XVI. Its Hall of Mirrors is 73m long with 357 mirrors. The Treaty of Versailles ending WWI was signed here in 1919.'
+  },
+  {
+    image: wp('Dubrovnik_Old_Town_2.jpg'),
+    question: 'Where are these medieval city walls?',
+    correct_answer: 'Dubrovnik, Croatia',
+    incorrect_answers: ['Split, Croatia', 'Kotor, Montenegro', 'Valletta, Malta'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Dubrovnik\'s city walls, up to 25m high and 6m wide, encircle the old town. Founded in the 7th century, it was a powerful maritime republic. Used as King\'s Landing in Game of Thrones.'
+  },
+  {
+    image: wp('Moai_Rano_raraku.jpg'),
+    question: 'Where are these stone statues?',
+    correct_answer: 'Easter Island, Chile',
+    incorrect_answers: ['Hawaii, USA', 'Tonga', 'Samoa'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The moai of Easter Island were carved by the Rapa Nui people between the 13th and 16th centuries. There are 900 statues averaging 4m tall and 14 tonnes. How they were moved remains debated.'
+  },
+  {
+    image: wp('Borobudur_Magelang_2014.jpg'),
+    question: 'Where is this Buddhist temple?',
+    correct_answer: 'Java, Indonesia',
+    incorrect_answers: ['Bali, Indonesia', 'Cambodia', 'Myanmar'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'hard',
+    explanation: 'Borobudur is a 9th-century Mahayana Buddhist temple on Java. Built around 800 AD, it has 2,672 relief panels and 504 Buddha statues. Abandoned after volcanic eruptions and rediscovered in 1814.'
+  },
+  {
+    image: wp('Kapadokya_balon.jpg'),
+    question: 'Where are these famous hot air balloons flown over a volcanic landscape?',
+    correct_answer: 'Cappadocia, Turkey',
+    incorrect_answers: ['Pamukkale, Turkey', 'Wadi Rum, Jordan', 'Serengeti, Tanzania'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Cappadocia in central Turkey is famous for its fairy chimney rock formations, carved cave dwellings, and underground cities. Up to 150 hot air balloons take off at sunrise each morning.'
+  },
+  {
+    image: wp('Iguazu_Argentina.jpg'),
+    question: 'Where are these waterfalls?',
+    correct_answer: 'Argentina/Brazil border',
+    incorrect_answers: ['USA/Canada border', 'Zambia/Zimbabwe border', 'Venezuela'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Iguazu Falls on the Argentina-Brazil border consists of 275 individual falls spanning 2.7km. Eleanor Roosevelt reportedly said "Poor Niagara!" upon first seeing them. The largest drop is called the Devil\'s Throat.'
+  },
+  {
+    image: wp('Victoria_Falls_Zimbabwe_(2009).jpg'),
+    question: 'Where are these waterfalls, known locally as "the smoke that thunders"?',
+    correct_answer: 'Zambia/Zimbabwe border',
+    incorrect_answers: ['Congo/Rwanda border', 'Kenya/Tanzania border', 'Ethiopia'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Victoria Falls (Mosi-oa-Tunya) on the Zambezi River is the world\'s largest waterfall by combined width (1.7km) and height (108m). Named by explorer David Livingstone in 1855 after Queen Victoria.'
+  },
+  {
+    image: wp('Brandenburger_Tor_nachts.jpg'),
+    question: 'Where is this neoclassical gate?',
+    correct_answer: 'Berlin, Germany',
+    incorrect_answers: ['Vienna, Austria', 'Prague, Czech Republic', 'Warsaw, Poland'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Brandenburg Gate was built 1788–1791, inspired by the Propylaea of the Acropolis. For 28 years it stood in the no-man\'s land of the Berlin Wall, becoming the symbol of divided — then reunified — Germany.'
+  },
+  {
+    image: wp('Charles_Bridge_and_Prague_Castle,_Prague_(8578873974).jpg'),
+    question: 'Where is this medieval stone bridge?',
+    correct_answer: 'Prague, Czech Republic',
+    incorrect_answers: ['Budapest, Hungary', 'Kraków, Poland', 'Vienna, Austria'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Charles Bridge was built 1357–1402 across the Vltava. Its 30 Baroque statues of saints were added 1683–1714. It was the only bridge across the Vltava for 500 years and is now pedestrian only.'
+  },
+  {
+    image: wp('Great_Sphinx_of_Giza_-_20080716a.jpg'),
+    question: 'Where is this ancient limestone statue?',
+    correct_answer: 'Giza, Egypt',
+    incorrect_answers: ['Luxor, Egypt', 'Memphis, Egypt', 'Alexandria, Egypt'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Great Sphinx of Giza, carved around 2500 BC, is the oldest known monumental sculpture in the world. It is 73m long and 20m high. The nose was likely removed deliberately — theories include Napoleon\'s soldiers, though this predates him.'
+  },
+  {
+    image: wp('Space_Needle_2011-07-04.jpg'),
+    question: 'Where is this futuristic tower?',
+    correct_answer: 'Seattle, USA',
+    incorrect_answers: ['Portland, USA', 'Vancouver, Canada', 'San Francisco, USA'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Space Needle was built for the 1962 World\'s Fair in Seattle. It stands 184m tall and has a rotating restaurant at the top. Its design was inspired by the Jetsons TV show and a flying saucer.'
+  },
+  {
+    image: wp('Ha_Long_Bay_1.jpg'),
+    question: 'Where is this bay with limestone karst islands?',
+    correct_answer: 'Vietnam',
+    incorrect_answers: ['Thailand', 'Philippines', 'China'],
+    category: 'Famous Places', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ha Long Bay in northeast Vietnam contains over 1,600 limestone islands and islets. A UNESCO World Heritage Site since 1994. "Ha Long" means "descending dragon" — legend says a dragon created the islands.'
+  },
 ]
 
 const FAMOUS_ARTWORKS: ImageQuestion[] = [
@@ -702,6 +902,158 @@ const FAMOUS_ARTWORKS: ImageQuestion[] = [
     incorrect_answers: ['Les Demoiselles d\'Avignon', 'The Weeping Woman', 'Girl Before a Mirror'],
     category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
     explanation: 'Guernica (1937) by Pablo Picasso is a powerful anti-war statement depicting the Nazi bombing of the Basque town of Guernica during the Spanish Civil War. Now in the Reina Sofía museum, Madrid.'
+  },
+  {
+    image: wp('Rembrandt_van_Rijn-_The_Night_Watch_-_Google_Art_Project.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Night Watch',
+    incorrect_answers: ['The Anatomy Lesson of Dr Nicolaes Tulp', 'Self-Portrait with Two Circles', 'The Jewish Bride'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Night Watch (1642) by Rembrandt is the largest painting in the Rijksmuseum, Amsterdam. It depicts a militia company led by Captain Frans Banninck Cocq. The painting was cut down on all four sides when moved in 1715.'
+  },
+  {
+    image: wp('Gustav_Klimt_016.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Kiss',
+    incorrect_answers: ['Judith and the Head of Holofernes', 'Portrait of Adele Bloch-Bauer I', 'Danae'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Kiss (1907–1908) by Gustav Klimt is his most famous work, painted during his "Golden Phase" using gold leaf. The couple is often thought to be Klimt himself and his companion Emilie Flöge. It hangs in Vienna\'s Belvedere.'
+  },
+  {
+    image: wp('The_Garden_of_Earthly_Delights_by_Bosch_High_Resolution.jpg'),
+    question: 'What is this triptych painting?',
+    correct_answer: 'The Garden of Earthly Delights',
+    incorrect_answers: ['The Last Judgement', 'The Seven Deadly Sins', 'The Ship of Fools'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Garden of Earthly Delights (c.1490–1510) by Hieronymus Bosch is a triptych depicting Eden, worldly pleasure, and Hell. Its bizarre imagery has fascinated viewers for 500 years. It hangs in the Prado, Madrid.'
+  },
+  {
+    image: wp('Eugène_Delacroix_-_La_liberté_guidant_le_peuple.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'Liberty Leading the People',
+    incorrect_answers: ['The Raft of the Medusa', 'The Coronation of Napoleon', 'Oath of the Tennis Court'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Liberty Leading the People (1830) by Eugène Delacroix commemorates the July Revolution in France. The woman personifying Liberty holding the tricolour became an emblem of France and inspired the Statue of Liberty.'
+  },
+  {
+    image: wp('Francisco_de_Goya,_Saturno_devorando_a_su_hijo_(1819-1823).jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'Saturn Devouring His Son',
+    incorrect_answers: ['The Third of May 1808', 'The Witches\' Sabbath', 'The Fight with Cudgels'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Saturn Devouring His Son (1819–1823) by Francisco Goya is one of his "Black Paintings," painted directly onto the walls of his house. It depicts the Titan Saturn eating one of his children to prevent being overthrown.'
+  },
+  {
+    image: wp('Van_Eyck_-_Arnolfini_Portrait.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Arnolfini Portrait',
+    incorrect_answers: ['Portrait of a Man in a Red Turban', 'The Virgin of Chancellor Rolin', 'The Ghent Altarpiece'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Arnolfini Portrait (1434) by Jan van Eyck is one of the first large-scale uses of oil paint in Northern Europe. The convex mirror in the background reflects two witnesses, possibly including van Eyck himself.'
+  },
+  {
+    image: wp('Claude_Monet,_Impression,_soleil_levant.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'Impression, Sunrise',
+    incorrect_answers: ['Haystacks', 'Rouen Cathedral', 'Water Lilies'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Impression, Sunrise (1872) by Claude Monet depicts Le Havre harbour in morning mist. A critic mocked it as a mere "impression" — inadvertently giving the Impressionist movement its name.'
+  },
+  {
+    image: wp('John_Constable_-_The_Hay_Wain_(1821).jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Hay Wain',
+    incorrect_answers: ['The Cornfield', 'Dedham Vale', 'Flatford Mill'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Hay Wain (1821) by John Constable depicts a horse-drawn hay wain crossing the River Stour in Suffolk. It won a gold medal at the Paris Salon and is the UK\'s most beloved painting according to a 2005 poll.'
+  },
+  {
+    image: wp('Caspar_David_Friedrich_-_Wanderer_above_the_sea_of_fog.jpg'),
+    question: 'What is this Romantic painting?',
+    correct_answer: 'Wanderer above the Sea of Fog',
+    incorrect_answers: ['The Monk by the Sea', 'Two Men Contemplating the Moon', 'Rocky Landscape in the Elbe Sandstone Mountains'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Wanderer above the Sea of Fog (c.1818) by Caspar David Friedrich is a definitive image of German Romanticism. The figure gazing into a misty abyss represents the human relationship with the sublime natural world.'
+  },
+  {
+    image: wp('John_Everett_Millais_-_Ophelia_-_Google_Art_Project.jpg'),
+    question: 'What is this Pre-Raphaelite painting?',
+    correct_answer: 'Ophelia',
+    incorrect_answers: ['The Lady of Shalott', 'Miranda', 'Mariana'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ophelia (1851–1852) by John Everett Millais depicts the death of Hamlet\'s Ophelia. The model, Elizabeth Siddal, lay in a bath of water for hours while Millais painted — she caught a severe cold as a result.'
+  },
+  {
+    image: wp('The_Fighting_Temeraire,_JMW_Turner,_National_Gallery.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Fighting Temeraire',
+    incorrect_answers: ['Rain, Steam and Speed', 'The Slave Ship', 'Venice from the Porch of Madonna della Salute'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'The Fighting Temeraire (1839) by J.M.W. Turner depicts the veteran warship of Trafalgar being towed to be broken up. Voted the greatest painting in Britain in a public poll. Now in the National Gallery, London.'
+  },
+  {
+    image: wp('Michelangelo\'s_David_-_right_view_2.jpg'),
+    question: 'What is this famous marble sculpture?',
+    correct_answer: 'David',
+    incorrect_answers: ['Moses', 'Apollo Belvedere', 'Dying Slave'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
+    explanation: 'David (1501–1504) by Michelangelo stands 5.17m tall and depicts the biblical shepherd before his battle with Goliath. Carved from a single block of marble, it is displayed in the Galleria dell\'Accademia, Florence.'
+  },
+  {
+    image: wp('Venus_de_Milo_Louvre_Ma399_n4.jpg'),
+    question: 'What is this ancient Greek marble statue?',
+    correct_answer: 'Venus de Milo',
+    incorrect_answers: ['Nike of Samothrace', 'Aphrodite of Knidos', 'Artemis of Ephesus'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Venus de Milo (c.100 BC) was discovered on the Greek island of Milos in 1820. Its missing arms have inspired endless speculation. It depicts Aphrodite (Venus) and now resides in the Louvre, Paris.'
+  },
+  {
+    image: wp('The_Thinker,_Auguste_Rodin.jpg'),
+    question: 'What is this bronze sculpture?',
+    correct_answer: 'The Thinker',
+    incorrect_answers: ['The Kiss', 'Burghers of Calais', 'The Age of Bronze'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Thinker (Le Penseur) by Auguste Rodin was originally called "The Poet," intended to depict Dante Alighieri contemplating The Divine Comedy. Created 1880–1882, it is now one of the most recognised sculptures in the world.'
+  },
+  {
+    image: wp('Edouard_Manet_-_A_Bar_at_the_Folies-Bergère.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'A Bar at the Folies-Bergère',
+    incorrect_answers: ['Le Déjeuner sur l\'Herbe', 'Olympia', 'The Plum'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'A Bar at the Folies-Bergère (1882) by Édouard Manet was his final major work. The barmaid\'s expression is detached despite the lively crowd reflected in the mirror behind her. The reflection does not match the perspective, puzzling art historians.'
+  },
+  {
+    image: wp('Nighthawks_by_Edward_Hopper_1942.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'Nighthawks',
+    incorrect_answers: ['Automat', 'Chop Suey', 'New York Movie'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'Nighthawks (1942) by Edward Hopper depicts people in a diner late at night in a big city. It is one of the most recognised paintings in American art, capturing a sense of urban isolation and loneliness.'
+  },
+  {
+    image: wp('Pierre-Auguste_Renoir,_Le_Moulin_de_la_Galette.jpg'),
+    question: 'What is this Impressionist painting?',
+    correct_answer: 'Dance at Le Moulin de la Galette',
+    incorrect_answers: ['The Luncheon of the Boating Party', 'Two Sisters', 'Bal du Moulin Rouge'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'hard',
+    explanation: 'Dance at Le Moulin de la Galette (1876) by Auguste Renoir captures a Sunday afternoon at a popular Montmartre dance garden. Painted en plein air, it is one of Impressionism\'s masterpieces. Now in the Musée d\'Orsay, Paris.'
+  },
+  {
+    image: wp('The_two_Fridas.jpg'),
+    question: 'What is this painting?',
+    correct_answer: 'The Two Fridas',
+    incorrect_answers: ['Self-Portrait with Thorn Necklace', 'My Dress Hangs There', 'The Broken Column'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'medium',
+    explanation: 'The Two Fridas (1939) by Frida Kahlo depicts two versions of herself with exposed, connected hearts — one whole and one cut. Painted after her divorce from Diego Rivera, it reflects her dual Mexican and European identity.'
+  },
+  {
+    image: wp('Vincent_van_Gogh_-_Self-Portrait_-_Google_Art_Project_(454045).jpg'),
+    question: 'Which artist painted this self-portrait?',
+    correct_answer: 'Vincent van Gogh',
+    incorrect_answers: ['Paul Gauguin', 'Paul Cézanne', 'Henri de Toulouse-Lautrec'],
+    category: 'Famous Artworks', type: 'multiple', difficulty: 'easy',
+    explanation: 'Van Gogh painted over 30 self-portraits between 1885 and 1889 — partly because he could not afford models. This 1889 version, painted just before he entered the Saint-Paul-de-Mausole asylum, is one of his most famous.'
   },
 ]
 
