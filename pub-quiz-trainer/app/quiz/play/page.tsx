@@ -245,6 +245,7 @@ function QuizPlay() {
   // Auto-save refs
   const sessionIdRef = useRef<string | null>(null)
   const savingRef = useRef(false)
+  const savedCountRef = useRef(0)   // how many answers already persisted
   const answersRef = useRef(state.answers)
   answersRef.current = state.answers
 
@@ -461,17 +462,26 @@ function QuizPlay() {
   }, [])
 
   async function saveAnswers(answers: typeof state.answers) {
-    if (answers.length === 0 || savingRef.current) return
+    const newAnswers = answers.slice(savedCountRef.current)
+    if (newAnswers.length === 0 && sessionIdRef.current) return  // nothing new to save
+    if (savingRef.current) return
     savingRef.current = true
+    const countAtSave = answers.length
     try {
       const res = await fetch('/api/quiz/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ answers, session_id: sessionIdRef.current }),
+        body: JSON.stringify({
+          new_answers: newAnswers,
+          all_count: answers.length,
+          correct_count: answers.filter(a => a.is_correct).length,
+          session_id: sessionIdRef.current,
+        }),
       })
       if (res.ok) {
         const data = await res.json()
         sessionIdRef.current = data.session_id
+        savedCountRef.current = countAtSave
       }
     } finally {
       savingRef.current = false
@@ -484,13 +494,19 @@ function QuizPlay() {
     saveAnswers(state.answers)
   }, [state.answers.length]) // eslint-disable-line
 
-  // Save on page close/navigate away
+  // Save on page close/navigate away (incremental beacon)
   useEffect(() => {
     const handler = () => {
       const answers = answersRef.current
-      if (answers.length === 0) return
+      const newAnswers = answers.slice(savedCountRef.current)
+      if (newAnswers.length === 0 && sessionIdRef.current) return
       const blob = new Blob(
-        [JSON.stringify({ answers, session_id: sessionIdRef.current })],
+        [JSON.stringify({
+          new_answers: newAnswers,
+          all_count: answers.length,
+          correct_count: answers.filter(a => a.is_correct).length,
+          session_id: sessionIdRef.current,
+        })],
         { type: 'application/json' }
       )
       navigator.sendBeacon('/api/quiz/save', blob)
