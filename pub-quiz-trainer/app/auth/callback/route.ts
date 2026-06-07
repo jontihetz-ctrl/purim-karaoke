@@ -58,5 +58,17 @@ export async function GET(req: NextRequest) {
     response.cookies.set(name, value, options)
   )
 
+  // Fallback identity cookie — getEffectiveUser() uses this if Supabase
+  // session cookies fail to propagate (e.g. SameSite/Secure attribute mismatch).
+  response.cookies.set('quiz_player_id', data.user.id, {
+    httpOnly: true,
+    path: '/',
+    maxAge: 60 * 60 * 24 * 30,
+    sameSite: 'lax',
+  })
+
+  console.log('[auth/callback] success uid=%s pendingCookies=%d redirectTo=%s',
+    data.user.id, pendingCookies.length, redirectTo)
+
   return response
 }
