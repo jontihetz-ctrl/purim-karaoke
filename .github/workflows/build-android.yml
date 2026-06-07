@@ -48,6 +48,17 @@ jobs:
         working-directory: pub-quiz-trainer
         run: npx cap sync android
 
+      - name: Inject widget files
+        working-directory: pub-quiz-trainer
+        run: |
+          JAVA_DIR=android/app/src/main/java/com/quiziq/app
+          RES_DIR=android/app/src/main/res
+          mkdir -p "$RES_DIR/layout" "$RES_DIR/xml"
+          cp android-extras/res/layout/quiz_widget.xml "$RES_DIR/layout/"
+          cp android-extras/res/xml/quiz_widget_info.xml "$RES_DIR/xml/"
+          cp android-extras/java/QuizWidget.java "$JAVA_DIR/"
+          python3 android-extras/patch_manifest.py android/app/src/main/AndroidManifest.xml
+
       - name: Make Gradle wrapper executable
         working-directory: pub-quiz-trainer/android
         run: chmod +x gradlew

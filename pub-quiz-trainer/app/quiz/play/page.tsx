@@ -9,7 +9,6 @@ import type { TriviaQuestion } from '@/types'
 const BATCH_SIZE = 20
 const PREFETCH_AT = 5
 
-// Weighted type pool: multiple choice appears more often (larger question bank)
 const TYPE_POOL = ['multiple', 'multiple', 'multiple', 'boolean', 'flags', 'faces', 'places', 'artworks']
 const CATEGORY_POOL = ['', '9', '10', '11', '12', '14', '15', '17', '21', '22', '23', '25', '27']
 const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
@@ -17,12 +16,12 @@ const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
 function randomBatchUrl(): string {
   const type = TYPE_POOL[Math.floor(Math.random() * TYPE_POOL.length)]
   const isKnowledge = type === 'multiple' || type === 'boolean'
-  const category = isKnowledge ? CATEGORY_POOL[Math.floor(Math.random() * CATEGORY_POOL.length)] : ''
-  const difficulty = isKnowledge ? DIFFICULTY_POOL[Math.floor(Math.random() * DIFFICULTY_POOL.length)] : ''
-  const params = new URLSearchParams({ amount: String(BATCH_SIZE), type })
-  if (category) params.set('category', category)
-  if (difficulty) params.set('difficulty', difficulty)
-  return `/api/questions?${params}`
+  const cat = isKnowledge ? CATEGORY_POOL[Math.floor(Math.random() * CATEGORY_POOL.length)] : ''
+  const diff = isKnowledge ? DIFFICULTY_POOL[Math.floor(Math.random() * DIFFICULTY_POOL.length)] : ''
+  const p = new URLSearchParams({ amount: String(BATCH_SIZE), type })
+  if (cat) p.set('category', cat)
+  if (diff) p.set('difficulty', diff)
+  return `/api/questions?${p}`
 }
 
 interface ProcessedQ {
@@ -47,8 +46,10 @@ interface AnswerRecord {
   image?: string
 }
 
+type Status = 'loading' | 'playing' | 'revealed' | 'waiting_more' | 'finished' | 'submitting' | 'error'
+
 type State = {
-  status: 'loading' | 'playing' | 'revealed' | 'waiting_more' | 'finished' | 'submitting' | 'error'
+  status: Status
   questions: ProcessedQ[]
   currentIndex: number
   answers: AnswerRecord[]
@@ -76,26 +77,22 @@ function reducer(state: State, action: Action): State {
       if (state.status !== 'playing') return state
       const q = state.questions[state.currentIndex]
       const is_correct = action.answer === q.correct_answer
-      const record: AnswerRecord = {
-        question_text: q.question,
-        category: q.category,
-        difficulty: q.difficulty,
-        correct_answer: q.correct_answer,
-        player_answer: action.answer,
-        is_correct,
-        time_taken_ms: action.timeTaken,
-        explanation: q.explanation,
-        image: q.image,
+      return {
+        ...state,
+        status: 'revealed',
+        selected: action.answer,
+        answers: [...state.answers, {
+          question_text: q.question, category: q.category, difficulty: q.difficulty,
+          correct_answer: q.correct_answer, player_answer: action.answer, is_correct,
+          time_taken_ms: action.timeTaken, explanation: q.explanation, image: q.image,
+        }],
       }
-      return { ...state, status: 'revealed', selected: action.answer, answers: [...state.answers, record] }
     }
 
     case 'NEXT': {
-      const nextIndex = state.currentIndex + 1
-      if (nextIndex >= state.questions.length) {
-        return { ...state, status: 'waiting_more', currentIndex: nextIndex, selected: null }
-      }
-      return { ...state, status: 'playing', currentIndex: nextIndex, selected: null }
+      const next = state.currentIndex + 1
+      if (next >= state.questions.length) return { ...state, status: 'waiting_more', currentIndex: next, selected: null }
+      return { ...state, status: 'playing', currentIndex: next, selected: null }
     }
 
     case 'MORE_LOADING':
@@ -103,15 +100,13 @@ function reducer(state: State, action: Action): State {
 
     case 'MORE_LOADED': {
       const merged = [...state.questions, ...action.questions]
-      if (state.status === 'waiting_more') {
-        return { ...state, fetchingMore: false, questions: merged, status: 'playing' }
-      }
-      return { ...state, fetchingMore: false, questions: merged }
+      return state.status === 'waiting_more'
+        ? { ...state, fetchingMore: false, questions: merged, status: 'playing' }
+        : { ...state, fetchingMore: false, questions: merged }
     }
 
     case 'FINISH':
-      if (state.answers.length === 0) return state
-      return { ...state, status: 'finished' }
+      return state.answers.length === 0 ? state : { ...state, status: 'finished' }
 
     case 'SUBMITTING':
       return { ...state, status: 'submitting' }
@@ -125,35 +120,32 @@ function reducer(state: State, action: Action): State {
 }
 
 const init: State = {
-  status: 'loading',
-  questions: [],
-  currentIndex: 0,
-  answers: [],
-  selected: null,
-  error: null,
-  fetchingMore: false,
+  status: 'loading', questions: [], currentIndex: 0,
+  answers: [], selected: null, error: null, fetchingMore: false,
 }
 
-function processQuestion(q: TriviaQuestion & { explanation?: string }): ProcessedQ {
+function processQ(q: TriviaQuestion & { explanation?: string }): ProcessedQ {
   return {
-    question: decodeHtml(q.question),
-    category: decodeHtml(q.category),
-    difficulty: q.difficulty,
-    correct_answer: decodeHtml(q.correct_answer),
-    options: buildOptions(q),
-    image: q.image,
-    explanation: q.explanation,
+    question: decodeHtml(q.question), category: decodeHtml(q.category),
+    difficulty: q.difficulty, correct_answer: decodeHtml(q.correct_answer),
+    options: buildOptions(q), image: q.image, explanation: q.explanation,
   }
 }
 
-function wikiUrl(title: string): string {
-  return `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`
+function wikiUrl(t: string) { return `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}` }
+function truncate(text: string, n = 2) {
+  const s = text.match(/[^.!?]+[.!?]+(\s|$)/g) || []
+  return s.length ? s.slice(0, n).join('').trim() : text.slice(0, 280)
 }
 
-function truncate(text: string, maxSentences = 2): string {
-  const sentences = text.match(/[^.!?]+[.!?]+(\s|$)/g) || []
-  if (sentences.length === 0) return text.slice(0, 280)
-  return sentences.slice(0, maxSentences).join('').trim()
+// ── Voice helpers ────────────────────────────────────────────────────────────
+function matchLetter(heard: string): number {
+  const t = heard.trim().toLowerCase()
+  if (/^(a|ay|eh|alpha)$/.test(t) || t.startsWith('a ')) return 0
+  if (/^(b|be|bee|bravo)$/.test(t) || t.startsWith('b ')) return 1
+  if (/^(c|see|sea|si|charlie)$/.test(t) || t.startsWith('c ') || t.startsWith('see ')) return 2
+  if (/^(d|dee|de|delta)$/.test(t) || t.startsWith('d ')) return 3
+  return -1
 }
 
 export default function QuizPlayPage() {
@@ -163,10 +155,7 @@ export default function QuizPlayPage() {
 function Spinner({ text = 'Loading…' }: { text?: string }) {
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center">
-      <div className="text-center">
-        <div className="text-4xl mb-4 animate-pulse">🎯</div>
-        <p className="text-gray-400">{text}</p>
-      </div>
+      <div className="text-center"><div className="text-4xl mb-4 animate-pulse">🎯</div><p className="text-gray-400">{text}</p></div>
     </div>
   )
 }
@@ -178,66 +167,168 @@ function QuizPlay() {
   const [wikiSummary, setWikiSummary] = useState<'idle' | 'loading' | string>('idle')
   const wikiAbortRef = useRef<AbortController | null>(null)
 
-  async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
-    try {
-      const res = await fetch(randomBatchUrl())
-      const data = await res.json()
-      if (data.questions) onLoad(data.questions.map(processQuestion))
-      else onLoad([])
-    } catch {
-      onLoad([])
-    }
+  // Voice mode
+  const [voiceMode, setVoiceMode] = useState(false)
+  const [voiceStatus, setVoiceStatus] = useState<'idle' | 'speaking' | 'listening'>('idle')
+  const voiceModeRef = useRef(false)
+  voiceModeRef.current = voiceMode
+  const stateRef = useRef(state)
+  stateRef.current = state
+  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  const voiceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  function stopAllVoice() {
+    if (typeof window !== 'undefined') window.speechSynthesis?.cancel()
+    recognitionRef.current?.abort()
+    recognitionRef.current = null
+    if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current)
+    setVoiceStatus('idle')
   }
 
-  // Initial load
-  useEffect(() => {
-    loadBatch(questions => {
-      if (questions.length === 0) {
-        dispatch({ type: 'ERROR', msg: 'Failed to load questions. Please try again.' })
-        return
+  function speakText(text: string, onEnd?: () => void) {
+    if (typeof window === 'undefined' || !window.speechSynthesis) { onEnd?.(); return }
+    window.speechSynthesis.cancel()
+    const utt = new SpeechSynthesisUtterance(text)
+    utt.rate = 1.05
+    utt.onend = () => { setVoiceStatus('idle'); onEnd?.() }
+    utt.onerror = () => { setVoiceStatus('idle'); onEnd?.() }
+    setVoiceStatus('speaking')
+    window.speechSynthesis.speak(utt)
+  }
+
+  function listenForAnswer(options: string[]) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const SpeechRec = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
+    if (!SpeechRec || !voiceModeRef.current) return
+
+    const rec = new SpeechRec() as SpeechRecognition
+    rec.lang = 'en-US'
+    rec.continuous = false
+    rec.interimResults = false
+    recognitionRef.current = rec
+    setVoiceStatus('listening')
+
+    rec.onresult = (e: SpeechRecognitionEvent) => {
+      recognitionRef.current = null
+      const heard = e.results[0][0].transcript
+      const idx = matchLetter(heard)
+      if (idx >= 0 && idx < options.length && stateRef.current.status === 'playing') {
+        dispatch({ type: 'SELECT', answer: options[idx], timeTaken: Date.now() - questionStartRef.current })
+        setVoiceStatus('idle')
+      } else {
+        // Didn't match, listen again
+        setTimeout(() => { if (voiceModeRef.current) listenForAnswer(options) }, 300)
       }
-      dispatch({ type: 'LOADED', questions })
+    }
+
+    rec.onerror = () => {
+      recognitionRef.current = null
+      setVoiceStatus('idle')
+      setTimeout(() => {
+        if (voiceModeRef.current && stateRef.current.status === 'playing') listenForAnswer(options)
+      }, 800)
+    }
+
+    rec.onend = () => {
+      if (recognitionRef.current !== rec) return
+      recognitionRef.current = null
+      if (!voiceModeRef.current || stateRef.current.status !== 'playing') return
+      setTimeout(() => listenForAnswer(options), 300)
+    }
+
+    try { rec.start() } catch {}
+  }
+
+  // Voice: speak question when new question appears
+  useEffect(() => {
+    if (!voiceMode || state.status !== 'playing') return
+    const q = state.questions[state.currentIndex]
+    if (!q) return
+
+    stopAllVoice()
+    const labels = ['A', 'B', 'C', 'D']
+    const optText = q.options.map((o, i) => `${labels[i]}. ${o}`).join('. ')
+    speakText(`${q.question}. ${optText}`, () => {
+      if (voiceModeRef.current) listenForAnswer(q.options)
+    })
+    return () => { window.speechSynthesis?.cancel() }
+  }, [voiceMode, state.status === 'playing' ? state.currentIndex : -1]) // eslint-disable-line
+
+  // Voice: speak result and auto-advance after reveal
+  useEffect(() => {
+    if (!voiceMode || state.status !== 'revealed') return
+    const q = state.questions[state.currentIndex]
+    const last = state.answers[state.answers.length - 1]
+    if (!q || !last) return
+
+    recognitionRef.current?.abort()
+    recognitionRef.current = null
+
+    const resultText = last.is_correct
+      ? `Correct! ${q.correct_answer}.`
+      : `Wrong. The answer was ${q.correct_answer}.`
+
+    speakText(resultText, () => {
+      voiceTimerRef.current = setTimeout(() => {
+        if (voiceModeRef.current) {
+          dispatch({ type: 'NEXT' })
+          questionStartRef.current = Date.now()
+        }
+      }, 1000)
+    })
+    return () => {
+      window.speechSynthesis?.cancel()
+      if (voiceTimerRef.current) clearTimeout(voiceTimerRef.current)
+    }
+  }, [voiceMode, state.status === 'revealed' ? state.currentIndex : -1]) // eslint-disable-line
+
+  // Clean up voice when toggled off or unmounted
+  useEffect(() => { if (!voiceMode) stopAllVoice() }, [voiceMode])
+  useEffect(() => () => stopAllVoice(), []) // eslint-disable-line
+
+  // Batch loading
+  async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
+    try {
+      const data = await fetch(randomBatchUrl()).then(r => r.json())
+      onLoad(data.questions ? data.questions.map(processQ) : [])
+    } catch { onLoad([]) }
+  }
+
+  useEffect(() => {
+    loadBatch(qs => {
+      if (qs.length === 0) { dispatch({ type: 'ERROR', msg: 'Failed to load questions.' }); return }
+      dispatch({ type: 'LOADED', questions: qs })
       questionStartRef.current = Date.now()
     })
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // eslint-disable-line
 
-  // Background-fetch more when running low
   useEffect(() => {
     if (state.fetchingMore) return
-    if (state.status === 'loading' || state.status === 'finished' || state.status === 'submitting' || state.status === 'error') return
+    if (['loading', 'finished', 'submitting', 'error'].includes(state.status)) return
     const remaining = state.questions.length - state.currentIndex - 1
     if (remaining > PREFETCH_AT) return
-
     dispatch({ type: 'MORE_LOADING' })
-    loadBatch(questions => dispatch({ type: 'MORE_LOADED', questions }))
-  }, [state.currentIndex, state.questions.length, state.fetchingMore, state.status]) // eslint-disable-line react-hooks/exhaustive-deps
+    loadBatch(qs => dispatch({ type: 'MORE_LOADED', questions: qs }))
+  }, [state.currentIndex, state.questions.length, state.fetchingMore, state.status]) // eslint-disable-line
 
-  // Wikipedia fact on reveal
+  // Wikipedia fact
   useEffect(() => {
     if (state.status === 'playing' || state.status === 'waiting_more') {
-      setWikiSummary('idle')
-      wikiAbortRef.current?.abort()
-      return
+      setWikiSummary('idle'); wikiAbortRef.current?.abort(); return
     }
     if (state.status !== 'revealed') return
-
     const q = state.questions[state.currentIndex]
     if (q.explanation) return
-    const answer = q.correct_answer
-    if (answer === 'True' || answer === 'False') return
+    const ans = q.correct_answer
+    if (ans === 'True' || ans === 'False') return
 
     const ctrl = new AbortController()
     wikiAbortRef.current = ctrl
     setWikiSummary('loading')
-
-    fetch(wikiUrl(answer), { signal: ctrl.signal })
+    fetch(wikiUrl(ans), { signal: ctrl.signal })
       .then(r => r.json())
-      .then(data => {
-        if (data.extract && data.type !== 'disambiguation') setWikiSummary(truncate(data.extract, 2))
-        else setWikiSummary('idle')
-      })
+      .then(data => setWikiSummary(data.extract && data.type !== 'disambiguation' ? truncate(data.extract) : 'idle'))
       .catch(() => setWikiSummary('idle'))
-
     return () => ctrl.abort()
   }, [state.status, state.currentIndex, state.questions])
 
@@ -263,6 +354,7 @@ function QuizPlay() {
   }
 
   if (state.status === 'loading') return <Spinner text="Loading questions…" />
+  if (state.status === 'waiting_more') return <Spinner text="Loading more questions…" />
 
   if (state.status === 'error') {
     return (
@@ -270,27 +362,20 @@ function QuizPlay() {
         <div className="text-center max-w-sm">
           <div className="text-4xl mb-4">😬</div>
           <p className="text-red-400 mb-6">{state.error}</p>
-          <button onClick={() => router.push('/')} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors">
-            Try again
-          </button>
+          <button onClick={() => router.push('/')} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-6 py-3 rounded-xl transition-colors">Try again</button>
         </div>
       </div>
     )
   }
 
-  if (state.status === 'waiting_more') return <Spinner text="Loading more questions…" />
-
   if (state.status === 'finished' || state.status === 'submitting') {
     const correct = state.answers.filter(a => a.is_correct).length
     const total = state.answers.length
     const acc = Math.round((correct / total) * 100)
-
     return (
       <div className="min-h-screen bg-gray-950 flex items-center justify-center p-6">
         <div className="w-full max-w-md text-center">
-          <div className="text-5xl mb-4">
-            {acc >= 80 ? '🏆' : acc >= 60 ? '👍' : acc >= 40 ? '💪' : '📚'}
-          </div>
+          <div className="text-5xl mb-4">{acc >= 80 ? '🏆' : acc >= 60 ? '👍' : acc >= 40 ? '💪' : '📚'}</div>
           <h1 className="text-3xl font-bold mb-2" style={{ color: accuracyColor(acc) }}>{acc}%</h1>
           <p className="text-gray-400 mb-8">{correct} of {total} correct</p>
 
@@ -299,39 +384,21 @@ function QuizPlay() {
               <div key={i} className="px-4 py-4 flex items-start gap-3">
                 <span className="mt-0.5 flex-shrink-0 text-lg">{a.is_correct ? '✅' : '❌'}</span>
                 <div className="min-w-0 flex-1">
-                  {a.image && (
-                    <div className="mb-2">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={a.image} alt="" className="h-16 w-auto rounded object-cover" />
-                    </div>
-                  )}
+                  {a.image && <div className="mb-2"><img src={a.image} alt="" className="h-16 w-auto rounded object-cover" /></div>}
                   <p className="text-sm text-white leading-snug font-medium">{a.question_text}</p>
-                  {!a.is_correct && a.player_answer && (
-                    <p className="text-xs text-red-400 mt-1">Your answer: {a.player_answer}</p>
-                  )}
-                  {!a.is_correct && (
-                    <p className="text-xs text-green-400 mt-0.5 font-semibold">✓ {a.correct_answer}</p>
-                  )}
-                  {a.explanation && (
-                    <p className="text-xs text-gray-400 mt-1.5 leading-relaxed border-l-2 border-gray-700 pl-2 italic">{a.explanation}</p>
-                  )}
+                  {!a.is_correct && a.player_answer && <p className="text-xs text-red-400 mt-1">Your answer: {a.player_answer}</p>}
+                  {!a.is_correct && <p className="text-xs text-green-400 mt-0.5 font-semibold">✓ {a.correct_answer}</p>}
+                  {a.explanation && <p className="text-xs text-gray-400 mt-1.5 leading-relaxed border-l-2 border-gray-700 pl-2 italic">{a.explanation}</p>}
                 </div>
               </div>
             ))}
           </div>
 
           <div className="flex gap-3">
-            <button
-              onClick={() => router.push('/quiz/play')}
-              className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-semibold py-3 rounded-xl transition-colors"
-            >
+            <button onClick={() => router.push('/quiz/play')} className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-semibold py-3 rounded-xl transition-colors">
               Keep playing
             </button>
-            <button
-              onClick={handleSubmit}
-              disabled={state.status === 'submitting'}
-              className="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-colors"
-            >
+            <button onClick={handleSubmit} disabled={state.status === 'submitting'} className="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-colors">
               {state.status === 'submitting' ? 'Saving…' : 'Save & stats →'}
             </button>
           </div>
@@ -355,27 +422,40 @@ function QuizPlay() {
           {total > 0 && (
             <span className="text-xs text-gray-400 hidden sm:block">{total} answered · {correct} correct</span>
           )}
-          <Link
-            href="/dashboard"
-            className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors"
+          {/* Voice mode toggle */}
+          <button
+            onClick={() => setVoiceMode(v => !v)}
+            title={voiceMode ? 'Voice mode on' : 'Enable voice mode (hands-free)'}
+            className={`text-xs border px-2.5 py-1.5 rounded-lg transition-colors ${
+              voiceMode ? 'border-purple-500 text-purple-300 bg-purple-500/10' : 'border-gray-700 text-gray-400 hover:border-gray-500'
+            }`}
           >
-            📊 Stats
+            {voiceMode
+              ? voiceStatus === 'speaking' ? '🔊' : voiceStatus === 'listening' ? '👂' : '🎤'
+              : '🎤'}
+          </button>
+          <Link href="/dashboard" className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
+            📊
           </Link>
           {total > 0 && (
-            <button
-              onClick={() => dispatch({ type: 'FINISH' })}
-              className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors"
-            >
+            <button onClick={() => dispatch({ type: 'FINISH' })} className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
               Finish
             </button>
           )}
         </div>
       </div>
 
-      {/* Score strip (mobile) */}
+      {/* Mobile score strip */}
       {total > 0 && (
-        <div className="sm:hidden px-4 py-1.5 bg-gray-900/60 border-b border-gray-800/60 text-xs text-gray-400 text-center">
+        <div className="sm:hidden px-4 py-1 bg-gray-900/60 border-b border-gray-800/60 text-xs text-gray-400 text-center">
           {total} answered · {correct} correct
+        </div>
+      )}
+
+      {/* Voice status banner */}
+      {voiceMode && (
+        <div className="px-4 py-1.5 bg-purple-950/40 border-b border-purple-800/30 text-xs text-purple-300 text-center">
+          {voiceStatus === 'speaking' ? '🔊 Listening — get ready…' : voiceStatus === 'listening' ? '👂 Say A, B, C or D' : '🎤 Voice mode on — tap 🎤 to disable'}
         </div>
       )}
 
@@ -394,11 +474,7 @@ function QuizPlay() {
             {q.image && (
               <div className="flex justify-center mb-4">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={q.image}
-                  alt="Quiz question"
-                  className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg"
-                />
+                <img src={q.image} alt="Quiz question" className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg" />
               </div>
             )}
             <p className="text-lg font-semibold text-white leading-snug">{q.question}</p>
@@ -443,14 +519,17 @@ function QuizPlay() {
             })}
           </div>
 
-          {isRevealed && (
+          {isRevealed && !voiceMode && (
             <div className="mt-6 flex justify-end">
-              <button
-                onClick={handleNext}
-                className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors text-base"
-              >
+              <button onClick={handleNext} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors text-base">
                 Next →
               </button>
+            </div>
+          )}
+
+          {isRevealed && voiceMode && (
+            <div className="mt-4 text-center text-xs text-purple-400 animate-pulse">
+              Reading result… next question coming up
             </div>
           )}
         </div>
