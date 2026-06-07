@@ -24,7 +24,31 @@ export async function middleware(request: NextRequest) {
   )
 
   // Refreshes the session token if expired — must be called on every request.
-  await supabase.auth.getUser()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Unauthenticated users hitting protected pages get sent to /auth.
+  // For /onboard we also preserve the ?join= invite code in a short-lived cookie
+  // so the auth callback can restore it after sign-in.
+  const { pathname, searchParams, origin } = request.nextUrl
+  const PROTECTED = ['/onboard', '/quiz', '/dashboard', '/team']
+  const isProtected = PROTECTED.some(p => pathname === p || pathname.startsWith(p + '/'))
+  const hasCookieUser = request.cookies.get('quiz_player_id')?.value
+
+  if (!user && !hasCookieUser && isProtected) {
+    const authUrl = new URL('/auth', origin)
+    const redirect = NextResponse.redirect(authUrl)
+
+    const joinCode = searchParams.get('join')
+    if (joinCode) {
+      redirect.cookies.set('pending_join', joinCode, {
+        httpOnly: true,
+        path: '/',
+        maxAge: 60 * 15, // 15 min
+        sameSite: 'lax',
+      })
+    }
+    return redirect
+  }
 
   return response
 }

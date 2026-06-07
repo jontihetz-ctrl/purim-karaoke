@@ -50,8 +50,18 @@ export async function GET(req: NextRequest) {
     .eq('id', data.user.id)
     .single()
 
-  const redirectTo = profile ? `${origin}/quiz/play` : `${origin}/onboard`
+  // Restore pending invite code if the user was bounced here from /onboard?join=...
+  const pendingJoin = req.cookies.get('pending_join')?.value
+  let onboardUrl = `${origin}/onboard`
+  if (pendingJoin) onboardUrl += `?join=${encodeURIComponent(pendingJoin)}`
+
+  const redirectTo = profile ? `${origin}/quiz/play` : onboardUrl
   const response = NextResponse.redirect(redirectTo)
+
+  // Clear the pending_join cookie now that we've consumed it.
+  if (pendingJoin) {
+    response.cookies.set('pending_join', '', { path: '/', maxAge: 0 })
+  }
 
   // Write all session cookies directly onto the response.
   pendingCookies.forEach(({ name, value, options }) =>
