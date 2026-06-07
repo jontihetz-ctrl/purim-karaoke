@@ -1,31 +1,30 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = req.nextUrl
   const code = searchParams.get('code')
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/auth?error=invalid_code`)
+    return NextResponse.redirect(`${origin}/auth?error=no_code`)
   }
 
-  // cookies() from next/headers is writable in Route Handlers — Next.js automatically
-  // includes any cookies set here in the response (including redirects).
-  const cookieStore = cookies()
+  // Collect all cookies that Supabase wants to set, then apply them
+  // directly to the final response — no intermediary, no header copying.
+  const pendingCookies: Array<{ name: string; value: string; options: CookieOptions }> = []
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return cookieStore.getAll() },
-        setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            )
-          } catch {}
+        getAll() { return req.cookies.getAll() },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            // Update req.cookies so subsequent getAll() reads see the new tokens.
+            req.cookies.set(name, value)
+            pendingCookies.push({ name, value, options })
+          })
         },
       },
     }
@@ -33,16 +32,31 @@ export async function GET(req: NextRequest) {
 
   const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-  if (error || !data.user) {
-    return NextResponse.redirect(`${origin}/auth?error=exchange_failed`)
+  if (error) {
+    console.error('[auth/callback] exchangeCodeForSession error:', error.message, error.code)
+    return NextResponse.redirect(`${origin}/auth?error=${encodeURIComponent(error.message)}`)
   }
 
-  // Use in-memory session (set by exchange above) to check for existing profile.
+  if (!data.user) {
+    console.error('[auth/callback] no user after exchange')
+    return NextResponse.redirect(`${origin}/auth?error=no_user`)
+  }
+
+  // The await here ensures any async cookie setAll calls (from the SIGNED_IN
+  // event) have had a chance to flush before we build the response.
   const { data: profile } = await supabase
     .from('quiz_players')
     .select('id')
     .eq('id', data.user.id)
     .single()
 
-  return NextResponse.redirect(profile ? `${origin}/quiz/play` : `${origin}/onboard`)
+  const redirectTo = profile ? `${origin}/quiz/play` : `${origin}/onboard`
+  const response = NextResponse.redirect(redirectTo)
+
+  // Write all session cookies directly onto the response.
+  pendingCookies.forEach(({ name, value, options }) =>
+    response.cookies.set(name, value, options)
+  )
+
+  return response
 }

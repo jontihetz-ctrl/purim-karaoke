@@ -1,9 +1,12 @@
 'use client'
-import { useState } from 'react'
+import { Suspense, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-export default function AuthPage() {
+function AuthInner() {
   const [loading, setLoading] = useState(false)
+  const searchParams = useSearchParams()
+  const errorParam = searchParams.get('error')
 
   async function handleGoogle() {
     setLoading(true)
@@ -24,6 +27,12 @@ export default function AuthPage() {
         </div>
 
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+          {errorParam && (
+            <div className="bg-red-950/50 border border-red-800 rounded-lg px-4 py-3">
+              <p className="text-red-300 text-sm font-medium">Sign-in failed</p>
+              <p className="text-red-400 text-xs mt-1 break-all">{decodeURIComponent(errorParam)}</p>
+            </div>
+          )}
           <button
             onClick={handleGoogle}
             disabled={loading}
@@ -42,4 +51,8 @@ export default function AuthPage() {
       </div>
     </div>
   )
+}
+
+export default function AuthPage() {
+  return <Suspense fallback={null}><AuthInner /></Suspense>
 }
