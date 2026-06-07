@@ -50,7 +50,7 @@ interface AnswerRecord {
   image?: string
 }
 
-type Status = 'loading' | 'playing' | 'revealed' | 'waiting_more' | 'finished' | 'submitting' | 'error'
+type Status = 'loading' | 'playing' | 'revealed' | 'waiting_more' | 'finished' | 'error'
 
 type State = {
   status: Status
@@ -70,7 +70,6 @@ type Action =
   | { type: 'MORE_LOADING' }
   | { type: 'MORE_LOADED'; questions: ProcessedQ[] }
   | { type: 'FINISH' }
-  | { type: 'SUBMITTING' }
   | { type: 'ERROR'; msg: string }
 
 function reducer(state: State, action: Action): State {
@@ -119,9 +118,6 @@ function reducer(state: State, action: Action): State {
 
     case 'FINISH':
       return state.answers.length === 0 ? state : { ...state, status: 'finished' }
-
-    case 'SUBMITTING':
-      return { ...state, status: 'submitting' }
 
     case 'ERROR':
       return { ...state, status: 'error', error: action.msg }
@@ -193,6 +189,12 @@ function QuizPlay() {
   const questionStartRef = useRef<number>(Date.now())
   const [wikiSummary, setWikiSummary] = useState<'idle' | 'loading' | string>('idle')
   const wikiAbortRef = useRef<AbortController | null>(null)
+
+  // Auto-save refs
+  const sessionIdRef = useRef<string | null>(null)
+  const savingRef = useRef(false)
+  const answersRef = useRef(state.answers)
+  answersRef.current = state.answers
 
   // Voice mode
   const [voiceMode, setVoiceMode] = useState(false)
@@ -378,15 +380,48 @@ function QuizPlay() {
     questionStartRef.current = Date.now()
   }, [])
 
-  async function handleSubmit() {
-    dispatch({ type: 'SUBMITTING' })
-    const res = await fetch('/api/quiz/complete', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ answers: state.answers, category: null, difficulty: null }),
-    })
-    if (res.ok) router.push('/dashboard')
-    else dispatch({ type: 'ERROR', msg: 'Failed to save results.' })
+  async function saveAnswers(answers: typeof state.answers) {
+    if (answers.length === 0 || savingRef.current) return
+    savingRef.current = true
+    try {
+      const res = await fetch('/api/quiz/save', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answers, session_id: sessionIdRef.current }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        sessionIdRef.current = data.session_id
+      }
+    } finally {
+      savingRef.current = false
+    }
+  }
+
+  // Auto-save after every answer
+  useEffect(() => {
+    if (state.answers.length === 0) return
+    saveAnswers(state.answers)
+  }, [state.answers.length]) // eslint-disable-line
+
+  // Save on page close/navigate away
+  useEffect(() => {
+    const handler = () => {
+      const answers = answersRef.current
+      if (answers.length === 0) return
+      const blob = new Blob(
+        [JSON.stringify({ answers, session_id: sessionIdRef.current })],
+        { type: 'application/json' }
+      )
+      navigator.sendBeacon('/api/quiz/save', blob)
+    }
+    window.addEventListener('beforeunload', handler)
+    return () => window.removeEventListener('beforeunload', handler)
+  }, [])
+
+  async function goToStats() {
+    await saveAnswers(answersRef.current)
+    router.push('/dashboard')
   }
 
   if (state.status === 'loading') return <Spinner text="Loading questions…" />
@@ -404,7 +439,7 @@ function QuizPlay() {
     )
   }
 
-  if (state.status === 'finished' || state.status === 'submitting') {
+  if (state.status === 'finished') {
     const correct = state.answers.filter(a => a.is_correct).length
     const total = state.answers.length
     const acc = Math.round((correct / total) * 100)
@@ -434,8 +469,8 @@ function QuizPlay() {
             <button onClick={() => router.push('/quiz/play')} className="flex-1 border border-gray-700 hover:border-gray-500 text-gray-300 font-semibold py-3 rounded-xl transition-colors">
               Keep playing
             </button>
-            <button onClick={handleSubmit} disabled={state.status === 'submitting'} className="flex-1 bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-colors">
-              {state.status === 'submitting' ? 'Saving…' : 'Save & stats →'}
+            <button onClick={goToStats} className="flex-1 bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 rounded-xl transition-colors">
+              View stats →
             </button>
           </div>
         </div>
@@ -470,9 +505,9 @@ function QuizPlay() {
               ? voiceStatus === 'speaking' ? '🔊' : voiceStatus === 'listening' ? '👂' : '🎤'
               : '🎤'}
           </button>
-          <Link href="/dashboard" className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
-            📊
-          </Link>
+          <button onClick={goToStats} className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
+            📊 Stats
+          </button>
           {total > 0 && (
             <button onClick={() => dispatch({ type: 'FINISH' })} className="text-xs text-gray-400 hover:text-white border border-gray-700 hover:border-gray-500 px-3 py-1.5 rounded-lg transition-colors">
               Finish
