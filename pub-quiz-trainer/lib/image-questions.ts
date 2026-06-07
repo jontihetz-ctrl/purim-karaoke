@@ -1139,6 +1139,158 @@ const SPORTS_STARS: ImageQuestion[] = [
     category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
     explanation: 'Ronaldinho (born 1980) is a Brazilian footballer known for his exceptional skill and joy for the game. He won the 2002 FIFA World Cup, the 2005 Ballon d\'Or, and the 2006 Champions League with Barcelona.'
   },
+  {
+    image: wp('Neymar_2018.jpg'),
+    question: 'Who is this Brazilian footballer?',
+    correct_answer: 'Neymar Jr.',
+    incorrect_answers: ['Lionel Messi', 'Kylian Mbappé', 'Vinicius Jr.'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Neymar Jr. (born 1992) is a Brazilian forward who became the world\'s most expensive footballer when Paris Saint-Germain paid €222 million for him in 2017. He won the 2015 Champions League with Barcelona.'
+  },
+  {
+    image: wp('Kylian_Mbappe_2018.jpg'),
+    question: 'Who is this French footballer?',
+    correct_answer: 'Kylian Mbappé',
+    incorrect_answers: ['Antoine Griezmann', 'Karim Benzema', 'Ousmane Dembélé'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Kylian Mbappé (born 1998) became the second teenager (after Pelé) to score in a World Cup final when France won in 2018. He is renowned for exceptional pace and won the Golden Boot at the 2022 World Cup.'
+  },
+  {
+    image: wp('Zlatan_Ibrahimovic_2019.jpg'),
+    question: 'Who is this Swedish footballer?',
+    correct_answer: 'Zlatan Ibrahimović',
+    incorrect_answers: ['Henrik Larsson', 'Fredrik Ljungberg', 'Sebastian Larsson'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Zlatan Ibrahimović (born 1981) is one of the most prolific strikers of his generation, scoring over 500 career goals and winning league titles in six different countries. Known for his acrobatic and spectacular goals.'
+  },
+  {
+    image: wp('Floyd_Mayweather_Jr_2015.jpg'),
+    question: 'Who is this undefeated boxing champion?',
+    correct_answer: 'Floyd Mayweather Jr.',
+    incorrect_answers: ['Manny Pacquiao', 'Oscar De La Hoya', 'Shane Mosley'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Floyd Mayweather Jr. (born 1977) retired with a perfect 50-0 record and is considered the greatest defensive boxer of all time. His 2015 fight against Manny Pacquiao was dubbed "The Fight of the Century".'
+  },
+  {
+    image: wp('Valentina_Shevchenko_2019_(cropped).jpg'),
+    question: 'Who is this UFC champion?',
+    correct_answer: 'Valentina Shevchenko',
+    incorrect_answers: ['Amanda Nunes', 'Ronda Rousey', 'Rose Namajunas'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'hard',
+    explanation: 'Valentina Shevchenko (born 1988) is a Kyrgyzstan-born MMA fighter who held the UFC Flyweight Championship for five years, making seven successful defences. She also holds black belts in multiple martial arts disciplines.'
+  },
+  {
+    image: wp('Conor_McGregor_2016.jpg'),
+    question: 'Who is this UFC champion?',
+    correct_answer: 'Conor McGregor',
+    incorrect_answers: ['Khabib Nurmagomedov', 'Dustin Poirier', 'Nate Diaz'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Conor McGregor (born 1988) is an Irish MMA fighter and the first UFC champion to hold titles in two weight classes simultaneously. His 2017 boxing match against Floyd Mayweather generated over $600 million in revenue.'
+  },
+  {
+    image: wp('Naomi_Osaka_2019_Australian_Open.jpg'),
+    question: 'Who is this tennis champion?',
+    correct_answer: 'Naomi Osaka',
+    incorrect_answers: ['Serena Williams', 'Ash Barty', 'Bianca Andreescu'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Naomi Osaka (born 1997) is a Japanese-American tennis player who has won four Grand Slam singles titles. She became the highest-paid female athlete in history and is known for her advocacy for mental health awareness.'
+  },
+  {
+    image: wp('Carlos_Alcaraz_(2023)_(cropped).jpg'),
+    question: 'Who is this young tennis champion?',
+    correct_answer: 'Carlos Alcaraz',
+    incorrect_answers: ['Jannik Sinner', 'Holger Rune', 'Casper Ruud'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Carlos Alcaraz (born 2003) became the youngest world No. 1 in ATP history at 19. He has won multiple Grand Slam titles including Wimbledon (2023, 2024) and the US Open (2022).'
+  },
+  {
+    image: wp('Pelé_con_Botafogo.jpg'),
+    question: 'Who is this legendary Brazilian footballer?',
+    correct_answer: 'Pelé',
+    incorrect_answers: ['Garrincha', 'Zico', 'Ronaldo Nazário'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Pelé (1940–2022) won three World Cups with Brazil (1958, 1962, 1970) and scored over 1,000 career goals. He is universally regarded as one of the greatest footballers of all time.'
+  },
+  {
+    image: wp('Max_Verstappen_2023.jpg'),
+    question: 'Who is this Formula 1 World Champion?',
+    correct_answer: 'Max Verstappen',
+    incorrect_answers: ['Charles Leclerc', 'Lando Norris', 'Fernando Alonso'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Max Verstappen (born 1997) is a Dutch Formula 1 driver who became the youngest ever F1 race winner at 18 in 2016. He won four consecutive World Championships with Red Bull Racing (2021–2024).'
+  },
+  {
+    image: wp('Caitlin_Clark_2024_(cropped).jpg'),
+    question: 'Who is this record-breaking basketball star?',
+    correct_answer: 'Caitlin Clark',
+    incorrect_answers: ['Breanna Stewart', 'A\'ja Wilson', 'Diana Taurasi'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Caitlin Clark (born 2002) became the all-time leading scorer in NCAA basketball history (men\'s or women\'s) before being selected first overall in the 2024 WNBA Draft, sparking unprecedented interest in women\'s basketball.'
+  },
+  {
+    image: wp('Didier_Drogba_2012.jpg'),
+    question: 'Who is this Ivorian football legend?',
+    correct_answer: 'Didier Drogba',
+    incorrect_answers: ['Samuel Eto\'o', 'Michael Essien', 'Yaya Touré'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Didier Drogba (born 1978) is considered the greatest African striker of all time. He scored Chelsea\'s equaliser in the 2012 Champions League final and then converted the winning penalty, having missed only two penalties in his career.'
+  },
+  {
+    image: wp('Stephen_Curry_2019_(cropped).jpg'),
+    question: 'Who is this NBA sharpshooter?',
+    correct_answer: 'Stephen Curry',
+    incorrect_answers: ['Klay Thompson', 'Kevin Durant', 'LeBron James'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Stephen Curry (born 1988) revolutionised basketball with his extraordinary three-point shooting. He won four NBA championships with the Golden State Warriors and holds the all-time record for most three-pointers made in NBA history.'
+  },
+  {
+    image: wp('Paula_Radcliffe_2009.jpg'),
+    question: 'Who is this British marathon world record holder?',
+    correct_answer: 'Paula Radcliffe',
+    incorrect_answers: ['Mo Farah', 'Jessica Ennis-Hill', 'Kelly Holmes'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'hard',
+    explanation: 'Paula Radcliffe (born 1973) set the women\'s marathon world record of 2:15:25 in London in 2003, a record that stood for 16 years. She is widely considered the greatest female distance runner of her era.'
+  },
+  {
+    image: wp('Ronaldo_Nazario_2011.jpg'),
+    question: 'Who is this Brazilian striker known as "R9"?',
+    correct_answer: 'Ronaldo Nazário',
+    incorrect_answers: ['Ronaldinho', 'Roberto Carlos', 'Rivaldo'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ronaldo Nazário (born 1976) is a Brazilian footballer who won the FIFA World Player of the Year award three times and scored twice in the 2002 World Cup final. Many consider him the greatest striker of all time.'
+  },
+  {
+    image: wp('Diego_Maradona_1981.jpg'),
+    question: 'Who is this Argentine football legend?',
+    correct_answer: 'Diego Maradona',
+    incorrect_answers: ['Gabriel Batistuta', 'Mario Kempes', 'Sergio Agüero'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Diego Maradona (1960–2020) led Argentina to the 1986 World Cup title, scoring both the infamous "Hand of God" goal and the "Goal of the Century" against England in the same quarter-final match.'
+  },
+  {
+    image: wp('Franz_Beckenbauer_1974.jpg'),
+    question: 'Who is this German football legend known as "Der Kaiser"?',
+    correct_answer: 'Franz Beckenbauer',
+    incorrect_answers: ['Gerd Müller', 'Lothar Matthäus', 'Karl-Heinz Rummenigge'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'hard',
+    explanation: 'Franz Beckenbauer (1945–2024) is the only person to win the World Cup as both captain (1974) and manager (1990) of Germany. He revolutionised the sweeper/libero position in football.'
+  },
+  {
+    image: wp('Carl_Lewis_1983.jpg'),
+    question: 'Who is this legendary American sprinter and long jumper?',
+    correct_answer: 'Carl Lewis',
+    incorrect_answers: ['Jesse Owens', 'Michael Johnson', 'Maurice Greene'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Carl Lewis (born 1961) won nine Olympic gold medals and one silver across four Olympics (1984–1996). He is considered by many to be the greatest track and field athlete of all time.'
+  },
+  {
+    image: wp('Zinedine_Zidane_2011_(cropped).jpg'),
+    question: 'Who is this French football legend?',
+    correct_answer: 'Zinedine Zidane',
+    incorrect_answers: ['Thierry Henry', 'Patrick Vieira', 'Franck Ribéry'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Zinedine Zidane (born 1972) won the 1998 World Cup with France on home soil. He is remembered for both his sublime skill — including a famous overhead kick in the 2002 Champions League final — and his headbutt in the 2006 World Cup final.'
+  },
 ]
 
 // ── MUSIC STARS ─────────────────────────────────────────────────────────────
@@ -1222,6 +1374,158 @@ const MUSIC_STARS: ImageQuestion[] = [
     incorrect_answers: ['Amy Winehouse', 'Duffy', 'Jessie J'],
     category: 'Music Stars', type: 'multiple', difficulty: 'easy',
     explanation: 'Adele (born 1988) is a British singer-songwriter known for her powerful mezzo-soprano voice and soulful ballads. Her album 21 is one of the best-selling albums of all time and she has won 15 Grammy Awards.'
+  },
+  {
+    image: wp('Rihanna_2012_in_concert_(cropped).jpg'),
+    question: 'Who is this pop and R&B superstar?',
+    correct_answer: 'Rihanna',
+    incorrect_answers: ['Beyoncé', 'Nicki Minaj', 'Mary J. Blige'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Rihanna (born 1988) is a Barbadian singer who has sold over 250 million records worldwide, making her one of the best-selling music artists of all time. She also built a billion-dollar empire with her Fenty Beauty cosmetics brand.'
+  },
+  {
+    image: wp('Ed_Sheeran_2013_(cropped).jpg'),
+    question: 'Who is this British singer-songwriter?',
+    correct_answer: 'Ed Sheeran',
+    incorrect_answers: ['Sam Smith', 'Harry Styles', 'James Arthur'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Ed Sheeran (born 1991) is one of the best-selling music artists in the world, with his 2017 album ÷ (Divide) breaking multiple streaming records. He is known for his loop-pedal live performances and emotionally resonant songwriting.'
+  },
+  {
+    image: wp('Eminem_in_2010.jpg'),
+    question: 'Who is this hip-hop legend?',
+    correct_answer: 'Eminem',
+    incorrect_answers: ['Jay-Z', 'Kanye West', 'Drake'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Eminem (born 1972) is the best-selling hip-hop artist of all time, with over 220 million records sold. He has won 15 Grammy Awards and his 2002 film 8 Mile won an Academy Award for Best Original Song.'
+  },
+  {
+    image: wp('Jay-Z_Roc_Nation_Brunch_2013.jpg'),
+    question: 'Who is this rapper and music mogul?',
+    correct_answer: 'Jay-Z',
+    incorrect_answers: ['Kanye West', 'Nas', 'Diddy'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jay-Z (born 1969) is an American rapper, businessman and record executive. He holds the record for the most number-one albums on the Billboard 200 by a solo artist and became hip-hop\'s first billionaire.'
+  },
+  {
+    image: wp('Mick_Jagger_2015.jpg'),
+    question: 'Who is the lead singer of The Rolling Stones?',
+    correct_answer: 'Mick Jagger',
+    incorrect_answers: ['Keith Richards', 'Rod Stewart', 'David Bowie'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Mick Jagger (born 1943) has been the lead vocalist of the Rolling Stones since 1962. He is famous for his energetic stage presence and distinctive voice. The Stones have sold over 200 million records worldwide.'
+  },
+  {
+    image: wp('Bruce_Springsteen_2012.jpg'),
+    question: 'Who is "The Boss" of rock music?',
+    correct_answer: 'Bruce Springsteen',
+    incorrect_answers: ['Tom Petty', 'John Mellencamp', 'Bob Seger'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Bruce Springsteen (born 1949) is an American singer-songwriter who has sold over 135 million records worldwide. His 1975 album Born to Run established him as a rock icon. He has won 20 Grammy Awards and an Oscar.'
+  },
+  {
+    image: wp('Prince_(musician)_2009.jpg'),
+    question: 'Who is this legendary musician who performed as a symbol?',
+    correct_answer: 'Prince',
+    incorrect_answers: ['Michael Jackson', 'James Brown', 'Stevie Wonder'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Prince (1958–2016) was an American singer, songwriter, multi-instrumentalist and actor. He is regarded as one of the greatest musicians of his generation, known for Purple Rain (1984) and his extraordinary live performances.'
+  },
+  {
+    image: wp('Whitney_Houston_1988.jpg'),
+    question: 'Who is this singer known as "The Voice"?',
+    correct_answer: 'Whitney Houston',
+    incorrect_answers: ['Mariah Carey', 'Celine Dion', 'Janet Jackson'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Whitney Houston (1963–2012) is regarded as one of the greatest singers of all time. Her 1992 recording of "I Will Always Love You" remains one of the best-selling singles in history. She has sold over 220 million records worldwide.'
+  },
+  {
+    image: wp('Amy_Winehouse.jpg'),
+    question: 'Who is this British soul and jazz singer?',
+    correct_answer: 'Amy Winehouse',
+    incorrect_answers: ['Adele', 'Lily Allen', 'Florence Welch'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Amy Winehouse (1983–2011) was a British singer known for her deep, expressive voice and her jazz, soul and R&B music. Her album Back to Black (2006) was the UK\'s best-selling album of the 2000s. She died aged 27, joining the "27 Club".'
+  },
+  {
+    image: wp('Dolly_Parton_2016_(cropped).jpg'),
+    question: 'Who is this country music legend?',
+    correct_answer: 'Dolly Parton',
+    incorrect_answers: ['Loretta Lynn', 'Tammy Wynette', 'Shania Twain'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Dolly Parton (born 1946) is a country music icon and philanthropist. She wrote and originally recorded "I Will Always Love You" and "Jolene" in 1973 on the same day. Her Imagination Library programme has gifted over 200 million books to children.'
+  },
+  {
+    image: wp('Johnny_Cash_1969.jpg'),
+    question: 'Who is this country music legend known as "The Man in Black"?',
+    correct_answer: 'Johnny Cash',
+    incorrect_answers: ['Waylon Jennings', 'Merle Haggard', 'Willie Nelson'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Johnny Cash (1932–2003) is one of the most influential musicians of the 20th century. Famous for wearing black on stage, his hits included "Ring of Fire" and "Man in Black". His 1968 live album "At Folsom Prison" is one of the greatest live records ever made.'
+  },
+  {
+    image: wp('Mariah_Carey_2018.jpg'),
+    question: 'Who is this singer known for her 5-octave vocal range?',
+    correct_answer: 'Mariah Carey',
+    incorrect_answers: ['Whitney Houston', 'Celine Dion', 'Christina Aguilera'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Mariah Carey (born 1969) is one of the best-selling music artists of all time, with over 200 million records sold. Her 1994 song "All I Want for Christmas Is You" becomes the world\'s most-streamed song each holiday season.'
+  },
+  {
+    image: wp('Lady_Gaga_2011_(1).jpg'),
+    question: 'Who is this pop performance artist?',
+    correct_answer: 'Lady Gaga',
+    incorrect_answers: ['Katy Perry', 'Pink', 'Kesha'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Lady Gaga (born 1986) is an American singer known for her bold fashion choices and theatrical performances. She has sold over 170 million records worldwide and won an Academy Award for Best Original Song for "Shallow" from A Star Is Born (2018).'
+  },
+  {
+    image: wp('Kanye_West_2007.jpg'),
+    question: 'Who is this rapper and music producer?',
+    correct_answer: 'Kanye West',
+    incorrect_answers: ['Jay-Z', 'Drake', 'Kendrick Lamar'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Kanye West (born 1977) is one of the most critically acclaimed and commercially successful hip-hop artists of all time, with 24 Grammy Awards. His albums from The College Dropout (2004) to Graduation (2007) are considered genre-defining classics.'
+  },
+  {
+    image: wp('Celine_Dion_2012.jpg'),
+    question: 'Who is this Canadian pop singer?',
+    correct_answer: 'Celine Dion',
+    incorrect_answers: ['Shania Twain', 'Alanis Morissette', 'k.d. lang'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Celine Dion (born 1968) is a Canadian singer who has sold over 200 million records worldwide. Her recording of "My Heart Will Go On" for Titanic (1997) became one of the best-selling physical singles of all time.'
+  },
+  {
+    image: wp('Billie_Eilish_2019_(cropped).jpg'),
+    question: 'Who is this singer-songwriter who swept the 2020 Grammys?',
+    correct_answer: 'Billie Eilish',
+    incorrect_answers: ['Olivia Rodrigo', 'Lorde', 'Halsey'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Billie Eilish (born 2001) became the youngest artist to sweep the four main Grammy categories (Record, Album, Song, and Best New Artist) at the 2020 Grammy Awards. She recorded her debut album in her family\'s bedroom.'
+  },
+  {
+    image: wp('Bob_Marley_Concert_for_Bangladesh_1971_(cropped).jpg'),
+    question: 'Who is this reggae music icon?',
+    correct_answer: 'Bob Marley',
+    incorrect_answers: ['Peter Tosh', 'Jimmy Cliff', 'Toots Hibbert'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Bob Marley (1945–1981) is the most famous reggae artist of all time. His 1977 album Exodus was named the greatest album of the 20th century by Time magazine. He brought Rastafarianism and Jamaican culture to a global audience.'
+  },
+  {
+    image: wp('Frank_Sinatra_-_publicity.jpg'),
+    question: 'Who is this "Chairman of the Board" of popular music?',
+    correct_answer: 'Frank Sinatra',
+    incorrect_answers: ['Dean Martin', 'Sammy Davis Jr.', 'Tony Bennett'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Frank Sinatra (1915–1998) is one of the most popular entertainers of the 20th century, selling over 150 million records. Known for hits like "My Way" and "New York, New York", he won the Academy Award for From Here to Eternity (1953).'
+  },
+  {
+    image: wp('Stevie_Wonder_2012.jpg'),
+    question: 'Who is this legendary Motown musician?',
+    correct_answer: 'Stevie Wonder',
+    incorrect_answers: ['Marvin Gaye', 'Ray Charles', 'Al Green'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Stevie Wonder (born 1950) is an American singer, songwriter and multi-instrumentalist who signed with Motown at age 11. He has won 25 Grammy Awards — the most by a male solo artist — and his 1970s albums are considered some of the greatest ever made.'
   },
 ]
 
@@ -1307,6 +1611,158 @@ const FILM_STARS: ImageQuestion[] = [
     category: 'Film Stars', type: 'multiple', difficulty: 'easy',
     explanation: 'Scarlett Johansson (born 1984) is an American actress who is one of the highest-grossing box office stars of all time. She first played Natasha Romanoff/Black Widow in "Iron Man 2" (2010) and starred in her own film in 2021.'
   },
+  {
+    image: wp('Brad_Pitt_2019_by_Glenn_Francis.jpg'),
+    question: 'Who is this Hollywood actor?',
+    correct_answer: 'Brad Pitt',
+    incorrect_answers: ['George Clooney', 'Matt Damon', 'Leonardo DiCaprio'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Brad Pitt (born 1963) is one of the most recognisable actors in Hollywood. He won Academy Awards for producing 12 Years a Slave (2014) and as Best Supporting Actor for Once Upon a Time in Hollywood (2020). He also co-founded the production company Plan B Entertainment.'
+  },
+  {
+    image: wp('Denzel_Washington_2012.jpg'),
+    question: 'Who is this two-time Oscar-winning actor?',
+    correct_answer: 'Denzel Washington',
+    incorrect_answers: ['Morgan Freeman', 'Samuel L. Jackson', 'Forest Whitaker'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Denzel Washington (born 1954) has won two Academy Awards — for Glory (1990) and Training Day (2002). He is widely regarded as one of the greatest actors of his generation, known for his powerful screen presence and commitment to his roles.'
+  },
+  {
+    image: wp('Cate_Blanchett_(2018).jpg'),
+    question: 'Who is this Oscar-winning Australian actress?',
+    correct_answer: 'Cate Blanchett',
+    incorrect_answers: ['Nicole Kidman', 'Naomi Watts', 'Rachel Weisz'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Cate Blanchett (born 1969) has won two Academy Awards and is known for her versatility and range. She has played Queen Elizabeth I, Hela in the MCU, and countless complex dramatic roles. She is often called one of the finest actresses of her generation.'
+  },
+  {
+    image: wp('Anthony_Hopkins_2011.jpg'),
+    question: 'Who is this Welsh actor who played Hannibal Lecter?',
+    correct_answer: 'Anthony Hopkins',
+    incorrect_answers: ['Ian McKellen', 'Michael Caine', 'Jeremy Irons'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Sir Anthony Hopkins (born 1937) is a Welsh actor who won the Academy Award for The Silence of the Lambs (1992) and The Father (2021). His portrayal of Hannibal Lecter with only 16 minutes of screen time remains one of cinema\'s most chilling performances.'
+  },
+  {
+    image: wp('Natalie_Portman_Cannes_2015_(cropped).jpg'),
+    question: 'Who is this Oscar-winning actress?',
+    correct_answer: 'Natalie Portman',
+    incorrect_answers: ['Keira Knightley', 'Rachel McAdams', 'Anne Hathaway'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Natalie Portman (born 1981) won the Academy Award for Best Actress for Black Swan (2011). She became the youngest actress to receive a star on the Hollywood Walk of Fame. Born in Jerusalem, she holds dual Israeli-American citizenship.'
+  },
+  {
+    image: wp('Johnny_Depp_2011.jpg'),
+    question: 'Who is this actor known for playing Captain Jack Sparrow?',
+    correct_answer: 'Johnny Depp',
+    incorrect_answers: ['Nicolas Cage', 'Orlando Bloom', 'Geoffrey Rush'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Johnny Depp (born 1963) is an American actor known for his eccentric, transformative roles. He received three Academy Award nominations for Chocolat, Pirates of the Caribbean, and Sweeney Todd. His portrayal of Captain Jack Sparrow became one of cinema\'s most beloved characters.'
+  },
+  {
+    image: wp('Chadwick_Boseman_2019_by_Gage_Skidmore.jpg'),
+    question: 'Who is this actor who played Black Panther?',
+    correct_answer: 'Chadwick Boseman',
+    incorrect_answers: ['Michael B. Jordan', 'John Boyega', 'Anthony Mackie'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Chadwick Boseman (1976–2020) became a cultural icon as T\'Challa/Black Panther in the MCU. He filmed Black Panther and subsequent Marvel films while privately battling colon cancer, a diagnosis he never made public. He received a posthumous Oscar nomination for Ma Rainey\'s Black Bottom.'
+  },
+  {
+    image: wp('Robert_De_Niro_2011.jpg'),
+    question: 'Who is this legendary actor known for Taxi Driver and Raging Bull?',
+    correct_answer: 'Robert De Niro',
+    incorrect_answers: ['Al Pacino', 'Jack Nicholson', 'Dustin Hoffman'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Robert De Niro (born 1943) is widely considered one of the greatest actors of all time. He is famous for his intense method acting and collaborations with Martin Scorsese. He won two Academy Awards — for The Godfather Part II and Raging Bull.'
+  },
+  {
+    image: wp('Al_Pacino_2014.jpg'),
+    question: 'Who is this actor famous for The Godfather and Scarface?',
+    correct_answer: 'Al Pacino',
+    incorrect_answers: ['Robert De Niro', 'Dustin Hoffman', 'Gene Hackman'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Al Pacino (born 1940) is an American actor who won the Academy Award for Best Actor for Scent of a Woman (1993). He is best known for roles in The Godfather trilogy, Scarface, and Dog Day Afternoon.'
+  },
+  {
+    image: wp('Nicole_Kidman_2017.jpg'),
+    question: 'Who is this Australian Oscar-winning actress?',
+    correct_answer: 'Nicole Kidman',
+    incorrect_answers: ['Cate Blanchett', 'Naomi Watts', 'Margot Robbie'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Nicole Kidman (born 1967) is an Australian-American actress who won the Academy Award for The Hours (2003) playing Virginia Woolf. She has appeared in over 60 films and is known for her range from intense dramas to romantic comedies.'
+  },
+  {
+    image: wp('Daniel_Craig_2011_(cropped).jpg'),
+    question: 'Who played James Bond in Casino Royale (2006)?',
+    correct_answer: 'Daniel Craig',
+    incorrect_answers: ['Pierce Brosnan', 'Idris Elba', 'Tom Hardy'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Daniel Craig (born 1968) played James Bond in five films (2006–2021), widely praised for bringing a grittier, more emotionally complex Bond to the screen. Casino Royale is frequently cited as the best Bond film.'
+  },
+  {
+    image: wp('Morgan_Freeman_2018.jpg'),
+    question: 'Who is this actor with one of cinema\'s most distinctive voices?',
+    correct_answer: 'Morgan Freeman',
+    incorrect_answers: ['Samuel L. Jackson', 'James Earl Jones', 'Denzel Washington'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Morgan Freeman (born 1937) is an American actor celebrated for The Shawshank Redemption, Million Dollar Baby (Oscar win) and Se7en. He is famous for his calm, resonant narration voice and has narrated documentaries, trailers and even played God.'
+  },
+  {
+    image: wp('Harrison_Ford_2015.jpg'),
+    question: 'Who is this actor best known as Han Solo and Indiana Jones?',
+    correct_answer: 'Harrison Ford',
+    incorrect_answers: ['Tom Hanks', 'Mel Gibson', 'Kurt Russell'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Harrison Ford (born 1942) has appeared in some of the highest-grossing films of all time, including Star Wars and Indiana Jones. Blade Runner (1982) and its sequel are also among his notable roles. He was working as a carpenter when cast as Han Solo.'
+  },
+  {
+    image: wp('Heath_Ledger_2006_portrait.jpg'),
+    question: 'Which actor won a posthumous Oscar for playing the Joker in The Dark Knight?',
+    correct_answer: 'Heath Ledger',
+    incorrect_answers: ['Jared Leto', 'Joaquin Phoenix', 'Jack Nicholson'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Heath Ledger (1979–2008) was an Australian actor who delivered one of cinema\'s most celebrated performances as the Joker in The Dark Knight (2008). He died of an accidental prescription drug overdose before the film\'s release and was awarded a posthumous Academy Award.'
+  },
+  {
+    image: wp('Margot_Robbie_2019.jpg'),
+    question: 'Who is this Australian actress who played Barbie?',
+    correct_answer: 'Margot Robbie',
+    incorrect_answers: ['Jennifer Lawrence', 'Emma Stone', 'Saoirse Ronan'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Margot Robbie (born 1990) is an Australian actress and producer who first gained wide recognition in The Wolf of Wall Street (2013). She played Harley Quinn in multiple DC films and starred in and produced Barbie (2023), one of the highest-grossing films of all time.'
+  },
+  {
+    image: wp('Hugh_Jackman_2013_-_TIFF_(cropped).jpg'),
+    question: 'Who is this actor known for playing Wolverine?',
+    correct_answer: 'Hugh Jackman',
+    incorrect_answers: ['Chris Hemsworth', 'Chris Evans', 'Ryan Reynolds'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Hugh Jackman (born 1968) is an Australian actor who played Wolverine/Logan in nine X-Men films over 17 years — the longest run of a superhero role by a single actor. He also won a Tony Award for his Broadway musical work.'
+  },
+  {
+    image: wp('Christopher_Nolan_2014.jpg'),
+    question: 'Who is this acclaimed film director?',
+    correct_answer: 'Christopher Nolan',
+    incorrect_answers: ['Steven Spielberg', 'James Cameron', 'Denis Villeneuve'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Christopher Nolan (born 1970) is a British-American director known for mind-bending blockbusters including Memento, The Dark Knight trilogy, Inception and Interstellar. His film Oppenheimer (2023) won him the Academy Award for Best Director.'
+  },
+  {
+    image: wp('Steven_Spielberg_2016.jpg'),
+    question: 'Who is this legendary Hollywood director?',
+    correct_answer: 'Steven Spielberg',
+    incorrect_answers: ['George Lucas', 'Martin Scorsese', 'Francis Ford Coppola'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Steven Spielberg (born 1946) is the most commercially successful film director of all time. His films include Jaws, E.T., Jurassic Park, Schindler\'s List and Saving Private Ryan. He has won three Academy Awards and his movies have grossed over $10 billion worldwide.'
+  },
+  {
+    image: wp('Joaquin_Phoenix_2019.jpg'),
+    question: 'Who is this Oscar-winning actor who played the Joker?',
+    correct_answer: 'Joaquin Phoenix',
+    incorrect_answers: ['Heath Ledger', 'Jared Leto', 'Jack Nicholson'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Joaquin Phoenix (born 1974) won the Academy Award for Best Actor for Joker (2019), in which he lost 52 pounds for the role. He is known for his intense method approach and has been nominated for Oscars four times, beginning with Gladiator (2001).'
+  },
 ]
 
 // ── WORLD LEADERS ───────────────────────────────────────────────────────────
@@ -1375,6 +1831,94 @@ const WORLD_LEADERS: ImageQuestion[] = [
     category: 'World Leaders', type: 'multiple', difficulty: 'medium',
     explanation: 'Jacinda Ardern (born 1980) served as New Zealand\'s 40th Prime Minister (2017–2023). She became the world\'s youngest female head of government at 37 and the second elected leader to give birth while in office.'
   },
+  {
+    image: wp('Donald_Trump_official_portrait.jpg'),
+    question: 'Who is this US President?',
+    correct_answer: 'Donald Trump',
+    incorrect_answers: ['Joe Biden', 'Ronald Reagan', 'George W. Bush'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'easy',
+    explanation: 'Donald Trump (born 1946) served as the 45th and 47th President of the United States. A businessman and reality TV star before entering politics, he was the first US president to be impeached twice by the House of Representatives.'
+  },
+  {
+    image: wp('Volodymyr_Zelensky_2023.jpg'),
+    question: 'Who is this Ukrainian president?',
+    correct_answer: 'Volodymyr Zelensky',
+    incorrect_answers: ['Petro Poroshenko', 'Yulia Tymoshenko', 'Viktor Yanukovych'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Volodymyr Zelensky (born 1978) became Ukraine\'s president in 2019 after a career as a comedian and actor. He became an international symbol of resistance following Russia\'s full-scale invasion of Ukraine in February 2022.'
+  },
+  {
+    image: wp('Narendra_Modi_2023.jpg'),
+    question: 'Who is this Indian Prime Minister?',
+    correct_answer: 'Narendra Modi',
+    incorrect_answers: ['Manmohan Singh', 'Rahul Gandhi', 'Arvind Kejriwal'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Narendra Modi (born 1950) has served as India\'s Prime Minister since 2014. A member of the BJP, he previously served as Chief Minister of Gujarat. India became the world\'s most populous country and a major space power under his leadership.'
+  },
+  {
+    image: wp('Justin_Trudeau_2015.jpg'),
+    question: 'Who is this Canadian Prime Minister?',
+    correct_answer: 'Justin Trudeau',
+    incorrect_answers: ['Jean Chrétien', 'Stephen Harper', 'Paul Martin'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Justin Trudeau (born 1971) served as Canada\'s 23rd Prime Minister from 2015 to 2025. The son of former PM Pierre Trudeau, he led the Liberal Party and was known internationally for his progressive policies and charismatic public profile.'
+  },
+  {
+    image: wp('Boris_Johnson_2019_portrait_(cropped).jpg'),
+    question: 'Who is this former UK Prime Minister?',
+    correct_answer: 'Boris Johnson',
+    incorrect_answers: ['Theresa May', 'David Cameron', 'Gordon Brown'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Boris Johnson (born 1964) served as UK Prime Minister from 2019 to 2022. He led the Conservative Party to an 80-seat majority and oversaw the UK\'s departure from the European Union ("Brexit").'
+  },
+  {
+    image: wp('Pedro_Sanchez_2018_(cropped).jpg'),
+    question: 'Who is this Spanish Prime Minister?',
+    correct_answer: 'Pedro Sánchez',
+    incorrect_answers: ['Felipe González', 'José Luis Rodríguez Zapatero', 'Mariano Rajoy'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'hard',
+    explanation: 'Pedro Sánchez (born 1972) has been Spain\'s Prime Minister since 2018, leading the Spanish Socialist Workers\' Party. He famously survived two no-confidence votes and was the first Spanish PM to pass a motion of no confidence against a sitting government.'
+  },
+  {
+    image: wp('Lula_2023_(cropped).jpg'),
+    question: 'Who is this three-time Brazilian president?',
+    correct_answer: 'Luiz Inácio Lula da Silva',
+    incorrect_answers: ['Jair Bolsonaro', 'Dilma Rousseff', 'Fernando Henrique Cardoso'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'hard',
+    explanation: 'Luiz Inácio Lula da Silva (born 1945), known as "Lula", served as Brazil\'s president 2003–2010 and again from 2023. A former trade union leader who was imprisoned in 2018, his convictions were annulled in 2021, allowing his political comeback.'
+  },
+  {
+    image: wp('George_W_Bush_2005-01-20.jpg'),
+    question: 'Who is this former US President?',
+    correct_answer: 'George W. Bush',
+    incorrect_answers: ['George H.W. Bush', 'Bill Clinton', 'Donald Trump'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'George W. Bush (born 1946) served as the 43rd US President (2001–2009). His presidency was defined by the September 11 attacks and the subsequent wars in Afghanistan and Iraq. He is also an avid oil painter in retirement.'
+  },
+  {
+    image: wp('Bill_Clinton_1993.jpg'),
+    question: 'Who is this former US President?',
+    correct_answer: 'Bill Clinton',
+    incorrect_answers: ['Al Gore', 'Jimmy Carter', 'George H.W. Bush'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Bill Clinton (born 1946) served as the 42nd US President (1993–2001). His presidency saw unprecedented economic growth and a federal budget surplus. He was impeached by the House in 1998 over the Monica Lewinsky scandal but was acquitted by the Senate.'
+  },
+  {
+    image: wp('Olaf_Scholz_2022_(cropped).jpg'),
+    question: 'Who is this German Chancellor?',
+    correct_answer: 'Olaf Scholz',
+    incorrect_answers: ['Armin Laschet', 'Friedrich Merz', 'Sigmar Gabriel'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'hard',
+    explanation: 'Olaf Scholz (born 1958) became Germany\'s Chancellor in December 2021, succeeding Angela Merkel. A member of the SPD, he leads a three-party coalition. As Finance Minister he helped steer Germany through the COVID-19 pandemic economic crisis.'
+  },
+  {
+    image: wp('Keir_Starmer_2020_(cropped).jpg'),
+    question: 'Who is this UK Prime Minister?',
+    correct_answer: 'Keir Starmer',
+    incorrect_answers: ['Jeremy Corbyn', 'Ed Miliband', 'Gordon Brown'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Sir Keir Starmer (born 1962) became the UK\'s Prime Minister in July 2024 after Labour\'s landslide election victory. A former Director of Public Prosecutions, he was knighted in 2014 for services to law and criminal justice.'
+  },
 ]
 
 // ── ROYALS ──────────────────────────────────────────────────────────────────
@@ -1427,6 +1971,110 @@ const ROYALS: ImageQuestion[] = [
     category: 'Royals', type: 'multiple', difficulty: 'medium',
     explanation: 'Queen Victoria (1819–1901) reigned for 63 years and 7 months — the second longest of any British monarch. During her reign the British Empire expanded to cover a quarter of the world\'s land surface.'
   },
+  {
+    image: wp('Prince_Harry_in_2019_(cropped).jpg'),
+    question: 'Who is this member of the British Royal Family?',
+    correct_answer: 'Prince Harry',
+    incorrect_answers: ['Prince William', 'Prince Andrew', 'Prince Edward'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Prince Harry (born 1984), Duke of Sussex, is the younger son of King Charles III. In 2020 he and his wife Meghan Markle stepped back as senior working royals and moved to the United States. He served two tours of duty in Afghanistan.'
+  },
+  {
+    image: wp('Catherine,_Princess_of_Wales_2023.jpg'),
+    question: 'Who is this Princess of Wales?',
+    correct_answer: 'Catherine, Princess of Wales',
+    incorrect_answers: ['Meghan, Duchess of Sussex', 'Sophie, Duchess of Edinburgh', 'Princess Anne'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Catherine (born 1982), Princess of Wales, married Prince William in 2011. She became Princess of Wales when King Charles III acceded to the throne in 2022. She is a patron of numerous charities focused on children\'s wellbeing and mental health.'
+  },
+  {
+    image: wp('King_Henry_VIII_portrait.jpg'),
+    question: 'Which English monarch is this?',
+    correct_answer: 'Henry VIII',
+    incorrect_answers: ['Henry VII', 'Edward VI', 'Charles I'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Henry VIII (1491–1547) is one of England\'s most famous monarchs, remembered for having six wives (two of whom he had executed), for breaking with the Catholic Church to found the Church of England, and for his imposing physical presence.'
+  },
+  {
+    image: wp('Elizabeth_I_when_a_Princess.jpg'),
+    question: 'Which Tudor monarch is shown in this famous portrait?',
+    correct_answer: 'Queen Elizabeth I',
+    incorrect_answers: ['Mary I', 'Mary Queen of Scots', 'Queen Anne'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Queen Elizabeth I (1533–1603) was the last Tudor monarch. Her 45-year reign (the "Elizabethan Era") is considered a golden age of English history, featuring the defeat of the Spanish Armada (1588) and a flourishing of arts including Shakespeare.'
+  },
+  {
+    image: wp('Louis_XIV_of_France.jpg'),
+    question: 'Who is the "Sun King" depicted in this portrait?',
+    correct_answer: 'Louis XIV',
+    incorrect_answers: ['Louis XV', 'Louis XVI', 'Francis I'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Louis XIV (1638–1715) was King of France for 72 years — the longest reign of any major European monarch. He built the Palace of Versailles and centralised royal power, famously declaring "L\'état, c\'est moi" ("I am the state").'
+  },
+  {
+    image: wp('King_George_VI_cph.3b16824.jpg'),
+    question: 'Which British monarch was portrayed in the film "The King\'s Speech"?',
+    correct_answer: 'King George VI',
+    incorrect_answers: ['King George V', 'King Edward VIII', 'King George IV'],
+    category: 'Royals', type: 'multiple', difficulty: 'hard',
+    explanation: 'King George VI (1895–1952) unexpectedly became king when his brother Edward VIII abdicated to marry Wallis Simpson. He overcame a severe stammer to lead Britain through WWII. His story was told in the Oscar-winning film The King\'s Speech (2010).'
+  },
+  {
+    image: wp('Marie_Antoinette_Adult.jpg'),
+    question: 'Who is this ill-fated queen of France?',
+    correct_answer: 'Marie Antoinette',
+    incorrect_answers: ['Catherine the Great', 'Maria Theresa', 'Empress Josephine'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Marie Antoinette (1755–1793) was the last Queen of France before the French Revolution. An Austrian princess who married King Louis XVI, she was guillotined during the Reign of Terror. She almost certainly never said "Let them eat cake."'
+  },
+  {
+    image: wp('Tsar_Nicholas_II_-_Romanov_-_c1900.jpg'),
+    question: 'Who was the last Emperor of Russia?',
+    correct_answer: 'Tsar Nicholas II',
+    incorrect_answers: ['Alexander III', 'Alexander II', 'Nicholas I'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Tsar Nicholas II (1868–1918) was the last Emperor of Russia. His poor leadership and the disastrous Russo-Japanese War led to the 1917 revolution. He and his family were executed by the Bolsheviks in Yekaterinburg in July 1918.'
+  },
+  {
+    image: wp('Felipe_VI_of_Spain.jpg'),
+    question: 'Who is the current King of Spain?',
+    correct_answer: 'King Felipe VI',
+    incorrect_answers: ['Juan Carlos I', 'Prince of Asturias', 'Alfonso XIII'],
+    category: 'Royals', type: 'multiple', difficulty: 'hard',
+    explanation: 'King Felipe VI (born 1968) became King of Spain in 2014 after his father Juan Carlos I abdicated. A trained naval officer, pilot and Olympic-level sailor, he represented Spain in sailing at the 1992 Barcelona Olympics.'
+  },
+  {
+    image: wp('Akihito,_Emperor_of_Japan_(cropped).jpg'),
+    question: 'Who is the Emperor Emeritus of Japan?',
+    correct_answer: 'Emperor Akihito',
+    incorrect_answers: ['Emperor Naruhito', 'Emperor Hirohito', 'Emperor Taisho'],
+    category: 'Royals', type: 'multiple', difficulty: 'hard',
+    explanation: 'Emperor Akihito (born 1933) was the 125th Emperor of Japan from 1989 to 2019, when he became the first Japanese emperor to abdicate in 200 years. His reign was named the Heisei era ("achieving peace"). He is a respected marine biologist.'
+  },
+  {
+    image: wp('Camilla,_Queen_Consort_in_2023.jpg'),
+    question: 'Who is Queen Camilla?',
+    correct_answer: 'Camilla, Queen Consort',
+    incorrect_answers: ['Sarah Ferguson', 'Sophie, Duchess of Edinburgh', 'Princess Anne'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Camilla (born 1947) married King Charles III in 2005. When Charles acceded to the throne in 2022, she became Queen Consort. She is patron of numerous literary charities and is known for her passion for reading and dogs.'
+  },
+  {
+    image: wp('Peter_I_by_Kneller,_1698.jpg'),
+    question: 'Which Russian tsar is depicted in this famous portrait?',
+    correct_answer: 'Peter the Great',
+    incorrect_answers: ['Ivan the Terrible', 'Catherine the Great', 'Nicholas II'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Peter the Great (1672–1725) modernised Russia and expanded its territory to make it a major European power. He founded St. Petersburg as Russia\'s new capital, built a powerful navy from scratch, and introduced Western customs. He stood 2.03 metres tall.'
+  },
+  {
+    image: wp('Catherine_ii.jpg'),
+    question: 'Who was the most celebrated woman to rule the Russian Empire?',
+    correct_answer: 'Catherine the Great',
+    incorrect_answers: ['Empress Elizabeth', 'Empress Anna', 'Sophia Alekseyevna'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Catherine the Great (1729–1796) ruled Russia for 34 years, overseeing a golden age of culture and territorial expansion. German-born, she came to power by overthrowing her husband Peter III. She was a prolific writer and an enthusiastic patron of the arts.'
+  },
 ]
 
 // ── COMEDIANS ───────────────────────────────────────────────────────────────
@@ -1478,6 +2126,110 @@ const COMEDIANS: ImageQuestion[] = [
     incorrect_answers: ['John Cleese', 'Steve Coogan', 'Harry Enfield'],
     category: 'Comedians', type: 'multiple', difficulty: 'easy',
     explanation: 'Rowan Atkinson (born 1955) created Mr. Bean — a childlike, largely silent character who became a global phenomenon. He also played Edmund Blackadder in the acclaimed BBC series Blackadder (1983–1989).'
+  },
+  {
+    image: wp('Eddie_Murphy_2011.jpg'),
+    question: 'Who is this comedian and actor?',
+    correct_answer: 'Eddie Murphy',
+    incorrect_answers: ['Chris Rock', 'Dave Chappelle', 'Richard Pryor'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Eddie Murphy (born 1961) is an American comedian and actor who became one of the most successful entertainers of the 1980s–1990s. He joined Saturday Night Live at 19 and went on to star in Beverly Hills Cop, Coming to America and Shrek.'
+  },
+  {
+    image: wp('Chris_Rock_2023_(cropped).jpg'),
+    question: 'Who is this stand-up comedian?',
+    correct_answer: 'Chris Rock',
+    incorrect_answers: ['Dave Chappelle', 'Kevin Hart', 'Eddie Murphy'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Chris Rock (born 1965) is an American comedian, actor and filmmaker widely regarded as one of the greatest stand-up comedians of his generation. He is known for his incisive social commentary. His 2023 Netflix special after the Oscar slap became the most-watched comedy special in Netflix history.'
+  },
+  {
+    image: wp('Jerry_Seinfeld_2011_(3).jpg'),
+    question: 'Who is this comedian who played a fictionalised version of himself on his own sitcom?',
+    correct_answer: 'Jerry Seinfeld',
+    incorrect_answers: ['Larry David', 'Ray Romano', 'Tim Allen'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jerry Seinfeld (born 1954) co-created and starred in Seinfeld (1989–1998), frequently ranked as the greatest sitcom of all time. A former stand-up comedian, he is famous for observational humour about everyday life.'
+  },
+  {
+    image: wp('Billy_Connolly_2012.jpg'),
+    question: 'Who is this Scottish "Big Yin" comedian?',
+    correct_answer: 'Billy Connolly',
+    incorrect_answers: ['Billy Marsh', 'Rab C. Nesbitt', 'Greg McHugh'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Billy Connolly (born 1942) is a Scottish comedian regarded as one of the greatest stand-ups of all time. A former welder and folk singer, he is known for his long, improvised, stream-of-consciousness style. He was knighted in 2017.'
+  },
+  {
+    image: wp('Peter_Kay_2011.jpg'),
+    question: 'Who is this popular British comedian?',
+    correct_answer: 'Peter Kay',
+    incorrect_answers: ['Lee Mack', 'Jason Manford', 'Michael McIntyre'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Peter Kay (born 1973) is a British comedian from Bolton known for Phoenix Nights and Car Share. His 2010–2011 tour was the biggest-selling in history, and he holds the Guinness World Record for the most tickets sold for a comedy tour.'
+  },
+  {
+    image: wp('Michael_McIntyre_2013.jpg'),
+    question: 'Who is this British observational comedian?',
+    correct_answer: 'Michael McIntyre',
+    incorrect_answers: ['Peter Kay', 'Lee Evans', 'Lee Mack'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Michael McIntyre (born 1976) is one of the UK\'s most commercially successful comedians. His 2012 world tour was the highest-grossing of any comedian at the time. He hosts his own BBC show and is known for energetic, family-friendly observational humour.'
+  },
+  {
+    image: wp('Stephen_Fry_2017_(cropped).jpg'),
+    question: 'Who is this British comedian, actor and writer?',
+    correct_answer: 'Stephen Fry',
+    incorrect_answers: ['Hugh Laurie', 'John Cleese', 'Rowan Atkinson'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Stephen Fry (born 1957) is a British comedian, actor, author and filmmaker. He co-starred with Hugh Laurie in A Bit of Fry and Laurie and Jeeves and Wooster. He hosted QI for 13 series and is a prominent mental health advocate.'
+  },
+  {
+    image: wp('Richard_Pryor_1986.jpg'),
+    question: 'Who is this pioneering stand-up comedian?',
+    correct_answer: 'Richard Pryor',
+    incorrect_answers: ['Eddie Murphy', 'Bill Cosby', 'George Carlin'],
+    category: 'Comedians', type: 'multiple', difficulty: 'hard',
+    explanation: 'Richard Pryor (1940–2005) is widely regarded as the greatest and most influential stand-up comedian of all time. His raw, autobiographical material about race, drugs and his personal struggles broke new ground and influenced virtually every comedian who followed.'
+  },
+  {
+    image: wp('Louis_CK_2012_(cropped).jpg'),
+    question: 'Who is this American comedian and writer?',
+    correct_answer: 'Louis C.K.',
+    incorrect_answers: ['Jerry Seinfeld', 'Jim Gaffigan', 'Patton Oswalt'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Louis C.K. (born 1967) is an American comedian and filmmaker who was considered one of the most innovative stand-ups of the 2010s. He wrote, directed and starred in the critically acclaimed FX series Louie (2010–2015).'
+  },
+  {
+    image: wp('Jim_Carrey_2008.jpg'),
+    question: 'Who is this rubber-faced Canadian comedian?',
+    correct_answer: 'Jim Carrey',
+    incorrect_answers: ['Adam Sandler', 'Mike Myers', 'Steve Martin'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Jim Carrey (born 1962) is a Canadian-American comedian and actor known for his extraordinary physical comedy and facial expressions. He starred in Ace Ventura, The Mask, and The Truman Show, for which he earned a Golden Globe.'
+  },
+  {
+    image: wp('Sarah_Millican_2013.jpg'),
+    question: 'Who is this popular British female comedian?',
+    correct_answer: 'Sarah Millican',
+    incorrect_answers: ['Victoria Wood', 'Jo Brand', 'Jenny Eclair'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Sarah Millican (born 1975) is a British stand-up comedian from South Shields who won the Edinburgh Comedy Award for Best Newcomer in 2008. Known for her warm, self-deprecating humour, her specials are among the best-selling comedy DVDs in the UK.'
+  },
+  {
+    image: wp('Trevor_Noah_2017_(cropped).jpg'),
+    question: 'Who is this South African comedian who hosted The Daily Show?',
+    correct_answer: 'Trevor Noah',
+    incorrect_answers: ['Hasan Minhaj', 'Ronny Chieng', 'Roy Wood Jr.'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Trevor Noah (born 1984) is a South African comedian who hosted The Daily Show on Comedy Central from 2015 to 2022. Born to a Black South African mother and White Swiss father during apartheid — his parents\' relationship was illegal at the time.'
+  },
+  {
+    image: wp('Miranda_Hart_2014.jpg'),
+    question: 'Who is this tall British comedian?',
+    correct_answer: 'Miranda Hart',
+    incorrect_answers: ['Sharon Horgan', 'Dawn French', 'Jennifer Saunders'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Miranda Hart (born 1972) is a British comedian and actress best known for her BBC sitcom Miranda (2009–2015), which she wrote and starred in. She also appeared in Call the Midwife and co-starred with Melissa McCarthy in Spy.'
   },
 ]
 
@@ -1538,6 +2290,102 @@ const INVENTORS: ImageQuestion[] = [
     incorrect_answers: ['Elon Musk', 'Bill Gates', 'Mark Zuckerberg'],
     category: 'Inventors', type: 'multiple', difficulty: 'easy',
     explanation: 'Jeff Bezos (born 1964) founded Amazon in 1994 as an online bookstore that grew into the world\'s largest e-commerce and cloud computing company. He also founded Blue Origin, a private aerospace company, and owns The Washington Post.'
+  },
+  {
+    image: wp('Alexander_Graham_Bell.jpg'),
+    question: 'Who is credited with inventing the telephone?',
+    correct_answer: 'Alexander Graham Bell',
+    incorrect_answers: ['Thomas Edison', 'Nikola Tesla', 'Guglielmo Marconi'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Alexander Graham Bell (1847–1922) was a Scottish-American inventor who is credited with patenting the first practical telephone in 1876. He also worked with the deaf community throughout his life and founded AT&T.'
+  },
+  {
+    image: wp('James_Watt_by_Henry_Howard.jpg'),
+    question: 'Who improved the steam engine, kick-starting the Industrial Revolution?',
+    correct_answer: 'James Watt',
+    incorrect_answers: ['George Stephenson', 'Richard Arkwright', 'Isambard Kingdom Brunel'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'James Watt (1736–1819) improved Thomas Newcomen\'s steam engine, dramatically increasing its efficiency. His work powered the Industrial Revolution. The unit of power, the watt, is named after him.'
+  },
+  {
+    image: wp('Wright_Brothers_in_1905.jpg'),
+    question: 'Who made the world\'s first powered aircraft flight?',
+    correct_answer: 'Wright Brothers',
+    incorrect_answers: ['Glenn Curtiss', 'Samuel Langley', 'Alberto Santos-Dumont'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Orville and Wilbur Wright made the world\'s first successful powered aircraft flight on 17 December 1903 at Kitty Hawk, North Carolina. The flight lasted just 12 seconds and covered 36 metres — shorter than a Boeing 747\'s wingspan.'
+  },
+  {
+    image: wp('Louis_Pasteur.jpg'),
+    question: 'Who developed pasteurisation and the germ theory of disease?',
+    correct_answer: 'Louis Pasteur',
+    incorrect_answers: ['Robert Koch', 'Joseph Lister', 'Ignaz Semmelweis'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Louis Pasteur (1822–1895) was a French microbiologist and chemist who pioneered germ theory, invented the process of pasteurisation, and developed vaccines for rabies and anthrax. Often called the "father of microbiology".'
+  },
+  {
+    image: wp('Galileo.arp.300pix.jpg'),
+    question: 'Who invented the telescope and supported the heliocentric model of the solar system?',
+    correct_answer: 'Galileo Galilei',
+    incorrect_answers: ['Nicolaus Copernicus', 'Johannes Kepler', 'Tycho Brahe'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Galileo Galilei (1564–1642) improved the telescope, discovered Jupiter\'s moons, and confirmed the heliocentric model of the solar system. He was tried by the Inquisition for heresy and spent his final years under house arrest.'
+  },
+  {
+    image: wp('Gregor_Mendel_2.jpg'),
+    question: 'Who is the "father of genetics"?',
+    correct_answer: 'Gregor Mendel',
+    incorrect_answers: ['Charles Darwin', 'Francis Crick', 'James Watson'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Gregor Mendel (1822–1884) was an Austrian monk who discovered the laws of heredity through his famous pea plant experiments. His work, ignored in his lifetime, was rediscovered in 1900 and became the foundation of modern genetics.'
+  },
+  {
+    image: wp('Isaac_Asimov.jpg'),
+    question: 'Who is this pioneering science fiction author who coined the word "robotics"?',
+    correct_answer: 'Isaac Asimov',
+    incorrect_answers: ['Arthur C. Clarke', 'Philip K. Dick', 'Ray Bradbury'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Isaac Asimov (1920–1992) was an American science fiction author and biochemist who wrote over 500 books. He coined the word "robotics" and formulated the Three Laws of Robotics. His Foundation series is one of science fiction\'s greatest achievements.'
+  },
+  {
+    image: wp('Larry_Page_in_the_European_Parliament,_22.06.2009_(cropped).jpg'),
+    question: 'Who co-founded Google?',
+    correct_answer: 'Larry Page',
+    incorrect_answers: ['Sergey Brin', 'Eric Schmidt', 'Mark Zuckerberg'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Larry Page (born 1973) co-founded Google with Sergey Brin in 1998 while they were PhD students at Stanford University. Google\'s search algorithm, PageRank, was named after him. He became one of the world\'s richest people as a result.'
+  },
+  {
+    image: wp('Ada_Lovelace_portrait.jpg'),
+    question: 'Who wrote the world\'s first computer algorithm?',
+    correct_answer: 'Ada Lovelace',
+    incorrect_answers: ['Charles Babbage', 'Alan Turing', 'Grace Hopper'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Ada Lovelace (1815–1852) was an English mathematician who wrote the world\'s first algorithm, intended for Charles Babbage\'s Analytical Engine — making her the world\'s first computer programmer. The programming language Ada is named in her honour.'
+  },
+  {
+    image: wp('Rosalind_Franklin.jpg'),
+    question: 'Which scientist\'s X-ray data was crucial to discovering the structure of DNA?',
+    correct_answer: 'Rosalind Franklin',
+    incorrect_answers: ['Lise Meitner', 'Dorothy Hodgkin', 'Cecilia Payne'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Rosalind Franklin (1920–1958) produced X-ray diffraction images of DNA, crucially including "Photo 51", which were central to Watson and Crick\'s 1953 discovery of DNA\'s double helix structure. She died before the Nobel Prize was awarded and was not recognised.'
+  },
+  {
+    image: wp('Jack_Kilby_(2008).jpg'),
+    question: 'Who invented the integrated circuit, the basis of all modern electronics?',
+    correct_answer: 'Jack Kilby',
+    incorrect_answers: ['Robert Noyce', 'Gordon Moore', 'William Shockley'],
+    category: 'Inventors', type: 'multiple', difficulty: 'hard',
+    explanation: 'Jack Kilby (1923–2005) invented the integrated circuit (microchip) in 1958 at Texas Instruments. This single invention launched the electronics revolution. He won the Nobel Prize in Physics in 2000 for this achievement.'
+  },
+  {
+    image: wp('Guglielmo_Marconi.jpg'),
+    question: 'Who invented the radio?',
+    correct_answer: 'Guglielmo Marconi',
+    incorrect_answers: ['Nikola Tesla', 'Alexander Graham Bell', 'Thomas Edison'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Guglielmo Marconi (1874–1937) was an Italian inventor who developed long-distance radio transmission and established the first transatlantic radio signal in 1901. He won the Nobel Prize in Physics in 1909 and his technology saved many lives at sea, including after the Titanic sinking.'
   },
 ]
 

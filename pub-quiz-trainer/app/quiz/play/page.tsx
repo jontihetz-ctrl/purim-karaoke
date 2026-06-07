@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { decodeHtml, buildOptions } from '@/lib/trivia'
 import { accuracyColor } from '@/lib/stats'
+import { getLocalTrivia } from '@/lib/local-trivia'
 import type { TriviaQuestion } from '@/types'
 
 const PREFETCH_AT = 5
@@ -260,8 +261,17 @@ function QuizPlay() {
   const answersRef = useRef(state.answers)
   answersRef.current = state.answers
 
-  // Dedup — track question texts seen this session so we never repeat
-  const seenRef = useRef<Set<string>>(new Set())
+  // Dedup — persist seen questions in localStorage so they don't repeat across sessions.
+  // Resets after 60 days so the pool stays fresh long-term.
+  const seenRef = useRef<Set<string>>((() => {
+    try {
+      const raw = localStorage.getItem('quiziq_seen_v1')
+      if (!raw) return new Set<string>()
+      const { expires, questions } = JSON.parse(raw)
+      if (Date.now() > expires) { localStorage.removeItem('quiziq_seen_v1'); return new Set<string>() }
+      return new Set<string>(questions as string[])
+    } catch { return new Set<string>() }
+  })())
 
   // IP-based country for localised questions
   const countryRef = useRef<string>('')
@@ -394,18 +404,19 @@ function QuizPlay() {
   useEffect(() => { if (!voiceMode) stopAllVoice() }, [voiceMode])
   useEffect(() => () => stopAllVoice(), []) // eslint-disable-line
 
-  // Batch loading — 4 knowledge + 1 image + local questions, shuffled
+  // Batch loading — 3 OpenTDB + 1 local trivia + 1 image + optional country questions
   async function loadBatch(onLoad: (qs: ProcessedQ[]) => void) {
     try {
       const safe = (p: Promise<Response>) => p.then(r => r.json()).catch(() => ({ questions: [] }))
-      // Shuffle the category pool and take 4 distinct categories so each batch
-      // covers different ground rather than independently picking at random.
+      // Shuffle categories for variety across the 3 OpenTDB fetches
       const shuffledCats = [...CATEGORY_POOL].sort(() => Math.random() - 0.5)
+      // Pull 5 local trivia questions (T/F or MC, randomly mixed)
+      const localHardcoded = getLocalTrivia(5, 'any').map(q => ({ questions: [q] }))
       const fetches = [
         safe(fetch(miniBatchUrl('multiple', shuffledCats[0]))),
         safe(fetch(miniBatchUrl('multiple', shuffledCats[1]))),
         safe(fetch(miniBatchUrl('multiple', shuffledCats[2]))),
-        safe(fetch(miniBatchUrl('multiple', shuffledCats[3]))),
+        Promise.resolve({ questions: localHardcoded.flatMap(x => x.questions) }),
         safe(fetch(miniBatchUrl(pick(IMAGE_TYPES)))),
         countryRef.current
           ? safe(fetch(`/api/local-questions?country=${encodeURIComponent(countryRef.current)}`))
@@ -419,6 +430,13 @@ function QuizPlay() {
           seenRef.current.add(q.question)
           return true
         })
+      // Persist seen set so duplicates are avoided across sessions too
+      try {
+        localStorage.setItem('quiziq_seen_v1', JSON.stringify({
+          expires: Date.now() + 60 * 24 * 60 * 60 * 1000,
+          questions: [...seenRef.current].slice(-8000),
+        }))
+      } catch {}
       for (let i = allQs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [allQs[i], allQs[j]] = [allQs[j], allQs[i]]
