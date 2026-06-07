@@ -16,16 +16,19 @@ const IMAGE_TYPES = [
   'royals', 'comedians', 'inventors', 'tv', 'fashion',
 ]
 const KNOWLEDGE_TYPES = ['multiple']
-// One entry per category — every question has an explicit category in stats
+// Every OpenTDB category — one entry each, full variety
 const CATEGORY_POOL = [
   '9',   // General Knowledge
   '10',  // Books
   '11',  // Film
   '12',  // Music
+  '13',  // Musicals & Theatres
   '14',  // Television
   '15',  // Video Games
+  '16',  // Board Games
   '17',  // Science & Nature
   '18',  // Computers
+  '19',  // Mathematics
   '20',  // Mythology
   '21',  // Sports
   '22',  // Geography
@@ -35,6 +38,10 @@ const CATEGORY_POOL = [
   '26',  // Celebrities
   '27',  // Animals
   '28',  // Vehicles
+  '29',  // Entertainment: Comics
+  '30',  // Science: Gadgets
+  '31',  // Entertainment: Anime & Manga
+  '32',  // Entertainment: Cartoon & Animations
 ]
 const DIFFICULTY_POOL = ['easy', 'medium', 'hard', '']
 
@@ -253,6 +260,9 @@ function QuizPlay() {
   const answersRef = useRef(state.answers)
   answersRef.current = state.answers
 
+  // Dedup — track question texts seen this session so we never repeat
+  const seenRef = useRef<Set<string>>(new Set())
+
   // IP-based country for localised questions
   const countryRef = useRef<string>('')
   useEffect(() => {
@@ -402,7 +412,13 @@ function QuizPlay() {
           : Promise.resolve({ questions: [] }),
       ]
       const results = await Promise.all(fetches)
-      const allQs = results.flatMap((d: any) => d.questions ? d.questions.map(processQ) : [])
+      const allQs = results
+        .flatMap((d: any) => d.questions ? d.questions.map(processQ) : [])
+        .filter((q: ProcessedQ) => {
+          if (seenRef.current.has(q.question)) return false
+          seenRef.current.add(q.question)
+          return true
+        })
       for (let i = allQs.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [allQs[i], allQs[j]] = [allQs[j], allQs[i]]
