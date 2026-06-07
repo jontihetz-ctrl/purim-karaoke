@@ -196,7 +196,8 @@ function QuizPlay() {
   voiceModeRef.current = voiceMode
   const stateRef = useRef(state)
   stateRef.current = state
-  const recognitionRef = useRef<SpeechRecognition | null>(null)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null)
   const voiceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   function stopAllVoice() {
