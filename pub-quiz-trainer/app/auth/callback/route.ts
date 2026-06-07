@@ -47,8 +47,10 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Create the final redirect with all cookies copied from the exchange step
+  // Copy raw Set-Cookie headers (preserves HttpOnly, SameSite, MaxAge, etc.)
   const response = NextResponse.redirect(redirectUrl)
-  redirectFallback.cookies.getAll().forEach(c => response.cookies.set(c.name, c.value))
+  redirectFallback.headers.getSetCookie().forEach(cookie =>
+    response.headers.append('Set-Cookie', cookie)
+  )
   return response
 }
