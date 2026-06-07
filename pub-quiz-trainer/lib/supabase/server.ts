@@ -5,8 +5,15 @@ export const DEMO_PLAYER_ID = '00000000-0000-0000-0000-000000000001'
 
 export async function getEffectiveUser() {
   const regular = createClient()
+
+  // getUser() validates the token with Supabase's server (most reliable).
   const { data: { user } } = await regular.auth.getUser()
   if (user) return { userId: user.id, db: regular }
+
+  // Fallback: getSession() reads the JWT from the cookie without a network call.
+  // Works when the token is still valid but getUser() had a transient issue.
+  const { data: { session } } = await regular.auth.getSession()
+  if (session?.user) return { userId: session.user.id, db: regular }
 
   const cookieStore = cookies()
   const playerCookie = cookieStore.get('quiz_player_id')
@@ -14,7 +21,6 @@ export async function getEffectiveUser() {
     return { userId: playerCookie.value, db: createServiceClient() }
   }
 
-  // No session — throw so callers redirect to /auth rather than hitting FK errors
   throw new Error('Not authenticated')
 }
 

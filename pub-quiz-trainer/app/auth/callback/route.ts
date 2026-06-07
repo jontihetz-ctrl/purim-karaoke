@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { cookies } from 'next/headers'
 
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = req.nextUrl
@@ -9,48 +10,39 @@ export async function GET(req: NextRequest) {
     return NextResponse.redirect(`${origin}/auth?error=invalid_code`)
   }
 
-  // Build the redirect response first so we can set cookies directly on it.
-  // The Supabase client's setAll writes to this response, so the session
-  // cookies survive the redirect to the browser.
-  const redirectFallback = NextResponse.redirect(`${origin}/auth?error=exchange_failed`)
-
-  let redirectUrl = `${origin}/auth?error=exchange_failed`
+  // cookies() from next/headers is writable in Route Handlers — Next.js automatically
+  // includes any cookies set here in the response (including redirects).
+  const cookieStore = cookies()
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return req.cookies.getAll() },
+        getAll() { return cookieStore.getAll() },
         setAll(cookiesToSet: Array<{ name: string; value: string; options: CookieOptions }>) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            redirectFallback.cookies.set(name, value, options)
-          )
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            )
+          } catch {}
         },
       },
     }
   )
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
-  if (!error) {
-    const { data: { user } } = await supabase.auth.getUser()
-    if (user) {
-      const { data: profile } = await supabase
-        .from('quiz_players')
-        .select('id')
-        .eq('id', user.id)
-        .single()
-      redirectUrl = profile ? `${origin}/quiz/play` : `${origin}/onboard`
-    } else {
-      redirectUrl = `${origin}/auth?error=no_user`
-    }
+  if (error || !data.user) {
+    return NextResponse.redirect(`${origin}/auth?error=exchange_failed`)
   }
 
-  // Copy raw Set-Cookie headers (preserves HttpOnly, SameSite, MaxAge, etc.)
-  const response = NextResponse.redirect(redirectUrl)
-  redirectFallback.headers.getSetCookie().forEach(cookie =>
-    response.headers.append('Set-Cookie', cookie)
-  )
-  return response
+  // Use in-memory session (set by exchange above) to check for existing profile.
+  const { data: profile } = await supabase
+    .from('quiz_players')
+    .select('id')
+    .eq('id', data.user.id)
+    .single()
+
+  return NextResponse.redirect(profile ? `${origin}/quiz/play` : `${origin}/onboard`)
 }
