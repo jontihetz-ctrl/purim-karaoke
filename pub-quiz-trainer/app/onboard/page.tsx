@@ -1,14 +1,17 @@
 'use client'
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { Suspense, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 
-export default function OnboardPage() {
+function OnboardInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const prefillCode = searchParams.get('join') || ''
+
   const [step, setStep] = useState<'name' | 'team'>('name')
   const [displayName, setDisplayName] = useState('')
-  const [teamChoice, setTeamChoice] = useState<'create' | 'join'>('create')
+  const [teamChoice, setTeamChoice] = useState<'create' | 'join'>(prefillCode ? 'join' : 'create')
   const [teamName, setTeamName] = useState('')
-  const [inviteCode, setInviteCode] = useState('')
+  const [inviteCode, setInviteCode] = useState(prefillCode.toUpperCase())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -37,7 +40,7 @@ export default function OnboardPage() {
     const data = await res.json()
     setLoading(false)
     if (!res.ok) setError(data.error)
-    else router.push('/dashboard')
+    else router.push('/quiz/play')
   }
 
   return (
@@ -72,18 +75,20 @@ export default function OnboardPage() {
           </form>
         ) : (
           <form onSubmit={handleTeam} className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
-            <div className="flex rounded-lg overflow-hidden border border-gray-700">
-              {(['create', 'join'] as const).map(opt => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => setTeamChoice(opt)}
-                  className={`flex-1 py-2 text-sm font-medium transition-colors ${teamChoice === opt ? 'bg-brand-500 text-white' : 'text-gray-400 hover:text-white'}`}
-                >
-                  {opt === 'create' ? '➕ Create team' : '🔗 Join team'}
-                </button>
-              ))}
-            </div>
+            {!prefillCode && (
+              <div className="flex rounded-lg overflow-hidden border border-gray-700">
+                {(['create', 'join'] as const).map(opt => (
+                  <button
+                    key={opt}
+                    type="button"
+                    onClick={() => setTeamChoice(opt)}
+                    className={`flex-1 py-2 text-sm font-medium transition-colors ${teamChoice === opt ? 'bg-brand-500 text-white' : 'text-gray-400 hover:text-white'}`}
+                  >
+                    {opt === 'create' ? '➕ Create team' : '🔗 Join team'}
+                  </button>
+                ))}
+              </div>
+            )}
 
             {teamChoice === 'create' ? (
               <div>
@@ -98,13 +103,16 @@ export default function OnboardPage() {
               </div>
             ) : (
               <div>
-                <label className="block text-sm text-gray-400 mb-1.5">Invite code</label>
+                <label className="block text-sm text-gray-400 mb-1.5">
+                  {prefillCode ? 'Joining with invite code:' : 'Invite code'}
+                </label>
                 <input
                   required
                   value={inviteCode}
                   onChange={e => setInviteCode(e.target.value.toUpperCase())}
                   placeholder="e.g. XK9M2F"
-                  className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors font-mono tracking-widest"
+                  readOnly={!!prefillCode}
+                  className={`w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-white placeholder-gray-500 focus:outline-none focus:border-brand-500 transition-colors font-mono tracking-widest ${prefillCode ? 'opacity-70 cursor-not-allowed' : ''}`}
                   maxLength={6}
                 />
               </div>
@@ -116,11 +124,25 @@ export default function OnboardPage() {
               disabled={loading}
               className="w-full bg-brand-500 hover:bg-brand-600 disabled:opacity-50 text-white font-semibold py-2.5 rounded-lg transition-colors"
             >
-              {loading ? 'Loading…' : teamChoice === 'create' ? 'Create & enter' : 'Join team'}
+              {loading ? 'Loading…' : teamChoice === 'create' ? 'Create team & start playing' : 'Join team & start playing'}
             </button>
+
+            {!prefillCode && (
+              <button
+                type="button"
+                onClick={() => router.push('/quiz/play')}
+                className="w-full text-gray-500 hover:text-gray-300 text-sm py-1 transition-colors"
+              >
+                Skip for now
+              </button>
+            )}
           </form>
         )}
       </div>
     </div>
   )
+}
+
+export default function OnboardPage() {
+  return <Suspense fallback={null}><OnboardInner /></Suspense>
 }

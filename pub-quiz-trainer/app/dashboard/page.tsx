@@ -4,6 +4,7 @@ import { getEffectiveUser } from '@/lib/supabase/server'
 import { buildPlayerStats, accuracyColor, getPlayerTitle } from '@/lib/stats'
 import CategoryBars from '@/components/CategoryBars'
 import AccuracyTrend from '@/components/AccuracyTrend'
+import InviteCard from '@/components/InviteCard'
 import type { QuizAnswer, QuizSession } from '@/types'
 
 export default async function DashboardPage() {
@@ -54,8 +55,8 @@ export default async function DashboardPage() {
               👥 {profile.quiz_teams.name}
             </Link>
           )}
-          <Link href="/quiz" className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
-            Play quiz
+          <Link href="/quiz/play" className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors">
+            Play →
           </Link>
         </div>
       </nav>
@@ -70,6 +71,13 @@ export default async function DashboardPage() {
             {getPlayerTitle(stats)}
           </div>
         </div>
+
+        {/* Invite card — shown to team captains */}
+        {profile.quiz_teams && profile.quiz_teams.owner_id === userId && (
+          <div className="mb-8">
+            <InviteCard code={profile.quiz_teams.invite_code} teamName={profile.quiz_teams.name} />
+          </div>
+        )}
 
         {/* Top stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
