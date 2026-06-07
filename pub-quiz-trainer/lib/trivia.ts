@@ -9,7 +9,14 @@ export function decodeHtml(str: string): string {
     .replace(/&#039;/g, "'")
     .replace(/&apos;/g, "'")
     .replace(/&nbsp;/g, ' ')
+    .replace(/&ndash;/g, '–')
+    .replace(/&mdash;/g, '—')
+    .replace(/&lsquo;/g, '‘')
+    .replace(/&rsquo;/g, '’')
+    .replace(/&ldquo;/g, '“')
+    .replace(/&rdquo;/g, '”')
     .replace(/&#(\d+);/g, (_, code) => String.fromCharCode(parseInt(code)))
+    .replace(/&[a-z]+;/gi, '') // strip any remaining unknown entities
 }
 
 export function shuffleArray<T>(arr: T[]): T[] {
