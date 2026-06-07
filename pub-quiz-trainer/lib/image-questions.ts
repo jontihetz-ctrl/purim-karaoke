@@ -1057,6 +1057,578 @@ const FAMOUS_ARTWORKS: ImageQuestion[] = [
   },
 ]
 
+// ── SPORTS STARS ────────────────────────────────────────────────────────────
+const SPORTS_STARS: ImageQuestion[] = [
+  {
+    image: wp('Lionel_Messi_20180626.jpg'),
+    question: 'Who is this footballer?',
+    correct_answer: 'Lionel Messi',
+    incorrect_answers: ['Cristiano Ronaldo', 'Neymar', 'Kylian Mbappé'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Lionel Messi (born 1987) is widely regarded as the greatest footballer of all time. He won 8 Ballon d\'Or awards and led Argentina to the 2022 FIFA World Cup title.'
+  },
+  {
+    image: wp('Cristiano_Ronaldo_2018.jpg'),
+    question: 'Who is this footballer?',
+    correct_answer: 'Cristiano Ronaldo',
+    incorrect_answers: ['Lionel Messi', 'Zinedine Zidane', 'Ronaldinho'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Cristiano Ronaldo (born 1985) is a Portuguese footballer and one of the greatest of all time. He holds records for most goals in Champions League history and has won 5 Ballon d\'Or awards.'
+  },
+  {
+    image: wp('Michael_Phelps_2012.jpg'),
+    question: 'Who is this Olympic swimmer?',
+    correct_answer: 'Michael Phelps',
+    incorrect_answers: ['Ian Thorpe', 'Ryan Lochte', 'Mark Spitz'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Michael Phelps (born 1985) is the most decorated Olympian of all time, with 23 gold medals. He dominated swimming at the 2004, 2008, 2012 and 2016 Olympics.'
+  },
+  {
+    image: wp('Novak_Djokovic_2019_French_Open.jpg'),
+    question: 'Who is this tennis player?',
+    correct_answer: 'Novak Djokovic',
+    incorrect_answers: ['Rafael Nadal', 'Andy Murray', 'Stan Wawrinka'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Novak Djokovic (born 1987) is a Serbian tennis player who holds the record for most Grand Slam singles titles (24) in the Open Era. He has been world No. 1 for over 400 weeks.'
+  },
+  {
+    image: wp('LeBron_James_-_51959723161.jpg'),
+    question: 'Who is this basketball player?',
+    correct_answer: 'LeBron James',
+    incorrect_answers: ['Kobe Bryant', 'Stephen Curry', 'Kevin Durant'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'LeBron James (born 1984) is considered one of the greatest NBA players of all time. He has won 4 NBA championships with 3 different teams and is the NBA\'s all-time leading scorer.'
+  },
+  {
+    image: wp('Simone_Biles_2016.jpg'),
+    question: 'Who is this gymnast?',
+    correct_answer: 'Simone Biles',
+    incorrect_answers: ['Nadia Comăneci', 'Aly Raisman', 'Gabby Douglas'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Simone Biles (born 1997) is the most decorated gymnast in World Championship history, with 30 medals. She has four gymnastics skills named after her, recognising their unprecedented difficulty.'
+  },
+  {
+    image: wp('Rafael_Nadal_2019_French_Open_R4_(48).jpg'),
+    question: 'Who is this tennis player?',
+    correct_answer: 'Rafael Nadal',
+    incorrect_answers: ['Novak Djokovic', 'Roger Federer', 'Carlos Alcaraz'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Rafael Nadal (born 1986) is a Spanish tennis player known as the "King of Clay". He won the French Open a record 14 times and accumulated 22 Grand Slam singles titles in his career.'
+  },
+  {
+    image: wp('Manny_Pacquiao_2012.jpg'),
+    question: 'Who is this boxer?',
+    correct_answer: 'Manny Pacquiao',
+    incorrect_answers: ['Floyd Mayweather', 'Oscar De La Hoya', 'Erik Morales'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Manny Pacquiao (born 1978) is a Filipino boxer and the only fighter to win world titles in eight different weight divisions. He also served as a senator in the Philippines.'
+  },
+  {
+    image: wp('Lewis_Hamilton_2016_Malaysia_2.jpg'),
+    question: 'Who is this Formula 1 driver?',
+    correct_answer: 'Lewis Hamilton',
+    incorrect_answers: ['Sebastian Vettel', 'Michael Schumacher', 'Max Verstappen'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Lewis Hamilton (born 1985) is a British Formula 1 driver who holds the record for most wins (103) and pole positions (104) in F1 history. He has won 7 World Drivers\' Championship titles, tying Michael Schumacher\'s record.'
+  },
+  {
+    image: wp('Ronaldinho_2018.jpg'),
+    question: 'Who is this Brazilian footballer?',
+    correct_answer: 'Ronaldinho',
+    incorrect_answers: ['Ronaldo Nazário', 'Roberto Carlos', 'Cafu'],
+    category: 'Sports Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ronaldinho (born 1980) is a Brazilian footballer known for his exceptional skill and joy for the game. He won the 2002 FIFA World Cup, the 2005 Ballon d\'Or, and the 2006 Champions League with Barcelona.'
+  },
+]
+
+// ── MUSIC STARS ─────────────────────────────────────────────────────────────
+const MUSIC_STARS: ImageQuestion[] = [
+  {
+    image: wp('Michael_Jackson_in_1988.jpg'),
+    question: 'Who is this music legend?',
+    correct_answer: 'Michael Jackson',
+    incorrect_answers: ['Prince', 'James Brown', 'Stevie Wonder'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Michael Jackson (1958–2009) was known as the "King of Pop". His 1982 album Thriller is the best-selling album of all time, with over 66 million copies sold worldwide.'
+  },
+  {
+    image: wp('Freddie_Mercury_performing_in_New_Haven,_CT,_November_1977.jpg'),
+    question: 'Who is this rock legend?',
+    correct_answer: 'Freddie Mercury',
+    incorrect_answers: ['David Bowie', 'Mick Jagger', 'Robert Plant'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Freddie Mercury (1946–1991) was the lead vocalist of Queen. He is widely regarded as one of the greatest singers in rock history, known for his extraordinary vocal range and theatrical stage presence.'
+  },
+  {
+    image: wp('David_Bowie_-_The_Jean_Genie,_1973.jpg'),
+    question: 'Who is this musician?',
+    correct_answer: 'David Bowie',
+    incorrect_answers: ['Elton John', 'Lou Reed', 'Bryan Ferry'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'David Bowie (1947–2016) was a pioneering English rock musician and actor known for his ever-changing persona. From Ziggy Stardust to the Thin White Duke, he reinvented himself across five decades of groundbreaking music.'
+  },
+  {
+    image: wp('Beatles_ad_1965_just_the_beatles_crop.jpg'),
+    question: 'Which band is pictured here?',
+    correct_answer: 'The Beatles',
+    incorrect_answers: ['The Rolling Stones', 'The Who', 'The Kinks'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'The Beatles — John Lennon, Paul McCartney, George Harrison and Ringo Starr — are the best-selling music act of all time, with over 600 million units sold. They transformed popular music from 1963 to 1970.'
+  },
+  {
+    image: wp('Bob_Dylan_-_Truly_Wild_The_Story_of_American_Music.jpg'),
+    question: 'Who is this singer-songwriter?',
+    correct_answer: 'Bob Dylan',
+    incorrect_answers: ['Neil Young', 'Leonard Cohen', 'Paul Simon'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Bob Dylan (born 1941) is an American singer-songwriter who has been a major figure in popular culture for more than 50 years. In 2016 he was awarded the Nobel Prize in Literature for "creating new poetic expressions within the great American song tradition".'
+  },
+  {
+    image: wp('Beyoncé_-_The_Formation_World_Tour,_at_Wembley_Stadium_(cropped).jpg'),
+    question: 'Who is this pop superstar?',
+    correct_answer: 'Beyoncé',
+    incorrect_answers: ['Rihanna', 'Mariah Carey', 'Whitney Houston'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Beyoncé (born 1981) is one of the best-selling music artists of all time, with over 200 million records sold. She holds the record for most Grammy wins by any artist, with 32 as of 2024.'
+  },
+  {
+    image: wp('Elton_John_-_Rocketman_premiere_(cropped_2).jpg'),
+    question: 'Who is this pop icon?',
+    correct_answer: 'Elton John',
+    incorrect_answers: ['Billy Joel', 'Rod Stewart', 'David Bowie'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Elton John (born 1947) is a British singer-songwriter who has sold over 300 million records. Known for flamboyant stage costumes and hit songs including Rocket Man and Tiny Dancer, he was knighted in 1998.'
+  },
+  {
+    image: wp('Madonna_at_the_2022_MTV_VMAs_09_(cropped).jpg'),
+    question: 'Who is the "Queen of Pop"?',
+    correct_answer: 'Madonna',
+    incorrect_answers: ['Cyndi Lauper', 'Janet Jackson', 'Tina Turner'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Madonna (born 1958) is the best-selling female music artist of all time, with over 300 million records sold. She is known for reinventing herself across decades and her influence on pop culture, fashion and music.'
+  },
+  {
+    image: wp('Taylor_Swift_at_the_2023_MTV_Video_Music_Awards_(3).jpg'),
+    question: 'Who is this singer-songwriter?',
+    correct_answer: 'Taylor Swift',
+    incorrect_answers: ['Selena Gomez', 'Katy Perry', 'Ariana Grande'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Taylor Swift (born 1989) is an American singer-songwriter who began as a country artist before crossing into pop. She became the first artist to simultaneously occupy all top 10 spots on the Billboard Hot 100 chart in 2022.'
+  },
+  {
+    image: wp('Adele_2016.jpg'),
+    question: 'Who is this British singer?',
+    correct_answer: 'Adele',
+    incorrect_answers: ['Amy Winehouse', 'Duffy', 'Jessie J'],
+    category: 'Music Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Adele (born 1988) is a British singer-songwriter known for her powerful mezzo-soprano voice and soulful ballads. Her album 21 is one of the best-selling albums of all time and she has won 15 Grammy Awards.'
+  },
+]
+
+// ── FILM STARS ──────────────────────────────────────────────────────────────
+const FILM_STARS: ImageQuestion[] = [
+  {
+    image: wp('Marlon-Brando.jpg'),
+    question: 'Who is this legendary actor?',
+    correct_answer: 'Marlon Brando',
+    incorrect_answers: ['James Dean', 'Paul Newman', 'Montgomery Clift'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Marlon Brando (1924–2004) revolutionised acting with his naturalistic method style. He is best known for roles in "The Godfather" (1972) and "Apocalypse Now" (1979), winning two Academy Awards for Best Actor.'
+  },
+  {
+    image: wp('Audrey_Hepburn_1956.jpg'),
+    question: 'Who is this iconic actress?',
+    correct_answer: 'Audrey Hepburn',
+    incorrect_answers: ['Grace Kelly', 'Katharine Hepburn', 'Elizabeth Taylor'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Audrey Hepburn (1929–1993) was a British actress and humanitarian. She is one of the few entertainers who achieved EGOT status (Emmy, Grammy, Oscar, Tony). She is remembered for Breakfast at Tiffany\'s and her later work as a UNICEF ambassador.'
+  },
+  {
+    image: wp('Alfred_Hitchcock_on_the_set_of_Saboteur_(1942).jpg'),
+    question: 'Who is this famous film director?',
+    correct_answer: 'Alfred Hitchcock',
+    incorrect_answers: ['Orson Welles', 'Billy Wilder', 'John Huston'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Alfred Hitchcock (1899–1980) was the "Master of Suspense" who directed classics such as Psycho, Rear Window and Vertigo. He appeared in brief cameos in almost all of his 53 films.'
+  },
+  {
+    image: wp('Audrey_Hepburn_-_Breakfast_at_Tiffany\'s.jpg'),
+    question: 'Who plays Holly Golightly in this iconic film scene?',
+    correct_answer: 'Audrey Hepburn',
+    incorrect_answers: ['Marilyn Monroe', 'Grace Kelly', 'Natalie Wood'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Audrey Hepburn starred as Holly Golightly in Breakfast at Tiffany\'s (1961), directed by Blake Edwards. The film produced the Oscar-winning song Moon River and became a defining moment of 1960s cinema.'
+  },
+  {
+    image: wp('Will_Smith_2011.jpg'),
+    question: 'Who is this Hollywood actor?',
+    correct_answer: 'Will Smith',
+    incorrect_answers: ['Denzel Washington', 'Jamie Foxx', 'Kevin Hart'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Will Smith (born 1968) is a rapper and actor who rose to fame on The Fresh Prince of Bel-Air before becoming one of Hollywood\'s biggest stars. He won an Academy Award for Best Actor for his role in "King Richard" (2022).'
+  },
+  {
+    image: wp('Leonardo_DiCaprio_2014.jpg'),
+    question: 'Who is this actor?',
+    correct_answer: 'Leonardo DiCaprio',
+    incorrect_answers: ['Brad Pitt', 'Tom Hanks', 'Matt Damon'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Leonardo DiCaprio (born 1974) is an American actor and environmental activist. He is known for roles in Titanic, The Aviator and The Wolf of Wall Street, and won the Academy Award for Best Actor for "The Revenant" (2016).'
+  },
+  {
+    image: wp('Meryl_Streep_2017.jpg'),
+    question: 'Who is this Oscar-winning actress?',
+    correct_answer: 'Meryl Streep',
+    incorrect_answers: ['Cate Blanchett', 'Kate Winslet', 'Helen Mirren'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'medium',
+    explanation: 'Meryl Streep (born 1949) holds the record for the most Academy Award nominations of any actor (21 nominations, 3 wins). She is widely considered the greatest living actress, known for her ability to master different accents and characters.'
+  },
+  {
+    image: wp('Tom_Hanks_2016.jpg'),
+    question: 'Who is this beloved actor?',
+    correct_answer: 'Tom Hanks',
+    incorrect_answers: ['Robin Williams', 'Steve Martin', 'Jim Carrey'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Tom Hanks (born 1956) is one of Hollywood\'s most respected actors, known for Forrest Gump, Cast Away and The Green Mile. He is the first male actor to win back-to-back Academy Awards for Best Actor (Philadelphia, 1994; Forrest Gump, 1995).'
+  },
+  {
+    image: wp('Oprah_in_2014.jpg'),
+    question: 'Who is this media mogul and actress?',
+    correct_answer: 'Oprah Winfrey',
+    incorrect_answers: ['Whoopi Goldberg', 'Halle Berry', 'Angela Bassett'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Oprah Winfrey (born 1954) is a media mogul, actress and philanthropist. Her talk show ran for 25 seasons (1986–2011) and she became the first Black female billionaire in the world. She received an honorary Academy Award in 2018.'
+  },
+  {
+    image: wp('Scarlett_Johansson_2014.jpg'),
+    question: 'Who plays Black Widow in the Marvel films?',
+    correct_answer: 'Scarlett Johansson',
+    incorrect_answers: ['Brie Larson', 'Elizabeth Olsen', 'Natalie Portman'],
+    category: 'Film Stars', type: 'multiple', difficulty: 'easy',
+    explanation: 'Scarlett Johansson (born 1984) is an American actress who is one of the highest-grossing box office stars of all time. She first played Natasha Romanoff/Black Widow in "Iron Man 2" (2010) and starred in her own film in 2021.'
+  },
+]
+
+// ── WORLD LEADERS ───────────────────────────────────────────────────────────
+const WORLD_LEADERS: ImageQuestion[] = [
+  {
+    image: wp('Emmanuel_Macron_in_2019.jpg'),
+    question: 'Who is this world leader?',
+    correct_answer: 'Emmanuel Macron',
+    incorrect_answers: ['François Hollande', 'Nicolas Sarkozy', 'Édouard Philippe'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Emmanuel Macron (born 1977) became France\'s youngest President at 39 when he was elected in 2017. He founded the centrist "En Marche!" party and was re-elected for a second term in 2022.'
+  },
+  {
+    image: wp('Joe_Biden_(49484798448)_(cropped).jpg'),
+    question: 'Who is this US President?',
+    correct_answer: 'Joe Biden',
+    incorrect_answers: ['Bernie Sanders', 'Barack Obama', 'Donald Trump'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'easy',
+    explanation: 'Joe Biden (born 1942) served as the 46th President of the United States (2021–2025) and had previously been Vice President under Barack Obama. At 78, he became the oldest person to be inaugurated as US President.'
+  },
+  {
+    image: wp('Vladimir_Putin_(2022-12-29).jpg'),
+    question: 'Who is this world leader?',
+    correct_answer: 'Vladimir Putin',
+    incorrect_answers: ['Dmitry Medvedev', 'Boris Yeltsin', 'Mikhail Gorbachev'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'easy',
+    explanation: 'Vladimir Putin (born 1952) has been the dominant political figure in Russia since 1999, serving multiple terms as both President and Prime Minister. He is the longest-serving leader of Russia since Joseph Stalin.'
+  },
+  {
+    image: wp('Angela_Merkel_Security_Conference_February_2009_crop.jpg'),
+    question: 'Who is this former world leader?',
+    correct_answer: 'Angela Merkel',
+    incorrect_answers: ['Theresa May', 'Jacinda Ardern', 'Christine Lagarde'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Angela Merkel (born 1954) served as Chancellor of Germany from 2005 to 2021 — the longest-serving leader of a major democratic nation in that period. She was consistently ranked as the world\'s most powerful woman.'
+  },
+  {
+    image: wp('Official_Photo_of_President_Reagan_1981.jpg'),
+    question: 'Who is this former US President?',
+    correct_answer: 'Ronald Reagan',
+    incorrect_answers: ['Gerald Ford', 'Jimmy Carter', 'George H.W. Bush'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ronald Reagan (1911–2004) was the 40th US President (1981–1989) and a former Hollywood actor. He is associated with "Reaganomics" — supply-side economic policies — and played a key role in ending the Cold War.'
+  },
+  {
+    image: wp('Tony_Blair_Falklands_2_crop.jpg'),
+    question: 'Who is this former UK Prime Minister?',
+    correct_answer: 'Tony Blair',
+    incorrect_answers: ['Gordon Brown', 'John Major', 'David Cameron'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Tony Blair (born 1953) served as Prime Minister of the United Kingdom from 1997 to 2007 — the longest-serving Labour Prime Minister. He won three general elections and oversaw the Good Friday Agreement in Northern Ireland.'
+  },
+  {
+    image: wp('Xi_Jinping_in_November_2013.jpg'),
+    question: 'Who is this world leader?',
+    correct_answer: 'Xi Jinping',
+    incorrect_answers: ['Hu Jintao', 'Jiang Zemin', 'Li Keqiang'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Xi Jinping (born 1953) has been General Secretary of the Chinese Communist Party since 2012 and President of China since 2013. He is considered the most powerful Chinese leader since Mao Zedong.'
+  },
+  {
+    image: wp('Jacinda_Ardern_2018_official_portrait_cropped.jpg'),
+    question: 'Who is this former world leader?',
+    correct_answer: 'Jacinda Ardern',
+    incorrect_answers: ['Helen Clark', 'Jenny Shipley', 'Nicola Willis'],
+    category: 'World Leaders', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jacinda Ardern (born 1980) served as New Zealand\'s 40th Prime Minister (2017–2023). She became the world\'s youngest female head of government at 37 and the second elected leader to give birth while in office.'
+  },
+]
+
+// ── ROYALS ──────────────────────────────────────────────────────────────────
+const ROYALS: ImageQuestion[] = [
+  {
+    image: wp('Queen_Elizabeth_II_in_March_2015.jpg'),
+    question: 'Who is this monarch?',
+    correct_answer: 'Queen Elizabeth II',
+    incorrect_answers: ['Princess Diana', 'Queen Mary', 'Princess Anne'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Queen Elizabeth II (1926–2022) was the longest-reigning British monarch, serving for 70 years and 214 days. She ascended the throne at 25 in 1952 following the death of her father, King George VI.'
+  },
+  {
+    image: wp('Princess_Diana_Allan_Warren.jpg'),
+    question: 'Who is this member of the British Royal Family?',
+    correct_answer: 'Princess Diana',
+    incorrect_answers: ['Queen Elizabeth II', 'Princess Anne', 'Sarah Ferguson'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Princess Diana (1961–1997) was the first wife of King Charles III and the mother of Princes William and Harry. Known as the "People\'s Princess", she was celebrated for her charity work and humanitarian causes.'
+  },
+  {
+    image: wp('King_Charles_III_at_COP27_(cropped).jpg'),
+    question: 'Who is this monarch?',
+    correct_answer: 'King Charles III',
+    incorrect_answers: ['Prince William', 'Prince Harry', 'Prince Andrew'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'King Charles III (born 1948) became King of the United Kingdom in September 2022 following the death of his mother, Queen Elizabeth II. He is the oldest person to accede to the British throne at 73.'
+  },
+  {
+    image: wp('Prince_William_2020.jpg'),
+    question: 'Who is this member of the Royal Family?',
+    correct_answer: 'Prince William',
+    incorrect_answers: ['Prince Harry', 'Prince Andrew', 'Prince Edward'],
+    category: 'Royals', type: 'multiple', difficulty: 'easy',
+    explanation: 'Prince William (born 1982), now the Prince of Wales, is the heir apparent to the British throne. He married Catherine Middleton in 2011 at Westminster Abbey in a ceremony watched by an estimated 2 billion people.'
+  },
+  {
+    image: wp('Napoleon_in_His_Study.jpg'),
+    question: 'Who is this historical figure?',
+    correct_answer: 'Napoleon Bonaparte',
+    incorrect_answers: ['Louis XIV', 'Louis XVI', 'Charles de Gaulle'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Napoleon Bonaparte (1769–1821) was a French military commander and Emperor who dominated Europe in the early 19th century. He is regarded as one of the greatest military commanders in history, winning most of his 60 battles.'
+  },
+  {
+    image: wp('Queen_Victoria_by_Bassano,_1882.jpg'),
+    question: 'Who is this monarch?',
+    correct_answer: 'Queen Victoria',
+    incorrect_answers: ['Mary Queen of Scots', 'Queen Anne', 'Queen Elizabeth I'],
+    category: 'Royals', type: 'multiple', difficulty: 'medium',
+    explanation: 'Queen Victoria (1819–1901) reigned for 63 years and 7 months — the second longest of any British monarch. During her reign the British Empire expanded to cover a quarter of the world\'s land surface.'
+  },
+]
+
+// ── COMEDIANS ───────────────────────────────────────────────────────────────
+const COMEDIANS: ImageQuestion[] = [
+  {
+    image: wp('Robin_Williams_Happy_Feet.jpg'),
+    question: 'Who is this comedian and actor?',
+    correct_answer: 'Robin Williams',
+    incorrect_answers: ['Steve Martin', 'Jim Carrey', 'Billy Crystal'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Robin Williams (1951–2014) was one of the most acclaimed comedians and actors of his generation. Known for improvisation and manic energy, he won an Academy Award for Good Will Hunting (1998) and starred in Mrs. Doubtfire and Aladdin.'
+  },
+  {
+    image: wp('Ricky_Gervais_2016_(cropped).jpg'),
+    question: 'Who is this British comedian?',
+    correct_answer: 'Ricky Gervais',
+    incorrect_answers: ['Steve Coogan', 'Lee Mack', 'Jimmy Carr'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Ricky Gervais (born 1961) created and starred in the original British version of The Office (2001–2003), which won two BAFTA Awards and two Golden Globes. He has hosted the Golden Globe Awards five times.'
+  },
+  {
+    image: wp('Dave_Chappelle_2015.jpg'),
+    question: 'Who is this stand-up comedian?',
+    correct_answer: 'Dave Chappelle',
+    incorrect_answers: ['Chris Rock', 'Eddie Murphy', 'Kevin Hart'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'Dave Chappelle (born 1973) is an American comedian and actor best known for Chappelle\'s Show, which he walked away from in 2005. He has won multiple Grammy Awards for his stand-up specials and is considered one of the greatest comedians of his generation.'
+  },
+  {
+    image: wp('Kevin_Hart_2014_Comic-Con.jpg'),
+    question: 'Who is this comedian?',
+    correct_answer: 'Kevin Hart',
+    incorrect_answers: ['Chris Rock', 'Eddie Murphy', 'Dave Chappelle'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Kevin Hart (born 1979) is an American comedian, actor and producer. Known for his high-energy stand-up specials, he became one of Hollywood\'s most bankable stars, starring in films like Jumanji and Ride Along.'
+  },
+  {
+    image: wp('John_Cleese_2014_by_Gage_Skidmore.jpg'),
+    question: 'Who is this British comedian?',
+    correct_answer: 'John Cleese',
+    incorrect_answers: ['Michael Palin', 'Eric Idle', 'Stephen Fry'],
+    category: 'Comedians', type: 'multiple', difficulty: 'medium',
+    explanation: 'John Cleese (born 1939) co-founded Monty Python and created and starred in Fawlty Towers. He also co-wrote and starred in A Fish Called Wanda (1988), for which he received a BAFTA nomination for Best Screenplay.'
+  },
+  {
+    image: wp('Mr._Bean_(character).jpg'),
+    question: 'Which comedian\'s most famous character is this?',
+    correct_answer: 'Rowan Atkinson',
+    incorrect_answers: ['John Cleese', 'Steve Coogan', 'Harry Enfield'],
+    category: 'Comedians', type: 'multiple', difficulty: 'easy',
+    explanation: 'Rowan Atkinson (born 1955) created Mr. Bean — a childlike, largely silent character who became a global phenomenon. He also played Edmund Blackadder in the acclaimed BBC series Blackadder (1983–1989).'
+  },
+]
+
+// ── INVENTORS & SCIENTISTS (tech focus) ─────────────────────────────────────
+const INVENTORS: ImageQuestion[] = [
+  {
+    image: wp('Steve_Jobs_Headshot_2010-CROP_(cropped_2).jpg'),
+    question: 'Who is this technology pioneer?',
+    correct_answer: 'Steve Jobs',
+    incorrect_answers: ['Bill Gates', 'Elon Musk', 'Jeff Bezos'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Steve Jobs (1955–2011) co-founded Apple Inc. and is credited with revolutionising personal computing, music (iPod), mobile phones (iPhone) and tablet computing (iPad). He was also the driving force behind Pixar Animation Studios.'
+  },
+  {
+    image: wp('Bill_Gates_2017_(cropped).jpg'),
+    question: 'Who co-founded Microsoft?',
+    correct_answer: 'Bill Gates',
+    incorrect_answers: ['Steve Jobs', 'Mark Zuckerberg', 'Larry Page'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Bill Gates (born 1955) co-founded Microsoft in 1975 with Paul Allen. Under his leadership, Microsoft became the world\'s most valuable company. He has since devoted much of his fortune to global health and education through the Bill & Melinda Gates Foundation.'
+  },
+  {
+    image: wp('Elon_Musk_Colorado_2022_(cropped).jpg'),
+    question: 'Who is this tech entrepreneur?',
+    correct_answer: 'Elon Musk',
+    incorrect_answers: ['Jeff Bezos', 'Richard Branson', 'Larry Ellison'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Elon Musk (born 1971) is a South African-born entrepreneur who founded SpaceX, co-founded Tesla and PayPal, and acquired Twitter (rebranded as X). He became the world\'s wealthiest person, with a net worth exceeding $300 billion in 2024.'
+  },
+  {
+    image: wp('Mark_Zuckerberg_F8_2018_Keynote_(26617494157)_(cropped).jpg'),
+    question: 'Who is this social media founder?',
+    correct_answer: 'Mark Zuckerberg',
+    incorrect_answers: ['Jack Dorsey', 'Sergey Brin', 'Larry Page'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Mark Zuckerberg (born 1984) co-founded Facebook (now Meta Platforms) in his Harvard dorm room in 2004. He became the world\'s youngest billionaire at 23, and Meta now owns Facebook, Instagram and WhatsApp.'
+  },
+  {
+    image: wp('Tim_Berners-Lee.jpg'),
+    question: 'Who invented the World Wide Web?',
+    correct_answer: 'Tim Berners-Lee',
+    incorrect_answers: ['Vint Cerf', 'Bill Gates', 'Steve Jobs'],
+    category: 'Inventors', type: 'multiple', difficulty: 'medium',
+    explanation: 'Tim Berners-Lee (born 1955) invented the World Wide Web in 1989 while working at CERN. He wrote the first web browser, web server and the HTML language. He famously made the web freely available without a patent.'
+  },
+  {
+    image: wp('Thomas_Edison2.jpg'),
+    question: 'Who is this famous inventor?',
+    correct_answer: 'Thomas Edison',
+    incorrect_answers: ['Alexander Graham Bell', 'Nikola Tesla', 'Benjamin Franklin'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Thomas Edison (1847–1931) held 1,093 US patents and invented the phonograph, the practical incandescent light bulb and a system to distribute electricity. He also created the world\'s first industrial research laboratory in Menlo Park, New Jersey.'
+  },
+  {
+    image: wp('Jeff_Bezos_2016.jpg'),
+    question: 'Who founded Amazon?',
+    correct_answer: 'Jeff Bezos',
+    incorrect_answers: ['Elon Musk', 'Bill Gates', 'Mark Zuckerberg'],
+    category: 'Inventors', type: 'multiple', difficulty: 'easy',
+    explanation: 'Jeff Bezos (born 1964) founded Amazon in 1994 as an online bookstore that grew into the world\'s largest e-commerce and cloud computing company. He also founded Blue Origin, a private aerospace company, and owns The Washington Post.'
+  },
+]
+
+// ── TV PERSONALITIES ─────────────────────────────────────────────────────────
+const TV_PERSONALITIES: ImageQuestion[] = [
+  {
+    image: wp('David_Attenborough_2011.jpg'),
+    question: 'Who is this beloved naturalist and broadcaster?',
+    correct_answer: 'David Attenborough',
+    incorrect_answers: ['Chris Packham', 'Richard Attenborough', 'Bill Nye'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Sir David Attenborough (born 1926) is a broadcaster and natural historian known for narrating landmark nature documentaries including Life on Earth, Planet Earth and Blue Planet. He is one of the most widely recognised voices in the world.'
+  },
+  {
+    image: wp('Gordon_Ramsay.jpg'),
+    question: 'Who is this celebrity chef and TV personality?',
+    correct_answer: 'Gordon Ramsay',
+    incorrect_answers: ['Jamie Oliver', 'Heston Blumenthal', 'Marco Pierre White'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Gordon Ramsay (born 1966) is a Scottish chef who holds 17 Michelin stars across his restaurants. He became a global TV star through Hell\'s Kitchen, MasterChef and Kitchen Nightmares, known for his fiery temper and passionate cooking.'
+  },
+  {
+    image: wp('Conan_O\'Brien_2014.jpg'),
+    question: 'Who is this late-night TV host?',
+    correct_answer: 'Conan O\'Brien',
+    incorrect_answers: ['Jimmy Fallon', 'Jay Leno', 'David Letterman'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Conan O\'Brien (born 1963) is an American comedian and TV host who hosted late-night shows for over 25 years, including Late Night with Conan O\'Brien and Conan. He graduated from Harvard and was once a writer for The Simpsons and Saturday Night Live.'
+  },
+  {
+    image: wp('Jimmy_Fallon_2016.jpg'),
+    question: 'Who is the host of The Tonight Show?',
+    correct_answer: 'Jimmy Fallon',
+    incorrect_answers: ['Conan O\'Brien', 'Seth Meyers', 'James Corden'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'medium',
+    explanation: 'Jimmy Fallon (born 1974) has hosted The Tonight Show Starring Jimmy Fallon since 2014, following in the footsteps of legends like Johnny Carson and Jay Leno. Before that, he was a cast member of Saturday Night Live for six years.'
+  },
+  {
+    image: wp('Ellen_DeGeneres_2011_(2).jpg'),
+    question: 'Who is this TV host and comedian?',
+    correct_answer: 'Ellen DeGeneres',
+    incorrect_answers: ['Oprah Winfrey', 'Rosie O\'Donnell', 'Whoopi Goldberg'],
+    category: 'TV Personalities', type: 'multiple', difficulty: 'easy',
+    explanation: 'Ellen DeGeneres (born 1958) hosted The Ellen DeGeneres Show from 2003 to 2022, winning numerous Daytime Emmy Awards. She was one of the first openly gay celebrities in Hollywood, coming out in 1997 on her sitcom Ellen.'
+  },
+]
+
+// ── FASHION & DESIGN ─────────────────────────────────────────────────────────
+const FASHION_ICONS: ImageQuestion[] = [
+  {
+    image: wp('Coco_Chanel_1920.jpg'),
+    question: 'Who is this fashion legend?',
+    correct_answer: 'Coco Chanel',
+    incorrect_answers: ['Christian Dior', 'Gianni Versace', 'Yves Saint Laurent'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Coco Chanel (1883–1971) revolutionised women\'s fashion by liberating women from corsets and introducing comfortable, practical designs. She created the "little black dress", Chanel No. 5 perfume, and the iconic Chanel suit.'
+  },
+  {
+    image: wp('Karl_Lagerfeld_2014_(cropped).jpg'),
+    question: 'Who is this fashion designer?',
+    correct_answer: 'Karl Lagerfeld',
+    incorrect_answers: ['Giorgio Armani', 'Donatella Versace', 'Valentino Garavani'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Karl Lagerfeld (1933–2019) was a German fashion designer who transformed Chanel after joining in 1983, making it one of the most profitable luxury brands in the world. He was known for his iconic white ponytail, dark glasses and fingerless gloves.'
+  },
+  {
+    image: wp('Naomi_Campbell_2019_(cropped).jpg'),
+    question: 'Who is this supermodel?',
+    correct_answer: 'Naomi Campbell',
+    incorrect_answers: ['Cindy Crawford', 'Tyra Banks', 'Linda Evangelista'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Naomi Campbell (born 1970) is one of the original supermodels who dominated the fashion industry in the late 1980s and 1990s. She was the first Black model to appear on the cover of Time magazine and French Vogue.'
+  },
+  {
+    image: wp('Cindy_Crawford_2009_crop.jpg'),
+    question: 'Who is this supermodel?',
+    correct_answer: 'Cindy Crawford',
+    incorrect_answers: ['Naomi Campbell', 'Claudia Schiffer', 'Heidi Klum'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'medium',
+    explanation: 'Cindy Crawford (born 1966) is one of the original supermodels, famous for her trademark beauty mark. She appeared on over 1,000 magazine covers and was one of the world\'s highest-paid models throughout the 1990s.'
+  },
+  {
+    image: wp('Victoria_Beckham_2014.jpg'),
+    question: 'Who is this fashion designer and former pop star?',
+    correct_answer: 'Victoria Beckham',
+    incorrect_answers: ['Eva Longoria', 'Kate Moss', 'Stella McCartney'],
+    category: 'Fashion Icons', type: 'multiple', difficulty: 'easy',
+    explanation: 'Victoria Beckham (born 1974) rose to fame as "Posh Spice" in the Spice Girls before launching a successful fashion label in 2008. Her brand has won multiple British Fashion Awards and is stocked in high-end boutiques worldwide.'
+  },
+]
+
 export function shuffleArray<T>(arr: T[]): T[] {
   const a = [...arr]
   for (let i = a.length - 1; i > 0; i--) {
@@ -1066,14 +1638,27 @@ export function shuffleArray<T>(arr: T[]): T[] {
   return a
 }
 
+export type ImageSubtype = 'faces' | 'places' | 'artworks' | 'sports' | 'music' | 'film' | 'leaders' | 'royals' | 'comedians' | 'inventors' | 'tv' | 'fashion' | 'mixed'
+
 export function generateImageQuestions(
   amount: number,
-  subtype: 'faces' | 'places' | 'artworks' | 'mixed'
+  subtype: ImageSubtype
 ): ImageQuestion[] {
   let pool: ImageQuestion[]
-  if (subtype === 'faces') pool = FAMOUS_FACES
-  else if (subtype === 'places') pool = FAMOUS_PLACES
-  else if (subtype === 'artworks') pool = FAMOUS_ARTWORKS
-  else pool = [...FAMOUS_FACES, ...FAMOUS_PLACES, ...FAMOUS_ARTWORKS]
+  switch (subtype) {
+    case 'faces':     pool = FAMOUS_FACES; break
+    case 'places':    pool = FAMOUS_PLACES; break
+    case 'artworks':  pool = FAMOUS_ARTWORKS; break
+    case 'sports':    pool = SPORTS_STARS; break
+    case 'music':     pool = MUSIC_STARS; break
+    case 'film':      pool = FILM_STARS; break
+    case 'leaders':   pool = WORLD_LEADERS; break
+    case 'royals':    pool = ROYALS; break
+    case 'comedians': pool = COMEDIANS; break
+    case 'inventors': pool = INVENTORS; break
+    case 'tv':        pool = TV_PERSONALITIES; break
+    case 'fashion':   pool = FASHION_ICONS; break
+    default:          pool = [...FAMOUS_FACES, ...FAMOUS_PLACES, ...FAMOUS_ARTWORKS, ...SPORTS_STARS, ...MUSIC_STARS, ...FILM_STARS]
+  }
   return shuffleArray(pool).slice(0, Math.min(amount, pool.length))
 }
