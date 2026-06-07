@@ -7,7 +7,9 @@ import MemberGrid from '@/components/MemberGrid'
 import type { QuizAnswer, QuizSession } from '@/types'
 
 export default async function TeamPage() {
-  const { userId, db } = await getEffectiveUser()
+  let userId: string, db: Awaited<ReturnType<typeof getEffectiveUser>>['db']
+  try { ({ userId, db } = await getEffectiveUser()) }
+  catch { redirect('/auth') }
 
   const { data: profile } = await db
     .from('quiz_players')

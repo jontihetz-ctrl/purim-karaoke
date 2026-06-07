@@ -14,7 +14,8 @@ export async function getEffectiveUser() {
     return { userId: playerCookie.value, db: createServiceClient() }
   }
 
-  return { userId: DEMO_PLAYER_ID, db: createServiceClient() }
+  // No session — throw so callers redirect to /auth rather than hitting FK errors
+  throw new Error('Not authenticated')
 }
 
 export function createClient() {

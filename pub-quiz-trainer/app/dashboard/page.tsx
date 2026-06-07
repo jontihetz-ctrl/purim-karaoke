@@ -11,7 +11,9 @@ import type { QuizAnswer, QuizSession } from '@/types'
 export const dynamic = 'force-dynamic'
 
 export default async function DashboardPage() {
-  const { userId, db } = await getEffectiveUser()
+  let userId: string, db: Awaited<ReturnType<typeof getEffectiveUser>>['db']
+  try { ({ userId, db } = await getEffectiveUser()) }
+  catch { redirect('/auth') }
 
   const { data: profile } = await db
     .from('quiz_players')
