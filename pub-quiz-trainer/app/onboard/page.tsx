@@ -1,5 +1,5 @@
 'use client'
-import { Suspense, useState } from 'react'
+import { Suspense, useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 
 function OnboardInner() {
@@ -7,13 +7,33 @@ function OnboardInner() {
   const searchParams = useSearchParams()
   const prefillCode = searchParams.get('join') || ''
 
-  const [step, setStep] = useState<'name' | 'team'>('name')
+  const [step, setStep] = useState<'checking' | 'name' | 'team'>('checking')
   const [displayName, setDisplayName] = useState('')
   const [teamChoice, setTeamChoice] = useState<'create' | 'join'>(prefillCode ? 'join' : 'create')
   const [teamName, setTeamName] = useState('')
   const [inviteCode, setInviteCode] = useState(prefillCode.toUpperCase())
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  // On mount: check if user already has a profile.
+  // If yes + invite code → skip name, jump straight to team join step.
+  // If yes + no invite code → they're already set up, send to play.
+  useEffect(() => {
+    fetch('/api/player/me')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (data?.has_profile) {
+          if (prefillCode) {
+            setStep('team')
+          } else {
+            router.replace('/quiz/play')
+          }
+        } else {
+          setStep('name')
+        }
+      })
+      .catch(() => setStep('name'))
+  }, []) // eslint-disable-line
 
   async function handleName(e: React.FormEvent) {
     e.preventDefault()
@@ -43,12 +63,22 @@ function OnboardInner() {
     else router.push('/quiz/play')
   }
 
+  if (step === 'checking') {
+    return (
+      <div className="min-h-screen bg-gray-950 flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-brand-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    )
+  }
+
   return (
     <div className="min-h-screen bg-gray-950 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="text-4xl mb-3">🧠</div>
-          <h1 className="text-2xl font-bold text-white">Let's get you set up</h1>
+          <h1 className="text-2xl font-bold text-white">
+            {step === 'team' && prefillCode ? 'Join your team' : 'Let\'s get you set up'}
+          </h1>
         </div>
 
         {step === 'name' ? (
