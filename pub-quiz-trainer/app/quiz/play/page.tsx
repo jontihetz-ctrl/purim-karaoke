@@ -225,22 +225,22 @@ export default function QuizPlayPage() {
 }
 
 function QuizImage({ src, className, onSkip }: { src: string; className?: string; onSkip?: () => void }) {
-  const [status, setStatus] = useState<'loading' | 'loaded' | 'errored'>('loading')
+  // 'hidden' = timed out but not a real error; show question without image
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'errored' | 'hidden'>('loading')
   const onSkipRef = useRef(onSkip)
   onSkipRef.current = onSkip
 
-  // Timeout: if the image hasn't loaded within 8 s, treat it as broken and skip
+  // After 20 s of loading: hide the spinner/placeholder but keep the question.
+  // Only a real onError (404 etc.) actually skips the whole question.
   useEffect(() => {
+    setStatus('loading')
     const t = setTimeout(() => {
-      setStatus(s => {
-        if (s === 'loading') { onSkipRef.current?.(); return 'errored' }
-        return s
-      })
-    }, 8000)
+      setStatus(s => s === 'loading' ? 'hidden' : s)
+    }, 20000)
     return () => clearTimeout(t)
   }, [src])
 
-  if (status === 'errored') return null
+  if (status === 'errored' || status === 'hidden') return null
   return (
     <div className={`relative ${status === 'loading' ? 'min-h-24' : ''}`}>
       {status === 'loading' && (
