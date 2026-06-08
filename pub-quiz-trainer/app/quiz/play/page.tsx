@@ -225,17 +225,39 @@ export default function QuizPlayPage() {
 }
 
 function QuizImage({ src, className, onSkip }: { src: string; className?: string; onSkip?: () => void }) {
-  const [errored, setErrored] = useState(false)
-  if (errored) return null
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'errored'>('loading')
+  const onSkipRef = useRef(onSkip)
+  onSkipRef.current = onSkip
+
+  // Timeout: if the image hasn't loaded within 8 s, treat it as broken and skip
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setStatus(s => {
+        if (s === 'loading') { onSkipRef.current?.(); return 'errored' }
+        return s
+      })
+    }, 8000)
+    return () => clearTimeout(t)
+  }, [src])
+
+  if (status === 'errored') return null
   return (
-    // eslint-disable-next-line @next/next/no-img-element
-    <img
-      src={src}
-      alt="Quiz question"
-      className={className}
-      onError={() => { setErrored(true); onSkip?.() }}
-      loading="eager"
-    />
+    <div className={`relative ${status === 'loading' ? 'min-h-24' : ''}`}>
+      {status === 'loading' && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-6 h-6 border-2 border-gray-600 border-t-gray-300 rounded-full animate-spin" />
+        </div>
+      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt="Quiz question"
+        className={`${className} ${status === 'loading' ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
+        onLoad={() => setStatus('loaded')}
+        onError={() => { setStatus('errored'); onSkipRef.current?.() }}
+        loading="eager"
+      />
+    </div>
   )
 }
 
@@ -679,7 +701,7 @@ function QuizPlay() {
             {q.image && (
               <div className="flex justify-center mb-4">
                 <QuizImage
-                  key={`q-${state.currentIndex}`}
+                  key={q.image}
                   src={q.image}
                   className="h-48 w-auto rounded-lg border border-gray-700 object-contain shadow-lg"
                   onSkip={state.status === 'playing' ? () => dispatch({ type: 'SKIP' }) : undefined}
