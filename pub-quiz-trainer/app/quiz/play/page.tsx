@@ -695,7 +695,12 @@ function QuizPlay() {
                 q.difficulty === 'medium' ? 'bg-yellow-900/50 text-yellow-400' :
                 'bg-red-900/50 text-red-400'
               }`}>{q.difficulty}</span>
-              <span className="text-xs text-gray-500 truncate">{q.category}</span>
+              <span className="text-xs text-gray-500 truncate flex-1">{q.category}</span>
+              {isRevealed && !voiceMode && (
+                <button onClick={handleNext} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-5 py-1.5 rounded-lg transition-colors text-sm">
+                  Next →
+                </button>
+              )}
             </div>
 
             {q.image && (
@@ -749,14 +754,6 @@ function QuizPlay() {
               )
             })}
           </div>
-
-          {isRevealed && !voiceMode && (
-            <div className="mt-6 flex justify-end">
-              <button onClick={handleNext} className="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors text-base">
-                Next →
-              </button>
-            </div>
-          )}
 
           {isRevealed && voiceMode && (
             <div className="mt-4 text-center text-xs text-purple-400 animate-pulse">
