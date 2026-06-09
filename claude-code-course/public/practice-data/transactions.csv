@@ -1,0 +1,121 @@
+transaction_id,date,amount,category,vendor,requester,approver
+TXN-0001,2024-01-08,1250.00,Travel,Premier Travel Ltd,Sarah Chen,David Wright
+TXN-0002,2024-01-09,3400.00,Equipment,TechSupply UK,Marcus Brown,Sarah Chen
+TXN-0003,2024-01-10,890.50,Office Supplies,Staples Business,Emma Davis,David Wright
+TXN-0004,2024-01-11,5000.00,Consultancy,StrategyFirst,James Harrison,Sarah Chen
+TXN-0005,2024-01-12,2100.00,Travel,Premier Travel Ltd,Priya Patel,Marcus Brown
+TXN-0006,2024-01-15,750.00,Training,SkillsForward,Emma Davis,Sarah Chen
+TXN-0007,2024-01-16,4500.00,Equipment,TechSupply UK,James Harrison,David Wright
+TXN-0008,2024-01-17,1800.00,Catering,TopNosh Events,Sarah Chen,Marcus Brown
+TXN-0009,2024-01-18,8200.00,Consultancy,James Harrison,James Harrison,James Harrison
+TXN-0010,2024-01-19,650.00,Office Supplies,Office Depot,Priya Patel,Emma Davis
+TXN-0011,2024-01-22,3200.00,Marketing,BrandBoost Agency,Marcus Brown,Sarah Chen
+TXN-0012,2024-01-23,950.00,Travel,Premier Travel Ltd,Emma Davis,David Wright
+TXN-0013,2024-01-24,10000.00,Equipment,TechFix Ltd,Sarah Chen,David Wright
+TXN-0014,2024-01-25,2750.00,Consultancy,StrategyFirst,James Harrison,Marcus Brown
+TXN-0015,2024-01-26,1100.00,Office Supplies,Staples Business,Priya Patel,Emma Davis
+TXN-0016,2024-01-29,6750.00,Consultancy,StrategyFirst,Marcus Brown,David Wright
+TXN-0017,2024-01-30,420.00,Travel,Premier Travel Ltd,Emma Davis,Sarah Chen
+TXN-0018,2024-01-31,9900.00,Equipment,TechSupply UK,James Harrison,Marcus Brown
+TXN-0019,2024-02-01,1400.00,Catering,TopNosh Events,Priya Patel,Sarah Chen
+TXN-0020,2024-02-02,5500.00,Marketing,BrandBoost Agency,Marcus Brown,David Wright
+TXN-0021,2024-02-05,2300.00,Travel,Premier Travel Ltd,Sarah Chen,Emma Davis
+TXN-0022,2024-02-06,4999.00,Equipment,TechFix Ltd,James Harrison,Marcus Brown
+TXN-0023,2024-02-07,880.00,Office Supplies,Office Depot,Emma Davis,Priya Patel
+TXN-0024,2024-02-08,7200.00,Consultancy,StrategyFirst,Priya Patel,Sarah Chen
+TXN-0025,2024-02-09,3100.00,Training,SkillsForward,Marcus Brown,David Wright
+TXN-0026,2024-02-12,1400.00,Catering,TopNosh Events,Priya Patel,Priya Patel
+TXN-0027,2024-02-13,5000.00,Consultancy,StrategyFirst,Sarah Chen,Marcus Brown
+TXN-0028,2024-02-14,9800.00,Equipment,TechSupply UK,Emma Davis,David Wright
+TXN-0029,2024-02-15,2600.00,Travel,Premier Travel Ltd,James Harrison,Sarah Chen
+TXN-0030,2024-02-16,680.00,Office Supplies,Staples Business,Marcus Brown,Emma Davis
+TXN-0031,2024-02-19,4800.00,Marketing,BrandBoost Agency,Sarah Chen,David Wright
+TXN-0032,2024-02-20,1950.00,Consultancy,TechFix Ltd,Priya Patel,Marcus Brown
+TXN-0033,2024-02-21,3300.00,Equipment,TechSupply UK,James Harrison,Sarah Chen
+TXN-0034,2024-02-22,820.00,Travel,Premier Travel Ltd,Emma Davis,Priya Patel
+TXN-0035,2024-02-23,6400.00,Consultancy,StrategyFirst,Marcus Brown,David Wright
+TXN-0036,2024-02-26,1200.00,Training,SkillsForward,Sarah Chen,Emma Davis
+TXN-0037,2024-02-27,7500.00,Equipment,TechFix Ltd,Priya Patel,Marcus Brown
+TXN-0038,2024-02-28,4200.00,Marketing,BrandBoost Agency,James Harrison,David Wright
+TXN-0039,2024-03-01,950.00,Office Supplies,Office Depot,Emma Davis,Sarah Chen
+TXN-0040,2024-03-04,2800.00,Travel,Premier Travel Ltd,Marcus Brown,Priya Patel
+TXN-0041,2024-03-05,5000.00,Consultancy,StrategyFirst,Sarah Chen,James Harrison
+TXN-0042,2024-03-06,10000.00,Equipment,TechSupply UK,James Harrison,David Wright
+TXN-0043,2024-03-07,1700.00,Catering,TopNosh Events,Priya Patel,Marcus Brown
+TXN-0044,2024-03-08,4950.00,Marketing,BrandBoost Agency,Emma Davis,Sarah Chen
+TXN-0045,2024-03-09,3600.00,Consultancy,TechFix Ltd,Marcus Brown,David Wright
+TXN-0046,2024-03-11,780.00,Travel,Premier Travel Ltd,Sarah Chen,Emma Davis
+TXN-0047,2024-03-12,6200.00,Equipment,TechSupply UK,James Harrison,Priya Patel
+TXN-0048,2024-03-13,2100.00,Office Supplies,Staples Business,Marcus Brown,Sarah Chen
+TXN-0049,2024-03-14,8200.00,Consultancy,StrategyFirst,James Harrison,James Harrison
+TXN-0050,2024-03-15,1450.00,Training,SkillsForward,Priya Patel,David Wright
+TXN-0051,2024-03-18,9500.00,Marketing,BrandBoost Agency,Emma Davis,Marcus Brown
+TXN-0052,2024-03-19,3900.00,Equipment,TechFix Ltd,Sarah Chen,James Harrison
+TXN-0053,2024-03-20,1100.00,Travel,Premier Travel Ltd,Marcus Brown,Priya Patel
+TXN-0054,2024-03-21,5500.00,Consultancy,StrategyFirst,James Harrison,David Wright
+TXN-0055,2024-03-22,850.00,Office Supplies,Office Depot,Priya Patel,Sarah Chen
+TXN-0056,2024-03-25,7800.00,Equipment,TechSupply UK,Emma Davis,Marcus Brown
+TXN-0057,2024-03-26,4400.00,Marketing,BrandBoost Agency,Marcus Brown,David Wright
+TXN-0058,2024-03-27,2250.00,Travel,Premier Travel Ltd,Sarah Chen,James Harrison
+TXN-0059,2024-03-28,6600.00,Consultancy,TechFix Ltd,Priya Patel,Emma Davis
+TXN-0060,2024-03-29,1800.00,Catering,TopNosh Events,James Harrison,Marcus Brown
+TXN-0061,2024-04-01,3700.00,Equipment,TechSupply UK,Emma Davis,Sarah Chen
+TXN-0062,2024-04-02,1400.00,Travel,Premier Travel Ltd,Marcus Brown,Marcus Brown
+TXN-0063,2024-04-03,5200.00,Marketing,BrandBoost Agency,Sarah Chen,David Wright
+TXN-0064,2024-04-04,900.00,Office Supplies,Staples Business,Priya Patel,James Harrison
+TXN-0065,2024-04-05,7100.00,Consultancy,StrategyFirst,James Harrison,Marcus Brown
+TXN-0066,2024-04-08,2900.00,Equipment,TechFix Ltd,Emma Davis,Sarah Chen
+TXN-0067,2024-04-09,4800.00,Travel,Premier Travel Ltd,Marcus Brown,David Wright
+TXN-0068,2024-04-10,1650.00,Training,SkillsForward,Priya Patel,Emma Davis
+TXN-0069,2024-04-11,8900.00,Marketing,BrandBoost Agency,Sarah Chen,James Harrison
+TXN-0070,2024-04-12,3400.00,Consultancy,StrategyFirst,James Harrison,Marcus Brown
+TXN-0071,2024-04-15,960.00,Office Supplies,Office Depot,Emma Davis,Priya Patel
+TXN-0072,2024-04-16,6800.00,Equipment,TechSupply UK,Marcus Brown,David Wright
+TXN-0073,2024-04-17,2400.00,Travel,Premier Travel Ltd,Sarah Chen,James Harrison
+TXN-0074,2024-04-18,5000.00,Consultancy,TechFix Ltd,Priya Patel,Emma Davis
+TXN-0075,2024-04-19,1300.00,Catering,TopNosh Events,James Harrison,Marcus Brown
+TXN-0076,2024-04-22,4600.00,Marketing,BrandBoost Agency,Emma Davis,Sarah Chen
+TXN-0077,2024-04-23,7600.00,Equipment,TechSupply UK,Marcus Brown,David Wright
+TXN-0078,2024-04-24,2000.00,Travel,Premier Travel Ltd,Sarah Chen,Priya Patel
+TXN-0079,2024-04-25,9400.00,Consultancy,StrategyFirst,James Harrison,Emma Davis
+TXN-0080,2024-04-26,1150.00,Office Supplies,Staples Business,Priya Patel,Marcus Brown
+TXN-0081,2024-04-29,5800.00,Equipment,TechFix Ltd,Emma Davis,David Wright
+TXN-0082,2024-04-30,3100.00,Marketing,BrandBoost Agency,Marcus Brown,Sarah Chen
+TXN-0083,2024-05-01,1600.00,Travel,Premier Travel Ltd,Sarah Chen,James Harrison
+TXN-0084,2024-05-02,6200.00,Consultancy,StrategyFirst,Priya Patel,Marcus Brown
+TXN-0085,2024-05-07,2700.00,Equipment,TechSupply UK,James Harrison,David Wright
+TXN-0086,2024-05-08,890.00,Office Supplies,Office Depot,Emma Davis,Sarah Chen
+TXN-0087,2024-05-09,4300.00,Marketing,BrandBoost Agency,Marcus Brown,Priya Patel
+TXN-0088,2024-05-10,8600.00,Consultancy,TechFix Ltd,Sarah Chen,David Wright
+TXN-0089,2024-05-13,1900.00,Travel,Premier Travel Ltd,Priya Patel,Emma Davis
+TXN-0090,2024-05-14,5500.00,Equipment,TechSupply UK,James Harrison,Marcus Brown
+TXN-0091,2024-05-15,3800.00,Training,SkillsForward,Emma Davis,Sarah Chen
+TXN-0092,2024-05-16,7300.00,Marketing,BrandBoost Agency,Marcus Brown,David Wright
+TXN-0093,2024-05-17,2500.00,Consultancy,StrategyFirst,Sarah Chen,James Harrison
+TXN-0094,2024-05-19,67200.00,Consultancy,JH Consulting Ltd,James Harrison,James Harrison
+TXN-0095,2024-05-20,1050.00,Office Supplies,Staples Business,Priya Patel,Emma Davis
+TXN-0096,2024-05-21,6500.00,Equipment,TechFix Ltd,Marcus Brown,David Wright
+TXN-0097,2024-05-22,4100.00,Travel,Premier Travel Ltd,Emma Davis,Sarah Chen
+TXN-0098,2024-05-23,9100.00,Marketing,BrandBoost Agency,James Harrison,Marcus Brown
+TXN-0099,2024-05-24,2200.00,Consultancy,StrategyFirst,Sarah Chen,Priya Patel
+TXN-0100,2024-05-27,5000.00,Equipment,TechSupply UK,Priya Patel,David Wright
+TXN-0101,2024-05-28,1750.00,Catering,TopNosh Events,Emma Davis,James Harrison
+TXN-0102,2024-05-29,8400.00,Marketing,BrandBoost Agency,Marcus Brown,Sarah Chen
+TXN-0103,2024-05-30,3500.00,Travel,Premier Travel Ltd,Sarah Chen,Emma Davis
+TXN-0104,2024-05-31,6900.00,Consultancy,TechFix Ltd,Priya Patel,David Wright
+TXN-0105,2024-06-03,2100.00,Equipment,TechSupply UK,James Harrison,Marcus Brown
+TXN-0106,2024-06-04,4700.00,Marketing,BrandBoost Agency,Emma Davis,Sarah Chen
+TXN-0107,2024-06-05,1300.00,Travel,Premier Travel Ltd,Marcus Brown,Priya Patel
+TXN-0108,2024-06-06,7000.00,Consultancy,StrategyFirst,Sarah Chen,David Wright
+TXN-0109,2024-06-07,3200.00,Office Supplies,Office Depot,Priya Patel,James Harrison
+TXN-0110,2024-06-10,5600.00,Equipment,TechFix Ltd,Emma Davis,Marcus Brown
+TXN-0111,2024-06-11,1900.00,Training,SkillsForward,Marcus Brown,Sarah Chen
+TXN-0112,2024-06-12,8100.00,Marketing,BrandBoost Agency,James Harrison,David Wright
+TXN-0113,2024-06-13,4400.00,Consultancy,StrategyFirst,Sarah Chen,Emma Davis
+TXN-0114,2024-06-14,2800.00,Travel,Premier Travel Ltd,Priya Patel,Marcus Brown
+TXN-0115,2024-06-17,6300.00,Equipment,TechSupply UK,James Harrison,Sarah Chen
+TXN-0116,2024-06-18,1100.00,Office Supplies,Staples Business,Emma Davis,David Wright
+TXN-0117,2024-06-19,9700.00,Consultancy,TechFix Ltd,Marcus Brown,Priya Patel
+TXN-0118,2024-06-20,3600.00,Marketing,BrandBoost Agency,Sarah Chen,James Harrison
+TXN-0119,2024-06-21,5200.00,Travel,Premier Travel Ltd,Priya Patel,Emma Davis
+TXN-0120,2024-06-24,10000.00,Equipment,TechSupply UK,James Harrison,David Wright

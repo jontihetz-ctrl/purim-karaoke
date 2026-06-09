@@ -1,0 +1,11 @@
+employee_id,name,department,role,manager,start_date,salary_band
+EMP-001,Sarah Chen,Finance,Finance Manager,CEO,2019-03-15,G5
+EMP-002,David Wright,Operations,COO,CEO,2017-09-01,G6
+EMP-003,Marcus Brown,Marketing,Marketing Director,CEO,2020-07-22,G5
+EMP-004,Emma Davis,Finance,Senior Auditor,Sarah Chen,2021-01-10,G4
+EMP-005,James Harrison,Finance,Procurement Manager,Sarah Chen,2018-05-14,G4
+EMP-006,Priya Patel,Operations,Operations Analyst,David Wright,2022-03-07,G3
+EMP-007,Thomas Lee,IT,IT Manager,David Wright,2020-11-30,G4
+EMP-008,Aisha Okonkwo,HR,HR Director,CEO,2019-08-19,G5
+EMP-009,Raj Mehta,Marketing,Digital Marketing Lead,Marcus Brown,2021-06-14,G3
+EMP-010,Fiona Clarke,Finance,Accounts Payable,Sarah Chen,2023-02-27,G2

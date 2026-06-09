@@ -1,0 +1,25 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.prose-content h2 { font-size: 1.25rem; font-weight: 700; margin: 1.5rem 0 0.75rem; color: #0f172a; }
+.prose-content h3 { font-size: 1.1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: #1e293b; }
+.prose-content p { margin: 0.75rem 0; line-height: 1.7; color: #334155; }
+.prose-content ul { margin: 0.75rem 0; padding-left: 1.5rem; }
+.prose-content li { margin: 0.35rem 0; color: #334155; line-height: 1.6; }
+.prose-content strong { color: #0f172a; font-weight: 600; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease forwards; }
