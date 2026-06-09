@@ -500,6 +500,94 @@ Benford\'s Law says in large genuine datasets, the first digit follows a specifi
       },
     ],
   },
+  {
+    id: 8,
+    emoji: '📈',
+    title: 'Building Dashboards',
+    subtitle: 'Turn audit findings into visual dashboards you can share with management',
+    duration: '30 min',
+    blocks: [
+      {
+        type: 'text',
+        content: `Being able to say "I built a dashboard from this data" is one of the most impressive things an auditor can show in a job interview or client presentation. Claude Code can build them for you — no coding knowledge needed.
+
+The approach here creates a **self-contained HTML file**. It opens in any web browser, needs no server, no software, and can be emailed or shared via Teams. It looks professional and works on any computer.`,
+      },
+      {
+        type: 'tip',
+        label: 'Why HTML dashboards?',
+        content: `HTML dashboards are the most practical choice for auditors because:\n- Open in any browser — no Excel, no Tableau, no Power BI needed\n- Can be emailed as a single file attachment\n- Work on Windows, Mac, iPad — anything with a browser\n- Claude can build one from your CSV in under a minute\n- They look as good as any professional BI tool`,
+      },
+      {
+        type: 'text',
+        content: `**Creating your first dashboard**
+
+Upload your audit data to Claude Code, then ask:`,
+      },
+      {
+        type: 'conversation',
+        label: 'Building a spend dashboard',
+        exchanges: [
+          { role: 'you', text: 'Using transactions.csv, create a professional HTML dashboard that shows: total spend by category as a bar chart, monthly spend trend as a line chart, and a summary table of the top 5 vendors by value. Make it look polished — suitable to show a CFO.' },
+          { role: 'claude', text: 'Built audit_dashboard.html. It includes:\n\n📊 Bar chart — spend by category (Consultancy leads at £89,400)\n📈 Line chart — monthly trend Jan–Jun 2024\n🏆 Top vendors table — with total values and transaction counts\n\nThe design uses a clean white layout with your brand-neutral colours. Download the file and open it in any browser to see it. Want me to add anything — like the flagged transactions or a risk summary?' },
+        ],
+      },
+      {
+        type: 'text',
+        content: `**Adding audit findings to the dashboard**`,
+      },
+      {
+        type: 'conversation',
+        exchanges: [
+          { role: 'you', text: 'Add a "Findings" section to the dashboard with a summary of the audit flags we found earlier — self-approvals, unapproved vendors, and the threshold analysis. Use red/amber/green risk colours.' },
+          { role: 'claude', text: 'Updated the dashboard. The Findings section now shows:\n\n🔴 High — 4 self-approvals (£85,000 total exposure)\n🔴 High — £67,200 transaction: unapproved vendor + self-approval by same person\n🟡 Medium — TechFix Ltd: 5 transactions (£26,850) from unapproved vendor\n🟡 Medium — Benford\'s Law deviation in digits 6 and 7\n\nEach finding has a brief description and recommended action. Download the updated file.' },
+        ],
+      },
+      {
+        type: 'text',
+        content: `**Making it interactive**`,
+      },
+      {
+        type: 'conversation',
+        exchanges: [
+          { role: 'you', text: 'Can you make the dashboard interactive — so I can click on a category in the bar chart and it shows just the transactions for that category in a table below?' },
+          { role: 'claude', text: 'Done. Click any bar in the chart and a filtered transaction table appears beneath it, showing all transactions in that category with ID, date, amount, requester, and approver. Click the bar again to clear the filter.\n\nI also added a search box so you can filter by any field — useful for looking up a specific person or vendor quickly.' },
+        ],
+      },
+      {
+        type: 'text',
+        content: `**Other useful dashboard types for auditors**`,
+      },
+      {
+        type: 'checklist',
+        items: [
+          '"Create a dashboard showing payroll spend by department, with headcount and average salary per person"',
+          '"Build a vendor risk dashboard — showing each vendor\'s total spend, contract limit, and how close they are to the limit"',
+          '"Create a timeline showing when each transaction was approved relative to when it was requested — flag anything approved more than 30 days late"',
+          '"Build a month-end variance dashboard comparing actual spend vs budget by category"',
+          '"Create a SoD risk heat map showing which employees have overlapping roles or approval authority"',
+        ],
+      },
+      {
+        type: 'text',
+        content: `**Sharing your dashboard**
+
+Once Claude creates the HTML file:\n1. Click it in the file panel to download it\n2. Open it in Chrome, Edge, or Safari — it works immediately\n3. Email it as an attachment, or upload it to SharePoint/Teams\n4. Recipients just double-click it — no software needed
+
+To impress further: ask Claude to *"add a print-to-PDF button"* so recipients can save a clean PDF copy straight from the browser.`,
+      },
+      {
+        type: 'tip',
+        label: 'The interview angle',
+        content: `If you\'re asked in a job interview "can you work with data tools?", you can honestly say:\n\n*"I\'ve used Claude Code to build interactive audit dashboards directly from CSV exports — spend analysis, risk flags, vendor compliance. I can turn raw transaction data into a CFO-ready dashboard in about 10 minutes."*\n\nThat\'s a very strong answer. Most candidates can\'t say anything close to that.`,
+      },
+      {
+        type: 'exercise',
+        label: 'Exercise — Build your audit dashboard (20 min)',
+        content: `Using transactions.csv and the findings from Module 7:\n\n1. Ask Claude: "Create a professional HTML audit dashboard from transactions.csv. Include: spend by category bar chart, monthly trend line, top 5 vendors table, and a RAG-rated findings summary based on what we\'ve discussed."\n2. Download the file and open it in your browser.\n3. Ask Claude to add one interactive feature of your choice.\n4. Ask: "Add a button that exports the findings table to CSV."\n5. Download the final version.\n\n**The goal:** End with a file you\'d actually be proud to show a partner or CFO.`,
+      },
+    ],
+  },
 ]
 
 export function getModule(id: number): Module | undefined {
