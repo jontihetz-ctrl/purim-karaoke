@@ -9,15 +9,23 @@ export default function Home() {
       {/* Hero */}
       <div className="bg-white border-b border-slate-200">
         <div className="max-w-3xl mx-auto px-6 py-16">
-          <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1 rounded-full mb-6">
-            <span>🎓</span> Beginner Course
+          <div className="flex flex-wrap gap-2 mb-6">
+            <div className="inline-flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1 rounded-full">
+              <span>🎓</span> Beginner Course
+            </div>
+            <div className="inline-flex items-center gap-2 bg-green-50 text-green-700 text-sm font-medium px-3 py-1 rounded-full">
+              <span>🌐</span> Web browser only — no downloads
+            </div>
+            <div className="inline-flex items-center gap-2 bg-purple-50 text-purple-700 text-sm font-medium px-3 py-1 rounded-full">
+              <span>✓</span> Requires Claude Pro ($20/mo)
+            </div>
           </div>
           <h1 className="text-4xl font-bold text-slate-900 mb-4 leading-tight">
             Claude Code for Auditors
           </h1>
           <p className="text-xl text-slate-600 mb-8 leading-relaxed">
             A practical crash course on using AI to supercharge your audit work.
-            No coding experience required — you&apos;ll be analysing data and writing scripts within the hour.
+            No installation, no terminal, no coding knowledge needed — runs entirely in your browser at claude.ai/code.
           </p>
           <div className="flex flex-wrap gap-6 text-sm text-slate-500">
             <div className="flex items-center gap-2">
@@ -109,8 +117,12 @@ export default function Home() {
           </div>
         </div>
 
+        <div className="mt-6 bg-slate-100 rounded-xl p-5 text-sm text-slate-600">
+          <strong className="text-slate-800">Before you start:</strong> Go to <strong>claude.ai</strong> and upgrade to <strong>Pro</strong> ($20/month). Then open <strong>claude.ai/code</strong> in your browser. That&apos;s all the setup you need — no downloads, no IT request, nothing to install.
+        </div>
+
         <p className="text-center text-slate-400 text-sm mt-10">
-          Built for auditors going into the job market in 2025 · Powered by Claude Code
+          Built for auditors going into the job market · Works with Claude Pro · Browser only
         </p>
       </div>
     </div>
