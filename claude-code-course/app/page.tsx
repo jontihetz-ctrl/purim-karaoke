@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { MODULES } from '@/lib/modules'
 
-const TOTAL_DURATION = '2.5 hrs'
+const TOTAL_DURATION = '3 hrs'
 
 export default function Home() {
   return (
@@ -105,8 +105,10 @@ export default function Home() {
               'Ask Claude to explain code written by others',
               'Write audit scripts in plain English',
               'Fix broken scripts without knowing how to code',
-              'Produce professional audit memos in minutes',
+              'Build interactive dashboards from raw data',
+              'Produce professional audit memos and reports in minutes',
               'Run Benford\'s Law checks on any dataset',
+              'Share polished findings with management as a single HTML file',
               'Stand out in interviews as an AI-savvy auditor',
             ].map(item => (
               <div key={item} className="flex items-start gap-2.5 text-sm text-slate-600">
