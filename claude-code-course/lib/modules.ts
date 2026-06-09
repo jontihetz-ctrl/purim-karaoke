@@ -282,7 +282,7 @@ You don\'t have to ask for a general summary. Ask specific questions:`,
         label: 'Running a full audit scan',
         exchanges: [
           { role: 'you', text: 'Review transactions.csv as an external auditor. Flag anything suspicious.' },
-          { role: 'claude', text: 'Scanned 120 transactions. Here are my findings:\n\n🔴 **High priority:**\n- 4 transactions where requester = approver (self-approval)\n- 1 transaction for £67,200 with no approver other than the requester themselves\n\n🟡 **Medium priority:**\n- 2 vendors not on the approved list (TechFix Ltd, JH Consulting Ltd)\n- Several round-number transactions (£5,000, £10,000) — worth verifying\n\n🟢 **Low priority:**\n- No weekend transactions found\n- No duplicate transaction IDs\n\nWant me to export the high-priority items to a separate file?' },
+          { role: 'claude', text: 'Scanned 120 transactions. Here are my findings:\n\n🔴 **High priority:**\n- 5 transactions where requester = approver (self-approval) — total exposure £86,400\n- TXN-0094 (£67,200, Sunday): self-approval + unapproved vendor "JH Consulting Ltd" + approved on a weekend — three red flags on one transaction\n- TXN-0009: vendor listed as "James Harrison" (a person\'s name, not a company) — possible fictitious vendor\n\n🟡 **Medium priority:**\n- 3 vendors not on the approved list: TechFix Ltd (15 transactions, £89,549), JH Consulting Ltd (1 transaction, £67,200), "James Harrison" (1 transaction, £8,200)\n- 2 weekend transactions: TXN-0045 (Saturday, £3,600) and TXN-0094 (Sunday, £67,200)\n\n🟢 **Low priority:**\n- Several round-number transactions (£5,000, £10,000) — worth verifying\n- No duplicate transaction IDs\n\nWant me to export the high-priority items to a separate file?' },
         ],
       },
       {
@@ -341,7 +341,7 @@ You don\'t have to ask for a general summary. Ask specific questions:`,
         label: 'Writing your first script',
         exchanges: [
           { role: 'you', text: 'Write a Python script that reads transactions.csv and produces a summary showing: total spend by category, number of transactions per month, and top 5 approvers by value. Show me the output.' },
-          { role: 'claude', text: 'Written and running analysis.py now…\n\n**Total spend by category:**\nConsultancy: £89,400 | Equipment: £78,200 | Marketing: £52,100 | Travel: £28,500 | Other: £14,200\n\n**Transactions per month:**\nJan: 18 | Feb: 20 | Mar: 22 | Apr: 20 | May: 22 | Jun: 18\n\n**Top 5 approvers by value:**\n1. David Wright — £98,400\n2. Sarah Chen — £72,100\n…\n\nWant me to save this as a formatted report?' },
+          { role: 'claude', text: 'Written and running analysis.py now…\n\n**Total spend by category:**\nConsultancy: £211,750 | Equipment: £151,799 | Marketing: £103,850 | Travel: £48,370 | Office Supplies: £17,351 | Training: £13,850 | Catering: £11,150\n\n**Transactions per month:**\nJan: 18 | Feb: 20 | Mar: 22 | Apr: 22 | May: 22 | Jun: 16\n\n**Top 5 approvers by value:**\n1. David Wright — £176,491\n2. James Harrison — £119,600\n3. Marcus Brown — £102,449\n4. Sarah Chen — £80,510\n5. Emma Davis — £45,410\n\nWant me to save this as a formatted report?' },
         ],
       },
       {
@@ -383,7 +383,7 @@ Flag transactions where the same person requested and approved.`,
         type: 'conversation',
         exchanges: [
           { role: 'you', text: 'In transactions.csv, find all rows where the "requester" column equals the "approver" column. Show the transaction ID, date, amount, and the person\'s name.' },
-          { role: 'claude', text: 'Found 4 SoD violations:\n\n| ID | Date | Amount | Person |\n|---|---|---|---|\n| TXN-0009 | 2024-01-18 | £8,200 | James Harrison |\n| TXN-0026 | 2024-02-12 | £1,400 | Priya Patel |\n| TXN-0049 | 2024-03-14 | £8,200 | James Harrison |\n| TXN-0094 | 2024-05-19 | £67,200 | James Harrison |\n\nJames Harrison self-approved three times, including a £67,200 transaction. Want me to export this and add a risk flag column?' },
+          { role: 'claude', text: 'Found 5 SoD violations:\n\n| ID | Date | Amount | Person |\n|---|---|---|---|\n| TXN-0009 | 2024-01-18 | £8,200 | James Harrison |\n| TXN-0026 | 2024-02-12 | £1,400 | Priya Patel |\n| TXN-0049 | 2024-03-14 | £8,200 | James Harrison |\n| TXN-0062 | 2024-04-02 | £1,400 | Marcus Brown |\n| TXN-0094 | 2024-05-19 | £67,200 | James Harrison |\n\nTotal exposure: £86,400. James Harrison self-approved three times, including TXN-0094 for £67,200 — which was also processed on a Sunday from an unapproved vendor. Want me to export this and add a risk flag column?' },
         ],
       },
       {
@@ -401,7 +401,7 @@ Flag transactions where the same person requested and approved.`,
         type: 'text',
         content: `**3. Benford\'s Law analysis**
 
-Benford\'s Law says in large genuine datasets, the first digit follows a specific distribution. Deviations can signal manipulation.`,
+Benford\'s Law says in large genuine datasets, the first digit follows a specific distribution. Deviations can signal manipulation. This works best on datasets of 1,000+ rows — on smaller sets the results are less reliable, but it\'s still worth running as a flag.`,
       },
       {
         type: 'conversation',
@@ -418,7 +418,7 @@ Benford\'s Law says in large genuine datasets, the first digit follows a specifi
         type: 'conversation',
         exchanges: [
           { role: 'you', text: 'Compare the vendors in transactions.csv against approved_vendors.csv. List any transactions from vendors not on the approved list.' },
-          { role: 'claude', text: 'Found 2 unapproved vendors:\n- **TechFix Ltd** — 5 transactions, £26,850 total. Not on approved list.\n- **JH Consulting Ltd** — 1 transaction, £67,200 total. Not on approved list, and the requester/approver is James Harrison. This may warrant further investigation.' },
+          { role: 'claude', text: 'Found 3 unapproved vendors:\n- **TechFix Ltd** — 15 transactions, £89,549 total. Not on the approved vendor list.\n- **JH Consulting Ltd** — 1 transaction, £67,200. Not approved, and TXN-0094 is also a self-approval processed on a Sunday — three flags on one transaction.\n- **"James Harrison"** — listed as the vendor on TXN-0009. A person\'s name as a vendor is unusual and may indicate a fictitious vendor or undisclosed related-party transaction.\n\nRecommend immediate review of TXN-0094 and all TechFix Ltd transactions.' },
         ],
       },
       {
@@ -540,7 +540,7 @@ Upload your audit data to Claude Code, then ask:`,
         type: 'conversation',
         exchanges: [
           { role: 'you', text: 'Add a "Findings" section to the dashboard with a summary of the audit flags we found earlier — self-approvals, unapproved vendors, and the threshold analysis. Use red/amber/green risk colours.' },
-          { role: 'claude', text: 'Updated the dashboard. The Findings section now shows:\n\n🔴 High — 4 self-approvals (£85,000 total exposure)\n🔴 High — £67,200 transaction: unapproved vendor + self-approval by same person\n🟡 Medium — TechFix Ltd: 5 transactions (£26,850) from unapproved vendor\n🟡 Medium — Benford\'s Law deviation in digits 6 and 7\n\nEach finding has a brief description and recommended action. Download the updated file.' },
+          { role: 'claude', text: 'Updated the dashboard. The Findings section now shows:\n\n🔴 High — 5 self-approvals totalling £86,400 (James Harrison x3, Priya Patel, Marcus Brown)\n🔴 High — TXN-0094 (£67,200, Sunday): self-approval + unapproved vendor + weekend — three flags\n🔴 High — "James Harrison" listed as vendor on TXN-0009 — possible fictitious vendor\n🟡 Medium — TechFix Ltd: 15 transactions (£89,549) from unapproved vendor\n🟡 Medium — 2 weekend transactions including the £67,200 outlier\n\nEach finding links to the underlying transactions. Download the updated file.' },
         ],
       },
       {
