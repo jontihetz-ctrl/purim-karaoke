@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #111b21;
+  color: #e9edef;
+}
+
+.nav-link {
+  @apply flex items-center gap-2 px-3 py-2 rounded-lg text-wa-sub hover:text-wa-text hover:bg-wa-input transition-colors text-sm;
+}
+.nav-link.active {
+  @apply text-wa-green bg-wa-input;
+}
+
+.card {
+  @apply bg-wa-panel rounded-xl p-5 border border-wa-border;
+}
+
+.spend-bar {
+  @apply h-2 rounded-full bg-wa-input overflow-hidden;
+}
+.spend-bar-fill {
+  @apply h-full rounded-full transition-all duration-500;
+}
