@@ -87,7 +87,7 @@ export default function Dashboard() {
   const isConnected = status?.connected;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-semibold">Dashboard</h2>
         <button onClick={fetchAll} className="text-xs text-wa-sub hover:text-wa-text transition-colors">

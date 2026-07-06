@@ -41,7 +41,7 @@ export default function ChatsPage() {
   }, []);
 
   return (
-    <div className="max-w-2xl mx-auto">
+    <div>
       <h2 className="text-xl font-semibold mb-6">Conversations</h2>
       {loading && <p className="text-wa-sub">Loading…</p>}
       {!loading && convos.length === 0 && (

@@ -64,7 +64,7 @@ export default function IntelligencePage() {
   const maxTagCount = stats?.top_tags?.[0]?.count ?? 1;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-xl font-semibold">Guardian Net Intelligence</h2>

@@ -79,7 +79,7 @@ export default function SettingsPage() {
   if (loading) return <p className="text-wa-sub">Loading…</p>;
 
   return (
-    <div className="max-w-xl mx-auto space-y-6">
+    <div className="max-w-lg space-y-6">
       <h2 className="text-xl font-semibold">Settings</h2>
 
       {/* Target numbers */}
