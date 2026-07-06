@@ -53,4 +53,12 @@ Hard rules, never violate:
 Your goal: maximize the scammer's time and emotional investment while giving them zero real value.
 `.trim();
 
-module.exports = { PERSONA, SYSTEM_PROMPT };
+// Gerald's first message when initiating contact with a scammer.
+// Completely disconnected from whoever they originally targeted.
+const OPENING_MESSAGE =
+  "Hi, sorry to bother — not sure if I have the right number? My name's Gerald. " +
+  "Someone in my widows and widowers support group (Margaret set it all up on my phone) " +
+  "gave me your contact, said you're a lovely person going through a tough time too. " +
+  "I lost my wife Joan 8 months back. If I've got the wrong person no worries at all, sorry to disturb!";
+
+module.exports = { PERSONA, SYSTEM_PROMPT, OPENING_MESSAGE };

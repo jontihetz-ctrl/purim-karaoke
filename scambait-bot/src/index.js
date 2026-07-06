@@ -1,5 +1,5 @@
-// index.js — WhatsApp scambait bot + Guardian Net Phase 0 signal recording.
-// Only replies to numbers explicitly listed in config/targets.json.
+// index.js — WhatsApp scambait bot + Guardian Net Phase 0.
+// Gerald auto-initiates contact when a new number is added to targets.json.
 
 const {
   default: makeWASocket,
@@ -18,15 +18,20 @@ const { generateReply } = require("./claudeClient");
 const { updateSignal } = require("./signals");
 const { classifyMessage, getEscalation } = require("./tagging");
 const { startApi } = require("./api");
+const { OPENING_MESSAGE } = require("./persona");
 
 const AUTH_DIR = path.join(__dirname, "..", "auth");
 const TARGETS_FILE = path.join(__dirname, "..", "config", "targets.json");
 const DATA_DIR = path.join(__dirname, "..", "data");
 const STATUS_FILE = path.join(DATA_DIR, "status.json");
 const QR_FILE = path.join(DATA_DIR, "qr.json");
+const INITIATED_FILE = path.join(DATA_DIR, "initiated.json");
 
 function ensureDataDir() {
   if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
+  if (!fs.existsSync(path.join(__dirname, "..", "config"))) {
+    fs.mkdirSync(path.join(__dirname, "..", "config"), { recursive: true });
+  }
 }
 
 function writeStatus(status) {
@@ -45,7 +50,21 @@ function clearQR() {
 
 function loadTargets() {
   if (!fs.existsSync(TARGETS_FILE)) return [];
-  return JSON.parse(fs.readFileSync(TARGETS_FILE, "utf-8"));
+  try { return JSON.parse(fs.readFileSync(TARGETS_FILE, "utf-8")); } catch { return []; }
+}
+
+function getInitiated() {
+  if (!fs.existsSync(INITIATED_FILE)) return [];
+  try { return JSON.parse(fs.readFileSync(INITIATED_FILE, "utf-8")); } catch { return []; }
+}
+
+function markInitiated(jid) {
+  const list = getInitiated();
+  if (!list.includes(jid)) {
+    list.push(jid);
+    ensureDataDir();
+    fs.writeFileSync(INITIATED_FILE, JSON.stringify(list, null, 2));
+  }
 }
 
 function randomDelayMs() {
@@ -54,7 +73,6 @@ function randomDelayMs() {
   return Math.floor(min + Math.random() * (max - min));
 }
 
-// Fire-and-forget signal recording — never blocks the reply
 async function recordSignalAsync(jid, text) {
   try {
     const { tags, payments } = await classifyMessage(text);
@@ -66,14 +84,61 @@ async function recordSignalAsync(jid, text) {
   }
 }
 
+// Send Gerald's opening message to a new target (fire once per JID)
+async function initiateContact(sock, jid) {
+  const initiated = getInitiated();
+  if (initiated.includes(jid)) return;
+
+  // Human-like delay before sending first message: 15–45 seconds
+  const delay = 15000 + Math.floor(Math.random() * 30000);
+  console.log(`[${jid}] New target — sending opening message in ${Math.round(delay / 1000)}s`);
+  await new Promise((r) => setTimeout(r, delay));
+
+  try {
+    await sock.sendPresenceUpdate("composing", jid);
+    await new Promise((r) => setTimeout(r, 2500));
+    await sock.sendMessage(jid, { text: OPENING_MESSAGE });
+    appendMessage(jid, "assistant", OPENING_MESSAGE);
+    markInitiated(jid);
+    console.log(`[${jid}] Opening message sent.`);
+  } catch (e) {
+    console.error(`[${jid}] Failed to send opening message:`, e.message);
+  }
+}
+
+// Watch targets.json — fire initiateContact for any new JIDs added
+function watchTargets(sock) {
+  let knownTargets = new Set(loadTargets());
+
+  // Initiate with any targets that were added before the bot connected
+  for (const jid of knownTargets) {
+    initiateContact(sock, jid).catch(console.error);
+  }
+
+  if (!fs.existsSync(TARGETS_FILE)) return;
+
+  fs.watch(TARGETS_FILE, () => {
+    // Debounce
+    setTimeout(() => {
+      const current = loadTargets();
+      for (const jid of current) {
+        if (!knownTargets.has(jid)) {
+          knownTargets.add(jid);
+          initiateContact(sock, jid).catch(console.error);
+        }
+      }
+    }, 500);
+  });
+}
+
 async function startBot() {
+  ensureDataDir();
   writeStatus({ connected: false, phone: null, connectedAt: null, lastMessageAt: null });
 
-  // Start the local Guardian Net API
   if (process.env.SIGNAL_SALT) {
     startApi();
   } else {
-    console.warn("[guardian-net] SIGNAL_SALT not set — signals will not be recorded and API is disabled.");
+    console.warn("[guardian-net] SIGNAL_SALT not set — signals disabled.");
   }
 
   const { state, saveCreds } = await useMultiFileAuthState(AUTH_DIR);
@@ -114,6 +179,8 @@ async function startBot() {
       const phone = sock.user?.id?.split(":")[0] ?? null;
       writeStatus({ connected: true, phone, connectedAt: new Date().toISOString(), lastMessageAt: null });
       console.log("Connected to WhatsApp as", phone);
+      // Start watching for new targets
+      watchTargets(sock);
     }
   });
 
@@ -136,7 +203,6 @@ async function startBot() {
 
         console.log(`[${jid}] scammer: ${text}`);
 
-        // Update lastMessageAt in status
         try {
           if (fs.existsSync(STATUS_FILE)) {
             const s = JSON.parse(fs.readFileSync(STATUS_FILE, "utf-8"));
@@ -145,9 +211,8 @@ async function startBot() {
           }
         } catch {}
 
-        // Guardian Net: classify + record signal (fire and forget)
         if (process.env.SIGNAL_SALT) {
-          recordSignalAsync(jid, text); // intentionally not awaited
+          recordSignalAsync(jid, text);
         }
 
         appendMessage(jid, "user", text);
@@ -183,4 +248,4 @@ async function startBot() {
   });
 }
 
-startBot().catch((err) => console.error("Fatal error starting bot:", err));
+startBot().catch((err) => console.error("Fatal error:", err));
