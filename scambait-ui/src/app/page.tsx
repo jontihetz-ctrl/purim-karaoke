@@ -156,11 +156,11 @@ export default function Dashboard() {
       {/* Opening message card */}
       <div className="card">
         <h3 className="font-semibold mb-2">Gerald&apos;s Opening Message</h3>
-        <p className="text-xs text-wa-sub mb-3">Copy this when you first message a scammer from your burner number. Gerald takes over after they reply.</p>
+        <p className="text-xs text-wa-sub mb-3">Gerald sends this automatically when you add a target. No action needed — just add the number in Settings.</p>
         <div className="bg-wa-input rounded-lg p-3 text-sm text-wa-text font-mono leading-relaxed select-all border border-wa-border">
-          Hi, sorry to bother — not sure if I have the right number? My name&apos;s Gerald. Someone in my widows and widowers support group (Margaret set it all up on my phone) gave me your contact, said you might be going through a similar time to me. I lost my wife 8 months back. If I&apos;ve got the wrong person no worries at all, sorry to disturb!
+          Hallo, sorry to bother you — not sure if I have the right number? My name&apos;s Gerald, Gerald Visser. I&apos;m from Benoni on the East Rand. A lady in our widows and widowers WhatsApp group, Margaret Botha, she shared the group members&apos; numbers so we could reach out to each other. Someone gave me your contact and said you might be going through a similar time to me. I lost my wife Joan 8 months back. Ag, if I&apos;ve got the wrong person, no worries at all — sorry to disturb! Just trying to connect with people who understand, you know?
         </div>
-        <p className="text-xs text-wa-sub mt-2">This gives you a clean backstory with zero link to whoever the scammer originally targeted.</p>
+        <p className="text-xs text-wa-sub mt-2">Zero link to whoever the scammer originally targeted — Gerald found the number through Margaret&apos;s grief group.</p>
       </div>
     </div>
   );
