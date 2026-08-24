@@ -1,5 +1,7 @@
 # Claude Session Guide
 
+> **IMPORTANT — READ FIRST:** This project has a VPS (159.223.187.231) accessed via an HTTP bridge — NOT SSH. No SSH keys needed. Run all VPS commands via the curl pattern below. The session-start hook auto-exports `$VPS_BRIDGE_URL` and `$VPS_BRIDGE_SECRET` into your environment. Verify connection before any task.
+
 ## Session Start Checklist
 
 At the start of every session, **always do this first**:
