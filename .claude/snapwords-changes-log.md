@@ -25,3 +25,21 @@
 
 ### Deployed
 - Production: https://snapwords.net
+
+## Session: 2026-10-15 — End-to-end test + fixes
+
+### Critical fix: students couldn't join classes
+- The `classes` and `students` tables stopped being readable by anonymous visitors (database access rules changed outside this session). New students got "Class not found", and class/student names were blank everywhere.
+- Fix keeps the tables locked and reads them server-side with the service client, selecting only safe columns: `api/students`, `api/worlds/[worldId]` GET, `api/classes/[classId]` GET (public fallback: id, name, roster), `play/[lessonId]/page.tsx`, `class/[classId]/page.tsx`, `class/[classId]/world/[worldId]/page.tsx`. Student names capped at 40 chars.
+- Backups on VPS: `/root/snapwords-rls-fix-backup/`
+
+### Dashboard: swipe between a class's worlds
+- Each class card is now a carousel of all its worlds (busiest first). Swipe on touch, arrows + dots on desktop. Other worlds load when first shown.
+- Stats under the card (count, newest arrival, medal progress, "+N this week") follow the visible world.
+- Backups on VPS: `/root/snapwords-carousel-backup/`
+
+### Reveal screen
+- The new creature's name label moved under the scene so it no longer covers the creature.
+
+### Tested
+- Full student flow (join → picker → Matching → design → reveal) on all 8 world types, desktop + phone, plus the teacher dashboard. Test creatures and lesson deleted afterwards.
