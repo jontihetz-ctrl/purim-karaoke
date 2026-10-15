@@ -44,7 +44,7 @@ vps() {
 
 - **Vercel token**: `/root/.vercel/auth.json` on the VPS
 - **GitHub token**: stored on VPS
-- To deploy snapwords: read token from VPS at `/root/.vercel/auth.json`, then run `vercel --prod --yes --token TOKEN` in the snapwords directory
+- To deploy snapwords: see **"SnapWords — always sync with GitHub first"** below. Never run `vercel --prod` on a folder that isn't up to date with `origin/main`.
 
 ---
 
@@ -71,7 +71,15 @@ vps() {
 
 **Beta status:** Free and unlimited. Beta end date is **June 26, 2026**. Change it in both `billing.ts` and `UsageBanner.tsx`.
 
-**To deploy after changes:**
+**SnapWords — always sync with GitHub first (READ BEFORE ANY CHANGE OR DEPLOY):**
+Production normally deploys automatically from GitHub `main`; other sessions push there too. On 2026-10-15 the VPS folder was a month behind GitHub, and running `vercel --prod` from it rolled production back by a month until it was caught and reverted. Before editing or deploying:
+1. `cd /root/.openclaw/workspace-main/projects/snapwords && HOME=/root git fetch origin && HOME=/root git status -sb` — if it says `behind`, run `git pull --rebase origin main` first (stash local edits if needed).
+2. Make changes, then commit and `git push origin main`. The push triggers the Vercel production deploy — prefer this over `vercel --prod`.
+3. Only use the manual `vercel --prod` command below if the folder is exactly at `origin/main` plus your pushed commits.
+4. Don't run `tsc`/`next build` from several agents at once — the VPS has 1GB RAM.
+5. `.env.local` is not tracked by git (it holds live keys) — never `git add` it.
+
+**Manual deploy (only after step 1):**
 ```bash
 source /home/user/purim-karaoke/.claude/vps.env
 curl -s -X POST "$VPS_BRIDGE_URL" -H "X-Secret: $VPS_BRIDGE_SECRET" \
