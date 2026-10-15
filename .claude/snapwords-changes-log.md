@@ -1,0 +1,27 @@
+# SnapWords Changes Log
+
+## Session: 2026-10-15 — Next-Level Redesign
+
+### Security hardening (applied via VPS bridge)
+- `next.config.js`: Added security headers (X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, X-XSS-Protection, X-DNS-Prefetch-Control)
+- `src/app/api/lessons/route.ts`: Added in-memory rate limiting (30 req/min per IP) and server-side input validation (title ≤200 chars, ≤200 pairs, each value ≤500 chars)
+
+### Game picker redesign (`src/app/play/[lessonId]/PlayPageClient.tsx`)
+- Replaced plain white vertical card list with colorful 2-column gradient tile grid
+- Each game has its own gradient: violet (Matching), blue (Memory), red (Word Fighter), emerald (Crossword), amber (Spell It), cyan (Word Finder)
+- Added taglines per game ("Pair them up", "Flip and find", etc.)
+- Hover scale animation on each tile
+- Pronounce It (beta) remains as full-width card below the grid
+
+### Landing page redesign (`src/app/page.tsx`)
+- Hero background: generic blue gradient → deep aquarium dark (#071828 → #0C2340)
+- Headline: "Vocabulary games your students actually want to play" → "Every game they play builds your class's world"
+- Sub-copy now mentions the class world reward mechanic
+- Second CTA: "Try a demo game" → "🐠 See a live class world"
+- Games grid tiles: plain white cards → colorful gradient tiles per game
+- Fish tank section: light sky/blue → dark navy background to match hero
+- Final CTA: standard blue gradient → blue-to-violet diagonal
+- All copy updated to lead with the world mechanic as the primary value prop
+
+### Deployed
+- Production: https://snapwords.net
