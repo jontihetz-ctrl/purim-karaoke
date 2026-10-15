@@ -43,3 +43,12 @@
 
 ### Tested
 - Full student flow (join → picker → Matching → design → reveal) on all 8 world types, desktop + phone, plus the teacher dashboard. Test creatures and lesson deleted afterwards.
+
+## Session: 2026-10-15 — Site-wide design pass
+- New shared pieces: `src/components/ui/TeacherHero.tsx` (navy header band) and `src/lib/gameStyle.ts` (one gradient per game).
+- Teacher pages on the navy header: class detail (tabs inside the header), lesson new/view/edit (games shown in their colours), library (search inside the header), account, billing/upgrade.
+- Login, reset-password, resend-confirmation, contact: navy background with centred card.
+- Student side: every game's top bar uses its game colour (incl. crossword + word finder), restyled name picker and completion screen, navy header on the public class and world pages, fixed the "Residents" heading overlapping the "swam further away" note.
+- Dashboard: admin link (🛠) now visible on phones; "+ New lesson" shortened to "+" on phones so it isn't cut off.
+- Backup of all source before the pass: `/root/snapwords-design-backup/src-before-design.tgz`; per-file backups in `/root/snapwords-design-backup/{A,B,C,D,E}/`.
+- Verified: no new type errors, screenshots of every page, full student flow on desktop + phone, no page errors.
