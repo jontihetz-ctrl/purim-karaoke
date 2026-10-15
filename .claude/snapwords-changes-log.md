@@ -52,3 +52,11 @@
 - Dashboard: admin link (🛠) now visible on phones; "+ New lesson" shortened to "+" on phones so it isn't cut off.
 - Backup of all source before the pass: `/root/snapwords-design-backup/src-before-design.tgz`; per-file backups in `/root/snapwords-design-backup/{A,B,C,D,E}/`.
 - Verified: no new type errors, screenshots of every page, full student flow on desktop + phone, no page errors.
+
+## Session: 2026-10-15 — Incident: stale deploy rolled production back, then merged
+- **What happened:** the VPS copy of SnapWords was a month behind GitHub `main` (last synced Sep 9). Every `vercel --prod` from it today (15:51–17:48 UTC) replaced the Oct 12 production build, removing a month of fixes (security/RLS lockdown, billing, email opt-out, game fixes, new characters). The "class not found" bug found earlier today was this regression, not a new bug.
+- **Damage window:** ~15:51–18:10 UTC. No scheduled emails ran in that window.
+- **Fix:** promoted the Oct 12 build back to production; merged today's redesign onto `origin/main` (20 conflicts resolved, Oct 12 logic kept everywhere, design re-applied); type check clean (0 errors); pushed merge `84d0d384` to `main`, which auto-deployed via GitHub.
+- **Also in the merge:** security headers now allow mic/camera on the site's own pages (the earlier version would have broken Pronounce It); `.env.local`, `.next/` and backup files untracked; never-deployed stray endpoints (`admin/debug-users`, `admin-email`, `vacation-email`, `suggest`) and an uncommitted SoundQuest rewrite left out — still recoverable from local branch `redesign-oct15` on the VPS.
+- **Prevention:** CLAUDE.md now requires `git fetch`/sync before any SnapWords change, and deploying by pushing to `main`.
+- **Verified after merge:** student flow on desktop + phone (designer now opens automatically after a win — Oct 12 behaviour), dashboard carousel, all pages, no errors. VPS copy now equals `origin/main`; temporary backups removed.
