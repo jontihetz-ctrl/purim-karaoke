@@ -1,0 +1,266 @@
+{
+ "_how": "Each Hebrew word: 'he' is how it is written in the subtitles (with nikud). Longest keys match first, case-insensitive. Pronunciation is the narrator's own.",
+ "Parshas Noach": {
+  "he": "פָּרָשַׁת נֹחַ",
+  "say": "pˈɑɹʃəs nˈOɑχ"
+ },
+ "Good Shabbos": {
+  "he": "גוּט שַׁבָּת",
+  "say": "ɡʊt ʃˈɑbəs"
+ },
+ "Hashem's": {
+  "he": "הַשֵּׁם",
+  "say": "hɑʃˈɛmz",
+  "suffix": "'s"
+ },
+ "Hashem": {
+  "he": "הַשֵּׁם",
+  "say": "hɑʃˈɛm"
+ },
+ "Noach": {
+  "he": "נֹחַ",
+  "say": "nˈOɑχ"
+ },
+ "parsha": {
+  "he": "פָּרָשָׁה",
+  "say": "pˈɑɹʃə"
+ },
+ "tzaddik": {
+  "he": "צַדִּיק",
+  "say": "tsˈɑdɪk"
+ },
+ "teivah": {
+  "he": "תֵּבָה",
+  "say": "tˈAvə"
+ },
+ "tzohar": {
+  "he": "צֹהַר",
+  "say": "tsˈOhɑɹ"
+ },
+ "Shem": {
+  "he": "שֵׁם",
+  "say": "ʃˈɛm"
+ },
+ "Cham": {
+  "he": "חָם",
+  "say": "χˈɑm"
+ },
+ "Yefes": {
+  "he": "יֶפֶת",
+  "say": "jˈɛfəs"
+ },
+ "teshuva": {
+  "he": "תְּשׁוּבָה",
+  "say": "təʃˈuvə"
+ },
+ "mabul": {
+  "he": "מַבּוּל",
+  "say": "mɑbˈul"
+ },
+ "korbanos": {
+  "he": "קׇרְבָּנוֹת",
+  "say": "kɔɹbɑnˈOs"
+ },
+ "keshes": {
+  "he": "קֶשֶׁת",
+  "say": "kˈɛʃəs"
+ },
+ "Ararat": {
+  "he": "אֲרָרָט",
+  "say": "ɑɹɑɹˈɑt"
+ },
+ "Shinar": {
+  "he": "שִׁנְעָר",
+  "say": "ʃɪnˈɑɹ"
+ },
+ "Bavel": {
+  "he": "בָּבֶל",
+  "say": "bˈɑvəl"
+ },
+ "Terach": {
+  "he": "תֶּרַח",
+  "say": "tˈɛɹɑχ"
+ },
+ "Avram": {
+  "he": "אַבְרָם",
+  "say": "ˈɑvɹɑm"
+ },
+ "Adam": {
+  "he": "אָדָם",
+  "say": "ˈɑdɑm"
+ },
+ "Shabbos": {
+  "he": "שַׁבָּת",
+  "say": "ʃˈɑbəs"
+ },
+ "Parshas Bereishis": {
+  "he": "פָּרָשַׁת בְּרֵאשִׁית",
+  "say": ""
+ },
+ "Bereishis": {
+  "he": "בְּרֵאשִׁית",
+  "say": ""
+ },
+ "Gan Eden": {
+  "he": "גַּן עֵדֶן",
+  "say": ""
+ },
+ "Eitz HaDaas": {
+  "he": "עֵץ הַדַּעַת",
+  "say": ""
+ },
+ "Chava": {
+  "he": "חַוָּה",
+  "say": ""
+ },
+ "nachash": {
+  "he": "נָחָשׁ",
+  "say": ""
+ },
+ "Ayeka": {
+  "he": "אַיֶּכָּה",
+  "say": ""
+ },
+ "Kayin": {
+  "he": "קַיִן",
+  "say": ""
+ },
+ "Hevel": {
+  "he": "הֶבֶל",
+  "say": ""
+ },
+ "korban": {
+  "he": "קׇרְבָּן",
+  "say": ""
+ },
+ "Shes": {
+  "he": "שֵׁת",
+  "say": ""
+ },
+ "Mesushelach": {
+  "he": "מְתוּשֶׁלַח",
+  "say": ""
+ },
+ "Chanoch": {
+  "he": "חֲנוֹךְ",
+  "say": ""
+ },
+ "Chava's": {
+  "he": "חַוָּה",
+  "say": "",
+  "suffix": "'s"
+ },
+ "Kayin's": {
+  "he": "קַיִן",
+  "say": "",
+  "suffix": "'s"
+ },
+ "Hevel's": {
+  "he": "הֶבֶל",
+  "say": "",
+  "suffix": "'s"
+ },
+ "Adam's": {
+  "he": "אָדָם",
+  "say": "",
+  "suffix": "'s"
+ },
+ "Parshas Lech Lecha": {
+  "he": "פָּרָשַׁת לֶךְ לְךָ",
+  "say": ""
+ },
+ "Lech lecha": {
+  "he": "לֶךְ לְךָ",
+  "say": ""
+ },
+ "Sarai": {
+  "he": "שָׂרַי",
+  "say": ""
+ },
+ "Sarah": {
+  "he": "שָׂרָה",
+  "say": ""
+ },
+ "Lot": {
+  "he": "לוֹט",
+  "say": ""
+ },
+ "Charan": {
+  "he": "חָרָן",
+  "say": ""
+ },
+ "Canaan": {
+  "he": "כְּנַעַן",
+  "say": ""
+ },
+ "mizbe'ach": {
+  "he": "מִזְבֵּחַ",
+  "say": ""
+ },
+ "Mitzrayim": {
+  "he": "מִצְרַיִם",
+  "say": ""
+ },
+ "Pharaoh": {
+  "he": "פַּרְעֹה",
+  "say": ""
+ },
+ "Sedom": {
+  "he": "סְדֹם",
+  "say": ""
+ },
+ "Eliezer": {
+  "he": "אֱלִיעֶזֶר",
+  "say": ""
+ },
+ "Chazal": {
+  "he": "חֲזַ\"ל",
+  "say": ""
+ },
+ "Malki-tzedek": {
+  "he": "מַלְכִּי־צֶדֶק",
+  "say": ""
+ },
+ "Shalem": {
+  "he": "שָׁלֵם",
+  "say": ""
+ },
+ "Rashi": {
+  "he": "רַשִׁ\"י",
+  "say": ""
+ },
+ "Hagar": {
+  "he": "הָגָר",
+  "say": ""
+ },
+ "Yishmael": {
+  "he": "יִשְׁמָעֵאל",
+  "say": ""
+ },
+ "Avraham": {
+  "he": "אַבְרָהָם",
+  "say": ""
+ },
+ "hei": {
+  "he": "ה",
+  "say": ""
+ },
+ "bris milah": {
+  "he": "בְּרִית מִילָה",
+  "say": ""
+ },
+ "Yitzchak": {
+  "he": "יִצְחָק",
+  "say": ""
+ },
+ "Lot's": {
+  "he": "לוֹט",
+  "say": "",
+  "suffix": "'s"
+ },
+ "Pharaoh's": {
+  "he": "פַּרְעֹה",
+  "say": "",
+  "suffix": "'s"
+ }
+}
