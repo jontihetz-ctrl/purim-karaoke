@@ -1,5 +1,5 @@
 // ── SCENES (Lech Lecha) ─────────────────────────────────────────────────────
-// Content rules: Hashem only as light. Sarai/Sarah and Hagar are never drawn. The war is shown without violence (a night chase, the captives freed).
+// Content rules: Hashem only as light. Women (Sarai/Sarah) are drawn dressed modestly (Person.female). Hagar is not shown. The war is shown without violence (a night chase, the captives freed).
 Person avram() { Person P = defaultPerson(); P.robe = vec3(0.55, 0.18, 0.22); P.trim = vec3(0.92, 0.82, 0.55); P.beard = vec3(0.72, 0.68, 0.62); P.beardLen = 0.8;
   P.wrap = vec3(0.95, 0.92, 0.85); P.skin = vec3(0.9, 0.7, 0.55); P.blink = blinkAt(0.05); return P; }
 Person lotP() { Person P = defaultPerson(); P.robe = vec3(0.3, 0.5, 0.4); P.trim = vec3(0.82, 0.72, 0.45); P.beard = vec3(0.35, 0.22, 0.1); P.beardLen = 0.35;
@@ -69,8 +69,9 @@ vec3 sceneJourney(vec2 p, float lt) {
   float march = fract(lt * 0.035) * 0.25;
   for (int i = 0; i < 6; i++) drawAnimal(col, p, vec2(-0.95 + float(i) * 0.08 + march, -0.34 - 0.015 * float(i % 2)), 0.08, 4, uT * 7.0 + float(i), 1.0);
   drawCamel(col, p, vec2(-0.45 + march, -0.31), 0.24, uT * 4.0, 1.0, true); drawCamel(col, p, vec2(-0.14 + march, -0.3), 0.24, uT * 4.0 + 1.0, 1.0, true);
-  Person L = lotP(); L.facing = 1.0; L.walk = uT * 5.0; L.armF = vec2(0.3, 0.3); drawPerson(col, p, vec2(0.08 + march, -0.34), 0.36, L);
-  Person A = avram(); A.facing = 1.0; A.walk = uT * 5.0; A.tool = 4; A.armF = vec2(0.6, 0.4); A.look = 0.4; drawPerson(col, p, vec2(0.28 + march, -0.35), 0.4, A);
+  Person L = lotP(); L.facing = 1.0; L.walk = uT * 5.0; L.armF = vec2(0.3, 0.3); drawPerson(col, p, vec2(-0.02 + march, -0.34), 0.36, L);
+  Person Sr = sarai(); Sr.facing = 1.0; Sr.walk = uT * 5.0 + 0.7; Sr.armF = vec2(0.35, 0.4); Sr.look = 0.5; drawPerson(col, p, vec2(0.16 + march, -0.345), 0.37, Sr);
+  Person A = avram(); A.facing = 1.0; A.walk = uT * 5.0; A.tool = 4; A.armF = vec2(0.6, 0.4); A.look = 0.4; drawPerson(col, p, vec2(0.36 + march, -0.35), 0.4, A);
   return col;
 }
 
@@ -103,7 +104,8 @@ vec3 sceneMitzrayim(vec2 p, float lt) {
   // Avram leaving with laden camels (at the end)
   float leave = smoothstep(0.78, 0.86, k);
   if (leave > 0.0) { float x = -0.1 - (k - 0.8) * 1.4; drawCamel(col, p, vec2(x, -0.33), 0.22, uT * 4.0, -1.0, true);
-    Person A = avram(); A.facing = -1.0; A.walk = uT * 5.0; A.tool = 4; A.armF = vec2(0.6, 0.4); drawPerson(col, p, vec2(x - 0.2, -0.36), 0.38, A); }
+    Person A = avram(); A.facing = -1.0; A.walk = uT * 5.0; A.tool = 4; A.armF = vec2(0.6, 0.4); drawPerson(col, p, vec2(x - 0.2, -0.36), 0.38, A);
+    Person Sr = sarai(); Sr.facing = -1.0; Sr.walk = uT * 5.0 + 0.8; Sr.armF = vec2(0.3, 0.4); drawPerson(col, p, vec2(x - 0.36, -0.365), 0.36, Sr); }
   col += rainStreaks(p, plague * 0.3);
   return col;
 }
@@ -220,6 +222,8 @@ vec3 sceneName(vec2 p, float lt) {
   Person A = avram(); A.facing = 1.0; A.look = 0.2; A.armF = vec2(0.5, 0.3); A.armB = vec2(-0.2, 0.3);
   if (k > 0.35) { A.armF = vec2(2.4, 0.3); A.armB = vec2(-2.4, -0.3); }
   drawPerson(col, p, vec2(0.12, -0.38), 0.44, A);
+  float sOn = smoothstep(0.55, 0.62, k); if (sOn > 0.0) { Person Sr = sarai(); Sr.facing = 1.0; Sr.look = 0.5; Sr.armF = vec2(0.5 + 0.6 * sOn, 0.5); Sr.talk = 0.2;
+    drawPerson(col, p, vec2(-0.25, -0.385), 0.42, Sr); }
   return col;
 }
 

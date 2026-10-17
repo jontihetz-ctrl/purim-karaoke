@@ -135,8 +135,8 @@ void drawPerson(inout vec3 col, vec2 p, vec2 pos, float h, Person P) {
     col = mix(col, P.beard * 0.7 * LIGHT_TINT, smoothstep(PX, -PX, brow)); }
   if (P.female > 0.5) {   // tichel: covers the top of the head and all the hair, drapes down the back to the shoulders, knotted at the back
     float dome = sdE2(q - vec2(0.008, 0.845), vec2(0.152, 0.112));
-    dome = max(dome, min(0.818 - q.y + 0.03 * q.x, q.x + 0.035));                          // open only for the face, below the hairline
-    float drape = max(sdSeg2(q, vec2(-0.055, 0.82), vec2(-0.105, 0.6), 0.088, 0.096), q.x - 0.005);
+    dome = max(dome, min(0.826 - q.y + 0.03 * q.x, q.x + 0.045));                          // open only for the face, below the hairline
+    float drape = max(sdSeg2(q, vec2(-0.075, 0.82), vec2(-0.11, 0.6), 0.075, 0.095), q.x + 0.04 - 0.3 * max(0.0, 0.74 - q.y));   // stays behind the face, widens below it
     float scarf = smin(dome, drape, 0.02);
     float knot = min(sdE2(q - vec2(-0.15, 0.86), vec2(0.042, 0.034)), min(sdSeg2(q, vec2(-0.16, 0.84), vec2(-0.2, 0.74), 0.022, 0.012), sdSeg2(q, vec2(-0.15, 0.84), vec2(-0.16, 0.72), 0.02, 0.01)));
     float folds = 0.88 + 0.12 * smoothstep(-0.5, 0.5, sin((q.x * 0.6 + q.y) * 70.0 + 2.0 * sin(q.x * 20.0)));
