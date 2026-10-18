@@ -18,7 +18,7 @@ CHAIN = ','.join([
 def room(x, sr, wet=0.07, t60=0.32):   # short, soft "booth" ambience (not an echo): decaying noise impulse response
     n = int(sr * t60); rng = np.random.default_rng(7); ir = rng.standard_normal(n) * np.exp(-6.9 * np.arange(n) / n)
     ir = np.convolve(ir, np.ones(24) / 24, 'same'); ir /= np.sqrt((ir ** 2).sum())
-    y = np.convolve(x, ir)[:len(x) + n]; dry = np.concatenate([x, np.zeros(n)]); return dry * (1 - wet) + y * wet * 0.6
+    y = np.pad(np.convolve(x, ir), (0, 1))[:len(x) + n]; dry = np.concatenate([x, np.zeros(n)]); return dry * (1 - wet) + y * wet * 0.6
 def process(src, dst):
     tmp = dst.replace('.wav', '_c.wav')
     subprocess.run([FF, '-loglevel', 'error', '-y', '-i', src, '-af', CHAIN, '-ar', '48000', tmp], check=True)
