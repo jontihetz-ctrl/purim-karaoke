@@ -9,10 +9,10 @@ dur = json.load(open(here / 'build' / EP / 'voice.json'))
 HEB = {k: v for k, v in json.load(open(here / 'hebrew.json')).items() if not k.startswith('_')}
 def hebrew_subtitle(text):
     # Hebrew words appear in Hebrew letters. Each is wrapped in a right-to-left isolate (RLI…PDI) so it sits correctly
-    # inside the English sentence, and inner spaces become no-break spaces so a phrase never splits across lines.
+    # inside the English sentence (a left-to-right mark after it keeps following punctuation like ':' on the English side), and inner spaces become no-break spaces so a phrase never splits across lines.
     for word in sorted(HEB, key=len, reverse=True):
         he = HEB[word]['he'].replace(' ', ' '); suf = HEB[word].get('suffix', '')
-        text = re.sub(r'(?<![\w-])' + re.escape(word) + r'(?![\w-])', '⁧' + he + '⁩' + suf, text, flags=re.I)
+        text = re.sub(r'(?<![\w-])' + re.escape(word) + r'(?![\w-])', '⁧' + he + '⁩‎' + suf, text, flags=re.I)
     return text
 # Every scene type the visual library knows. Add new scenes here and in build.py (SCENE_FN).
 SCENES = {'intro': 0, 'title': 1, 'corrupt': 2, 'tzaddik': 3, 'building': 4, 'animals': 5, 'rain': 6, 'inside': 7,
