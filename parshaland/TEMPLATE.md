@@ -58,6 +58,7 @@ One episode per week, about 3–4 minutes, for Orthodox kids. **A flowing summar
    - `transcribe.py`: word timings for the whole recording (faster-whisper).
    - `split.py`: matches the recording to the script lines. Each cut goes in the **longest stretch of real silence** between lines. Don't trust word timings for this, because they stretch over pauses and misread Hebrew names.
      Transcribe the cut clips to confirm each line starts and ends correctly.
+     **Check every cut clip in verbatim mode** (`medium.en` with a disfluency prompt like "Umm, so, uh, Hashem spoke to- to Avram"). Normal transcription hides restarts and repeated words ("called out, called out, and called out"). Cut each one at the quietest point and re-check.
    - `vc_lines.py` + `vc_slow.py` + `pick_vc.py`: convert every line to voice C (Chatterbox voice conversion, target `targets/C.wav`, a synthetic voice, no real person). Each line is converted at normal speed and with the source slowed to 0.85× and 0.75×, then sped back. The clearest of the three is kept. Fast speech garbles in conversion; slowing the source fixes it.
    - `lovely.py`: the kid-friendly finish. It lifts pitch about 1.5 semitones and restores melody (×1.55, smoothed so the pitch can't jump octaves). It then adds soft, warm, sparkly EQ, gentle compression and a short room tone. It is adaptive: each line gets the most melody that keeps it as clear as the narrator's own reading.
    - Copy `lovely2/C_<line>.wav` into `build/<parsha>/voice/` and write `voice.json` from their lengths.
@@ -116,3 +117,8 @@ One episode per week, about 3–4 minutes, for Orthodox kids. **A flowing summar
 - **Narrator voice:** voice C (`narr/targets/C.wav`) with the `lovely.py` finish (lift 1.5 semitones, melody up to ×1.55).
 - **Output:** 1920×1080, 24 fps, H.264 + AAC, loudness −14 LUFS (YouTube standard).
 - **YouTube description:** title "Parshas ___ for Kids | Animated Parsha Story | Parshaland", a short story summary, the pesukim range, "told simply from the pesukim, with details from Rashi", and hashtags.
+
+## Notes from the narrator
+
+- **Slow the voice down** (asked after Lech Lecha, for the next episode on). Try a gentler pace in voice conversion and longer gaps between lines.
+- **Visuals must be exciting:** moving camera with depth layers, lots of scenery, crowds, animals, birds, sparkles and light, with action timed to each line (`LS(i)`). See `glsl/life.glsl` and the Lech Lecha scenes.
