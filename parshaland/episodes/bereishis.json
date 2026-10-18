@@ -1,0 +1,94 @@
+{
+  "id": "bereishis",
+  "parsha": "Bereishis",
+  "parshaHeb": "פרשת בראשית",
+  "sefer": "Bereishis",
+  "range": "Bereishis 1:1 – 6:8",
+  "shabbos": "29 Tishrei 5787 · October 10, 2026",
+  "channel": "PARSHALAND",
+  "segments": [
+    { "scene": "intro", "pad": 1.0, "narration": [] },
+    { "scene": "title", "pad": 1.0, "card": { "type": "title" },
+      "narration": ["This week's parsha is Parshas Bereishis!"] },
+
+    { "scene": "creation", "mood": "wonder", "src": "Bereishis 1:1–13",
+      "narration": [
+        "In the beginning, there was nothing at all. Then Hashem created the whole world.",
+        "On the first day, Hashem said: Let there be light! And there was light.",
+        "On the second day, Hashem made the sky. On the third day, He gathered the waters into seas, and dry land appeared, full of grass and trees."
+      ] },
+
+    { "scene": "creation2", "mood": "joy", "src": "Bereishis 1:14–25",
+      "narration": [
+        "On the fourth day, Hashem made the sun, the moon and the stars.",
+        "At first, the sun and the moon were the same size. But the moon complained, so Hashem made it smaller,",
+        "and to make the moon feel better, Hashem gave it the stars to keep it company.",
+        "On the fifth day came the fish and the birds, and on the sixth day, all the animals."
+      ] },
+
+    { "scene": "adam", "mood": "wonder", "src": "Bereishis 1:26 – 2:7, 2:19–20",
+      "narration": [
+        "Then Hashem made the very first person: Adam.",
+        "Hashem brought all the animals to Adam, and Adam gave each one its name.",
+        "The plants had been waiting just under the ground. When Adam saw that they needed rain, he davened, and the rain came, and everything began to grow!"
+      ] },
+
+    { "scene": "shabbos", "mood": "hope", "src": "Bereishis 2:1–3",
+      "narration": [
+        "On the seventh day, Hashem rested, and made the day holy. It was the very first Shabbos.",
+        "The world was beautiful, but something was still missing. Then Shabbos came, and with it came rest."
+      ] },
+
+    { "scene": "gan", "mood": "joy", "src": "Bereishis 2:8–25",
+      "narration": [
+        "Hashem planted a beautiful garden, Gan Eden, and put Adam there to take care of it.",
+        "Hashem said: You may eat from every tree, except one, the Eitz HaDaas, the Tree of Knowledge.",
+        "Then Hashem made Chava, the first woman, to be Adam's wife."
+      ] },
+
+    { "scene": "nachash", "mood": "dark", "src": "Bereishis 3:1–7",
+      "narration": [
+        "But the nachash, the snake, was very clever, and very sneaky.",
+        "He tricked Chava into eating from the tree, and Chava gave some to Adam too.",
+        "Suddenly, they knew they had done something wrong."
+      ] },
+
+    { "scene": "exile", "mood": "dark", "src": "Bereishis 3:8–24",
+      "narration": [
+        "Hashem called out to Adam: Ayeka? Where are you?",
+        "Adam and Chava had to leave Gan Eden. From now on, people would have to work hard for their food.",
+        "And to guard the way back to the Tree of Life, Hashem placed angels, and a fiery, turning sword."
+      ] },
+
+    { "scene": "kayin", "mood": "dark", "src": "Bereishis 4:1–16",
+      "narration": [
+        "Adam and Chava had two sons, Kayin and Hevel. Kayin was a farmer, and Hevel was a shepherd.",
+        "Kayin brought Hashem a korban from his worst fruits. Hevel brought the very best of his sheep.",
+        "A fire came down from heaven and took Hevel's korban, but not Kayin's.",
+        "Kayin became so jealous and angry that he killed his brother Hevel.",
+        "Hashem punished Kayin, and he had to wander from place to place."
+      ] },
+
+    { "scene": "generations", "mood": "wonder", "src": "Bereishis 4:25 – 5:32",
+      "narration": [
+        "Adam and Chava had another son, Shes. Many generations passed, and people lived for hundreds of years.",
+        "Adam lived nine hundred and thirty years, and Mesushelach lived longest of all: nine hundred and sixty-nine years!",
+        "There was Chanoch, a tzaddik. Hashem took him from the world early, so that he would always stay good."
+      ] },
+
+    { "scene": "corrupt", "mood": "dark", "src": "Bereishis 6:1–7",
+      "narration": [
+        "But as the years went by, people stopped listening to Hashem, and the world filled with wrongdoing.",
+        "Hashem was sad, and decided that the world could not go on like this."
+      ] },
+
+    { "scene": "tzaddik", "mood": "hope", "src": "Bereishis 6:8",
+      "narration": [
+        "But one man found favor in Hashem's eyes. His name was Noach.",
+        "And that's a story for next week!"
+      ] },
+
+    { "scene": "outro", "mood": "hope", "pad": 3.0, "card": { "type": "outro" },
+      "narration": ["Good Shabbos!"] }
+  ]
+}

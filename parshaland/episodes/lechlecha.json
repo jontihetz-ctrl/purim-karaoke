@@ -1,0 +1,78 @@
+{
+  "id": "lechlecha",
+  "parsha": "Lech Lecha",
+  "parshaHeb": "פרשת לך לך",
+  "sefer": "Bereishis",
+  "range": "Bereishis 12:1 – 17:27",
+  "shabbos": "13 Cheshvan 5787 · October 24, 2026",
+  "channel": "PARSHALAND",
+  "segments": [
+    { "scene": "intro", "pad": 1.0, "narration": [] },
+    { "scene": "title", "pad": 1.0, "card": { "type": "title" },
+      "narration": ["This week's parsha is Parshas Lech Lecha!"] },
+
+    { "scene": "call", "mood": "wonder", "src": "Bereishis 12:1–3",
+      "narration": [
+        "Hashem spoke to Avram: Lech lecha! Leave your land, your birthplace and your father's house, and go to the land that I will show you.",
+        "It will be good for you, said Hashem. There I will make you a great nation, and I will bless you, and everyone will know your name."
+      ] },
+
+    { "scene": "journey", "mood": "hope", "src": "Bereishis 12:4–9",
+      "narration": [
+        "So Avram set out, with his wife Sarai and his nephew Lot.",
+        "With them came all the people Avram and Sarai had taught about Hashem in Charan.",
+        "They traveled all the way to the land of Canaan, and wherever Avram went, he built a mizbe'ach and called out in the name of Hashem."
+      ] },
+
+    { "scene": "mitzrayim", "mood": "dark", "src": "Bereishis 12:10–20",
+      "narration": [
+        "Then there was a famine in the land, so Avram and Sarai went down to Mitzrayim.",
+        "Pharaoh's men took Sarai to the palace. But Hashem protected her, and struck Pharaoh's house with great plagues,",
+        "until Pharaoh sent Avram and Sarai away, with many gifts."
+      ] },
+
+    { "scene": "parting", "mood": "wonder", "src": "Bereishis 13:1–13",
+      "narration": [
+        "Avram and Lot both had so many sheep and cattle that there wasn't room for everyone.",
+        "Lot's shepherds were letting their animals eat in other people's fields, and Avram's shepherds told them: that's stealing!",
+        "So Avram said to Lot: let's not fight, we are family. You choose where to go.",
+        "Lot looked at the green valley near Sedom, and went to live there, even though the people of Sedom were very wicked."
+      ] },
+
+    { "scene": "war", "mood": "storm", "src": "Bereishis 14:1–16",
+      "narration": [
+        "Then four mighty kings went to war against five kings, and they captured Lot.",
+        "When Avram heard, he went after them. Chazal say he took only his loyal servant Eliezer.",
+        "In the middle of the night, they chased the kings away, and rescued Lot and all the captives!"
+      ] },
+
+    { "scene": "malki", "mood": "joy", "src": "Bereishis 14:17–24",
+      "narration": [
+        "Malki-tzedek, king of Shalem, came out to greet Avram with bread and wine. Rashi tells us he was Shem, the son of Noach!",
+        "The king of Sedom wanted to give Avram a big reward. But Avram said: I won't take even a thread or a shoelace. Hashem is the One who makes me rich."
+      ] },
+
+    { "scene": "stars", "mood": "wonder", "src": "Bereishis 15:1–6",
+      "narration": [
+        "Avram still had no children. So Hashem took him outside and said: look up at the sky, and count the stars, if you can.",
+        "So many will your children be! And Avram believed in Hashem."
+      ] },
+
+    { "scene": "name", "mood": "hope", "src": "Bereishis 16:1 – 17:16",
+      "narration": [
+        "Sarai still had no children, so she gave Avram her maidservant Hagar as a wife, and Hagar had a son, Yishmael.",
+        "When Avram was ninety-nine years old, Hashem changed his name. He added the letter hei, and Avram became Avraham, father of many nations. And Sarai became Sarah.",
+        "Hashem gave Avraham the mitzvah of bris milah, a sign of the covenant between Hashem and his children forever."
+      ] },
+
+    { "scene": "promise", "mood": "joy", "src": "Bereishis 17:15–27",
+      "narration": [
+        "And Hashem made a wonderful promise: Sarah will have a son, and you will call him Yitzchak!",
+        "Avraham fell on his face and rejoiced.",
+        "But how will it happen? That's a story for next week!"
+      ] },
+
+    { "scene": "outro", "mood": "hope", "pad": 3.0, "card": { "type": "outro" },
+      "narration": ["Good Shabbos!"] }
+  ]
+}
