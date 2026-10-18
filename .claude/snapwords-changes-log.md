@@ -86,3 +86,8 @@ Six-reviewer audit (student/teacher/public visuals, security, correctness, quali
 - Removed deps: puppeteer, @stripe/stripe-js, stripe.
 - Verified: all games, picker, class/world pages, demo, creature flow desktop + phone, dashboard, every page sweep — no errors.
 - Still owner: rotate leaked keys (+ optional git history scrub).
+
+## 2026-10-18 — Worlds 2.0: Fish Tank (live, 953b72ac)
+- Illustrated fish tank: parallax scenery, god-rays, sand caustics, swaying kelp, bubbling treasure chest, plankton, background fish schools, time-of-day palette; creatures keep customizations and gain shading, blinking, eased turns, idle moments. 165-creature tank: 60 fps normal, 50–53 fps at 4x CPU throttle. Approved by owner on the Vercel preview.
+- Also: library-promo Resend client made lazy (preview builds have no RESEND_API_KEY) — d6445f52.
+- Next time: carry the style to Dino Land (also fix its 24 fps at 4x), City, Candy, Dragon's Lair, critter worlds. Optional: harden the VPS bridge (plain HTTP, root); key rotation checklist emailed to owner.
