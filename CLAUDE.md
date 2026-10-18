@@ -70,7 +70,7 @@ vps() {
 - `src/components/world/renderers/` — SVG renderers for each item type
 - `src/components/world/customizers/` — UI for students to customise their item
 
-**Beta status:** Free and unlimited. Beta end date is **June 26, 2026**. Change it in both `billing.ts` and `UsageBanner.tsx`.
+**Beta status:** The free beta **ended 31 August 2026** (`BETA_END_DATE` in `src/lib/billing.ts`). Beta sign-ups are grandfathered (`profiles.is_grandfathered`) with permanent free unlimited access — /terms and /refund-policy promise this, so never remove it. New teachers get the free plan (limits in `TIER_LIMITS`); paid plans Teacher $5/mo, School $20/mo via Paddle. Public pricing/game-count copy comes from `src/lib/siteFacts.ts`.
 
 **SnapWords — always sync with GitHub first (READ BEFORE ANY CHANGE OR DEPLOY):**
 Production normally deploys automatically from GitHub `main`; other sessions push there too. On 2026-10-15 the VPS folder was a month behind GitHub, and running `vercel --prod` from it rolled production back by a month until it was caught and reverted. Before editing or deploying:
