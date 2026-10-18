@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vocab Worksheet Maker — Free tool for teachers</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; min-height: 100vh; }
+
+/* NAV */
+nav { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 24px; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+.nav-brand { font-weight: 800; font-size: 18px; color: #6366f1; display: flex; align-items: center; gap: 8px; }
+.nav-brand span { font-size: 22px; }
+.nav-cta { background: #6366f1; color: #fff; border: none; padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; text-decoration: none; }
+
+/* HERO */
+.hero { text-align: center; padding: 64px 24px 48px; max-width: 680px; margin: 0 auto; }
+.hero-badge { display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: #3b82f6; border: 1px solid #bfdbfe; border-radius: 100px; padding: 4px 14px; font-size: 13px; font-weight: 600; margin-bottom: 20px; }
+.hero h1 { font-size: 42px; font-weight: 800; line-height: 1.15; margin-bottom: 16px; letter-spacing: -0.5px; }
+.hero h1 em { color: #6366f1; font-style: normal; }
+.hero p { font-size: 18px; color: #64748b; line-height: 1.6; margin-bottom: 32px; }
+.hero-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { background: #6366f1; color: #fff; border: none; padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all .15s; text-decoration: none; display: inline-block; }
+.btn-primary:hover { background: #4f46e5; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(99,102,241,.35); }
+.btn-secondary { background: #fff; color: #374151; border: 1px solid #d1d5db; padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; text-decoration: none; display: inline-block; }
+
+/* HOW IT WORKS */
+.how { background: #fff; padding: 56px 24px; }
+.how-inner { max-width: 840px; margin: 0 auto; }
+.section-label { text-align: center; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #6366f1; margin-bottom: 10px; }
+.section-title { text-align: center; font-size: 30px; font-weight: 800; margin-bottom: 48px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+@media(max-width:640px){ .steps { grid-template-columns: 1fr; } }
+.step { text-align: center; }
+.step-icon { width: 56px; height: 56px; background: #eff6ff; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto 16px; }
+.step h3 { font-size: 17px; font-weight: 700; margin-bottom: 8px; }
+.step p { color: #64748b; font-size: 15px; line-height: 1.6; }
+
+/* SAMPLE */
+.sample { background: #f8fafc; padding: 48px 24px; }
+.sample-inner { max-width: 840px; margin: 0 auto; }
+.worksheet-preview { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; box-shadow: 0 4px 24px rgba(0,0,0,.06); }
+.ws-header { border-bottom: 2px solid #1e293b; padding-bottom: 12px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: flex-end; }
+.ws-title { font-size: 22px; font-weight: 800; }
+.ws-meta { font-size: 13px; color: #64748b; }
+.ws-section { margin-bottom: 28px; }
+.ws-section h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #374151; margin-bottom: 14px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; }
+.matching-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; align-items: center; }
+.match-word { font-weight: 600; font-size: 15px; }
+.match-line { border-bottom: 1px solid #94a3b8; flex: 1; margin: 0 12px; }
+.match-def { font-size: 14px; color: #374151; }
+.fib-item { margin-bottom: 10px; font-size: 15px; line-height: 1.8; }
+.fib-blank { display: inline-block; border-bottom: 1px solid #374151; min-width: 80px; }
+.wordsearch { font-family: 'Courier New', monospace; font-size: 14px; line-height: 1.8; letter-spacing: 4px; color: #374151; }
+
+/* PRICING */
+.pricing { background: #fff; padding: 56px 24px; }
+.pricing-inner { max-width: 840px; margin: 0 auto; }
+.pricing-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 580px; margin: 0 auto; }
+@media(max-width:560px){ .pricing-cards { grid-template-columns: 1fr; } }
+.price-card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 28px; }
+.price-card.featured { border-color: #6366f1; background: linear-gradient(135deg, #eff6ff, #f0f0ff); box-shadow: 0 4px 24px rgba(99,102,241,.15); }
+.price-tag { font-size: 36px; font-weight: 800; color: #1e293b; }
+.price-tag span { font-size: 16px; font-weight: 500; color: #64748b; }
+.price-name { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; color: #6366f1; margin-bottom: 8px; }
+.price-desc { font-size: 14px; color: #64748b; margin: 8px 0 20px; }
+.price-features { list-style: none; font-size: 14px; }
+.price-features li { padding: 5px 0; display: flex; gap: 8px; }
+.price-features li::before { content: '✓'; color: #10b981; font-weight: 700; }
+.price-btn { display: block; text-align: center; padding: 12px; border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: none; margin-top: 20px; border: none; }
+.price-btn.free { background: #f1f5f9; color: #374151; }
+.price-btn.paid { background: #6366f1; color: #fff; }
+
+/* TOOL */
+#tool { background: #f8fafc; padding: 56px 24px; }
+.tool-inner { max-width: 860px; margin: 0 auto; }
+.tool-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 32px; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+.tool-card h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+.tool-card .subtitle { color: #64748b; margin-bottom: 24px; font-size: 15px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+@media(max-width:560px){ .form-row { grid-template-columns: 1fr; } }
+label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+input[type=text], textarea, select { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 14px; font-size: 15px; font-family: inherit; color: #1e293b; background: #fff; outline: none; transition: border .15s; }
+input[type=text]:focus, textarea:focus, select:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,.1); }
+textarea { resize: vertical; min-height: 140px; font-family: 'Courier New', monospace; }
+.types-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+.type-option { border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: all .15s; }
+.type-option:hover { border-color: #6366f1; background: #f8f5ff; }
+.type-option.active { border-color: #6366f1; background: #eff0ff; }
+.type-option input { display: none; }
+.type-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.type-desc { font-size: 12px; color: #64748b; }
+.generate-btn { width: 100%; background: #6366f1; color: #fff; border: none; padding: 15px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all .15s; margin-top: 8px; }
+.generate-btn:hover { background: #4f46e5; }
+.generate-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* OUTPUT */
+#output { display: none; padding: 40px 24px; background: #fff; }
+.output-inner { max-width: 860px; margin: 0 auto; }
+.output-actions { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.print-btn { background: #10b981; color: #fff; border: none; padding: 12px 22px; border-radius: 8px; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+.print-btn:hover { background: #059669; }
+.new-btn { background: #f1f5f9; color: #374151; border: none; padding: 12px 22px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+#worksheetOutput { border: 1px solid #e2e8f0; border-radius: 12px; padding: 40px; font-family: Georgia, serif; }
+.ws-generate-title { font-size: 24px; font-weight: bold; margin-bottom: 4px; }
+.ws-generate-meta { font-size: 13px; color: #888; margin-bottom: 24px; padding-bottom: 14px; border-bottom: 2px solid #000; display: flex; justify-content: space-between; }
+.ws-ex-title { font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; border-bottom: 1px solid #ccc; padding-bottom: 6px; }
+.ws-section-gap { margin-bottom: 32px; }
+.match-table { width: 100%; font-size: 15px; border-collapse: collapse; }
+.match-table td { padding: 7px 0; vertical-align: top; }
+.match-num { width: 24px; color: #888; }
+.match-word-col { width: 140px; font-weight: 600; }
+.match-line-col { border-bottom: 1px solid #888; width: 60px; }
+.match-letter { width: 20px; font-size: 12px; color: #888; padding-right: 8px; text-align: right; }
+.match-def-col { color: #374151; }
+.fib-row { margin-bottom: 12px; font-size: 15px; line-height: 2; }
+.fib-blank-gen { display: inline-block; border-bottom: 1.5px solid #000; min-width: 90px; }
+.ws-grid { font-family: 'Courier New', monospace; font-size: 16px; letter-spacing: 6px; line-height: 2; }
+.ws-words-list { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 13px; }
+.ws-word-chip { background: #f1f5f9; padding: 3px 10px; border-radius: 4px; font-weight: 600; }
+.answer-key { margin-top: 40px; padding-top: 24px; border-top: 2px dashed #ccc; }
+.answer-key-title { font-size: 14px; font-weight: bold; text-transform: uppercase; letter-spacing: .5px; color: #888; margin-bottom: 12px; }
+.answer-row { font-size: 13px; display: flex; gap: 12px; flex-wrap: wrap; color: #555; }
+
+/* SNAPWORDS PROMO */
+.snapwords-strip { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: #fff; padding: 32px 24px; text-align: center; }
+.snapwords-strip h3 { font-size: 20px; font-weight: 800; margin-bottom: 8px; }
+.snapwords-strip p { opacity: .9; margin-bottom: 16px; font-size: 15px; }
+.snapwords-strip a { background: #fff; color: #6366f1; padding: 10px 22px; border-radius: 8px; font-weight: 700; text-decoration: none; font-size: 15px; }
+
+/* USAGE COUNTER */
+.usage-bar { background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; color: #856404; display: flex; justify-content: space-between; align-items: center; }
+.upgrade-link { color: #6366f1; font-weight: 700; cursor: pointer; text-decoration: underline; }
+
+/* MODAL */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 999; align-items: center; justify-content: center; padding: 24px; }
+.modal-overlay.open { display: flex; }
+.modal { background: #fff; border-radius: 16px; padding: 32px; max-width: 440px; width: 100%; }
+.modal h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+.modal p { color: #64748b; font-size: 15px; margin-bottom: 20px; }
+.modal-price { font-size: 36px; font-weight: 800; color: #6366f1; margin-bottom: 8px; }
+.modal-price span { font-size: 16px; color: #64748b; font-weight: 500; }
+.modal-features { list-style: none; margin-bottom: 24px; }
+.modal-features li { padding: 6px 0; font-size: 15px; display: flex; gap: 8px; }
+.modal-features li::before { content: '✓'; color: #10b981; font-weight: 700; }
+.modal-btn { width: 100%; background: #6366f1; color: #fff; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; }
+.modal-close { float: right; background: none; border: none; font-size: 22px; cursor: pointer; color: #888; margin-top: -4px; }
+
+@media print {
+  nav, .hero, .how, .sample, .pricing, #tool, .output-actions, .snapwords-strip, .modal-overlay, #usageBar { display: none !important; }
+  #output { display: block !important; padding: 0; }
+  #worksheetOutput { border: none; padding: 0; }
+  .answer-key { page-break-before: always; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand"><span>📝</span> Vocab Worksheet Maker</div>
+  <a class="nav-cta" href="#tool">Make a Worksheet →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">⚡ Free for teachers — no login needed</div>
+  <h1>Create printable vocab<br><em>worksheets in 30 seconds</em></h1>
+  <p>Paste your word list, choose your exercises, hit Generate. Get a print-ready worksheet with matching, fill-in-the-blank, and word search. Every time.</p>
+  <div class="hero-actions">
+    <a href="#tool" class="btn-primary">Generate a Worksheet Free</a>
+    <a href="#sample" class="btn-secondary">See a sample ↓</a>
+  </div>
+</section>
+
+<!-- HOW -->
+<section class="how">
+  <div class="how-inner">
+    <div class="section-label">How it works</div>
+    <div class="section-title">Three steps to done</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-icon">📋</div>
+        <h3>Paste your words</h3>
+        <p>Type or paste your vocab list — one word + definition per line. Any language, any level.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🎛️</div>
+        <h3>Pick your exercises</h3>
+        <p>Choose matching, fill-in-the-blank, word search, or all three. Add your class name and date.</p>
+      </div>
+      <div class="step">
+        <div class="step-icon">🖨️</div>
+        <h3>Print or save as PDF</h3>
+        <p>One click to print. Or save as PDF for Google Classroom, email, or digital worksheet platforms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SAMPLE -->
+<section class="sample" id="sample">
+  <div class="sample-inner">
+    <div class="section-label">Sample output</div>
+    <div class="section-title">This is what you get</div>
+    <div class="worksheet-preview">
+      <div class="ws-header">
+        <div class="ws-title">Unit 5 Vocabulary — Weather</div>
+        <div class="ws-meta">Name: ________________  Date: ________</div>
+      </div>
+      <div class="ws-section">
+        <h3>Exercise A — Matching</h3>
+        <div class="matching-row"><span class="match-word">1. Precipitation</span><span class="match-line"></span><span class="match-def">a) a violent rotating column of air</span></div>
+        <div class="matching-row"><span class="match-word">2. Tornado</span><span class="match-line"></span><span class="match-def">b) any form of water falling from clouds</span></div>
+        <div class="matching-row"><span class="match-word">3. Humidity</span><span class="match-line"></span><span class="match-def">c) the amount of water vapour in the air</span></div>
+      </div>
+      <div class="ws-section">
+        <h3>Exercise B — Fill in the blank</h3>
+        <div class="fib-item">1. The weather forecast predicted heavy <span class="fib-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> throughout the afternoon.</div>
+        <div class="fib-item">2. High <span class="fib-blank">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> in summer makes the heat feel much worse.</div>
+      </div>
+      <div class="ws-section">
+        <h3>Exercise C — Word Search</h3>
+        <div class="wordsearch">
+          T E M P E R A T U R E X Q<br>
+          O C L O U D B U R S T A M<br>
+          R T H U N D E R S T O R M
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOOL -->
+<section id="tool">
+  <div class="tool-inner">
+    <div class="section-label">The tool</div>
+    <div class="section-title">Build your worksheet</div>
+    <div class="tool-card">
+      <h2>Enter your vocabulary</h2>
+      <p class="subtitle">One word + definition per line, separated by a dash or colon. E.g: <code>Photosynthesis - the process plants use to make food</code></p>
+
+      <div id="usageBar" class="usage-bar">
+        📊 <span id="usageText">Free plan: <strong id="usageCount">3</strong> worksheets remaining today</span>
+        <span class="upgrade-link" onclick="showUpgrade()">Unlock unlimited →</span>
+      </div>
+
+      <div class="form-row">
+        <div>
+          <label>Worksheet title</label>
+          <input type="text" id="wsTitle" placeholder="e.g. Unit 4 — Human Body" />
+        </div>
+        <div>
+          <label>Class / Student name label</label>
+          <input type="text" id="wsClass" placeholder="e.g. Grade 6 English" />
+        </div>
+      </div>
+
+      <label>Vocabulary list</label>
+      <textarea id="vocabInput" placeholder="Photosynthesis - the process plants use to make food from sunlight
+Chlorophyll - the green pigment in plant cells
+Osmosis - movement of water through a membrane
+Respiration - the process of releasing energy from food
+Transpiration - loss of water from leaves through tiny pores"></textarea>
+
+      <label style="margin-top:16px;margin-bottom:10px;">Include exercises</label>
+      <div class="types-grid">
+        <label class="type-option active" id="optMatching">
+          <input type="checkbox" checked id="chkMatching">
+          <div class="type-name">🔗 Matching</div>
+          <div class="type-desc">Match words to definitions</div>
+        </label>
+        <label class="type-option active" id="optFib">
+          <input type="checkbox" checked id="chkFib">
+          <div class="type-name">✏️ Fill in the blank</div>
+          <div class="type-desc">Complete sentences with vocab</div>
+        </label>
+        <label class="type-option active" id="optWordSearch">
+          <input type="checkbox" checked id="chkWordSearch">
+          <div class="type-name">🔍 Word search</div>
+          <div class="type-desc">Find all vocabulary words</div>
+        </label>
+        <label class="type-option active" id="optAnswerKey">
+          <input type="checkbox" checked id="chkAnswerKey">
+          <div class="type-name">🔑 Answer key</div>
+          <div class="type-desc">Separate answer key page</div>
+        </label>
+      </div>
+
+      <button class="generate-btn" onclick="generateWorksheet()">
+        <span>📄</span> Generate Worksheet — Free
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- OUTPUT -->
+<section id="output">
+  <div class="output-inner">
+    <div class="output-actions">
+      <button class="print-btn" onclick="window.print()">🖨️ Print / Save as PDF</button>
+      <button class="new-btn" onclick="newWorksheet()">← Make another</button>
+    </div>
+    <div id="worksheetOutput"></div>
+  </div>
+</section>
+
+<!-- SNAPWORDS STRIP -->
+<div class="snapwords-strip">
+  <h3>Want your students to actually practise these words?</h3>
+  <p>Turn any word list into 4 interactive games in 2 minutes — free with SnapWords</p>
+  <a href="https://snapwords.net" target="_blank">Try SnapWords free →</a>
+</div>
+
+<!-- UPGRADE MODAL -->
+<div class="modal-overlay" id="upgradeModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeUpgrade()">×</button>
+    <h2>Unlock unlimited worksheets</h2>
+    <p>You've used your 3 free worksheets for today. Upgrade once and create as many as you like — forever.</p>
+    <div class="modal-price">$9 <span>one-time, lifetime access</span></div>
+    <ul class="modal-features">
+      <li>Unlimited worksheet generation</li>
+      <li>All exercise types (matching, FIB, word search)</li>
+      <li>Answer key generation</li>
+      <li>No subscription — pay once, use forever</li>
+      <li>Works on any device</li>
+    </ul>
+    <button class="modal-btn" onclick="goToPay()">Get lifetime access — $9</button>
+    <p style="text-align:center;font-size:12px;color:#94a3b8;margin-top:12px;">Secure payment via Stripe</p>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// USAGE TRACKING (localStorage, free plan = 3/day)
+// ============================================================
+const FREE_LIMIT = 3;
+const STORAGE_KEY = 'vwm_usage';
+const PAID_KEY = 'vwm_paid';
+
+function getUsage() {
+  try {
+    const d = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    const today = new Date().toDateString();
+    if (d.date !== today) return { date: today, count: 0 };
+    return d;
+  } catch { return { date: new Date().toDateString(), count: 0 }; }
+}
+
+function saveUsage(u) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(u));
+}
+
+function isPaid() {
+  // Check for paid flag OR URL param (set after Stripe success)
+  if (localStorage.getItem(PAID_KEY) === '1') return true;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('upgraded') === '1') {
+    localStorage.setItem(PAID_KEY, '1');
+    return true;
+  }
+  return false;
+}
+
+function updateUsageBar() {
+  if (isPaid()) {
+    document.getElementById('usageBar').style.display = 'none';
+    return;
+  }
+  const u = getUsage();
+  const remaining = Math.max(0, FREE_LIMIT - u.count);
+  document.getElementById('usageCount').textContent = remaining;
+  document.getElementById('usageBar').style.display = remaining === 0 ? 'flex' : 'flex';
+  if (remaining === 0) {
+    document.getElementById('usageText').innerHTML = '⛔ Free limit reached for today. <strong>Upgrade for unlimited access.</strong>';
+  }
+}
+
+function canGenerate() {
+  if (isPaid()) return true;
+  const u = getUsage();
+  return u.count < FREE_LIMIT;
+}
+
+function recordUsage() {
+  const u = getUsage();
+  u.count = (u.count || 0) + 1;
+  saveUsage(u);
+  updateUsageBar();
+}
+
+function showUpgrade() {
+  document.getElementById('upgradeModal').classList.add('open');
+}
+function closeUpgrade() {
+  document.getElementById('upgradeModal').classList.remove('open');
+}
+function goToPay() {
+  // Replace with actual Stripe payment link
+  window.open('https://buy.stripe.com/PLACEHOLDER', '_blank');
+}
+
+// Toggle exercise options
+document.querySelectorAll('.type-option').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const cb = opt.querySelector('input[type=checkbox]');
+    if (cb) {
+      cb.checked = !cb.checked;
+      opt.classList.toggle('active', cb.checked);
+    }
+  });
+});
+
+// ============================================================
+// PARSING
+// ============================================================
+function parseVocab(raw) {
+  const lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+  const pairs = [];
+  for (const line of lines) {
+    const sep = line.match(/[-–—:]/);
+    if (!sep) continue;
+    const idx = line.indexOf(sep[0]);
+    const word = line.slice(0, idx).trim();
+    const def = line.slice(idx + 1).trim();
+    if (word && def) pairs.push({ word, def });
+  }
+  return pairs;
+}
+
+// ============================================================
+// MATCHING EXERCISE
+// ============================================================
+function buildMatching(pairs) {
+  const letters = 'abcdefghijklmnopqrstuvwxyz';
+  const shuffled = [...pairs].sort(() => Math.random() - 0.5);
+  let rows = '';
+  for (let i = 0; i < pairs.length; i++) {
+    const defIdx = shuffled.findIndex(s => s.word === pairs[i].word);
+    rows += `<tr>
+      <td class="match-num">${i + 1}.</td>
+      <td class="match-word-col">${escHtml(pairs[i].word)}</td>
+      <td class="match-line-col">&nbsp;</td>
+      <td class="match-letter">${letters[defIdx]})</td>
+      <td class="match-def-col">${escHtml(shuffled[defIdx].def)}</td>
+    </tr>`;
+  }
+  // Build right column (already shuffled above — display original shuffled order)
+  // Actually re-do: left = original order numbered, right = shuffled lettered
+  let html = `<table class="match-table">`;
+  const rightDefs = [...pairs].sort(() => Math.random() - 0.5);
+  const answerMap = {}; // number -> letter
+  pairs.forEach((p, i) => {
+    const li = rightDefs.findIndex(r => r.word === p.word);
+    answerMap[i + 1] = letters[li];
+  });
+  for (let i = 0; i < pairs.length; i++) {
+    html += `<tr>
+      <td class="match-num">${i+1}.</td>
+      <td class="match-word-col">${escHtml(pairs[i].word)}</td>
+      <td class="match-line-col">&nbsp;</td>
+      <td style="width:40px">&nbsp;</td>
+      <td class="match-letter">${letters[i]})</td>
+      <td class="match-def-col">${escHtml(rightDefs[i].def)}</td>
+    </tr>`;
+  }
+  html += '</table>';
+  return { html, answerMap: pairs.map((p,i) => ({ num: i+1, word: p.word, letter: letters[rightDefs.findIndex(r=>r.word===p.word)] })), rightDefs };
+}
+
+// ============================================================
+// FILL IN THE BLANK
+// ============================================================
+function buildFib(pairs) {
+  const templates = [
+    (w, d) => `A ${w.toLowerCase()} is defined as ${d.split(' ').slice(0,4).join(' ')} _______.`,
+    (w, d) => `The term _______ refers to "${d}".`,
+    (w, d) => `In science, _______ describes the process of ${d.toLowerCase()}.`,
+    (w, d) => `Students must understand the concept of _______, which means ${d.toLowerCase().slice(0, 40)}...`,
+    (w, d) => `When we talk about ${d.split(' ').slice(0,3).join(' ')}, we use the word _______.`,
+    (w, d) => `_______ is an important term: it means ${d}.`,
+  ];
+  const selected = [...pairs].sort(() => Math.random() - 0.5).slice(0, Math.min(pairs.length, 8));
+  let html = '';
+  selected.forEach((p, i) => {
+    const t = templates[i % templates.length];
+    const sentence = t(p.word, p.def);
+    html += `<div class="fib-row">${i+1}.&nbsp;&nbsp;${escHtml(sentence).replace('_______', '<span class="fib-blank-gen">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>')}</div>`;
+  });
+  return { html, answers: selected.map((p,i) => ({ num: i+1, word: p.word })) };
+}
+
+// ============================================================
+// WORD SEARCH
+// ============================================================
+function buildWordSearch(pairs) {
+  const SIZE = 15;
+  const words = pairs.map(p => p.word.toUpperCase().replace(/[^A-Z]/g, '')).filter(w => w.length >= 3 && w.length <= SIZE);
+  const grid = Array.from({ length: SIZE }, () => Array(SIZE).fill(''));
+  const placed = [];
+  const directions = [[0,1],[1,0],[1,1],[0,-1],[-1,0],[-1,-1],[1,-1],[-1,1]];
+
+  function tryPlace(word) {
+    const shuffledDirs = [...directions].sort(() => Math.random() - 0.5);
+    for (let attempt = 0; attempt < 80; attempt++) {
+      const [dr, dc] = shuffledDirs[attempt % shuffledDirs.length];
+      const sr = Math.floor(Math.random() * SIZE);
+      const sc = Math.floor(Math.random() * SIZE);
+      let ok = true;
+      for (let k = 0; k < word.length; k++) {
+        const r = sr + k * dr, c = sc + k * dc;
+        if (r < 0 || r >= SIZE || c < 0 || c >= SIZE) { ok = false; break; }
+        if (grid[r][c] !== '' && grid[r][c] !== word[k]) { ok = false; break; }
+      }
+      if (ok) {
+        for (let k = 0; k < word.length; k++) grid[sr + k*dr][sc + k*dc] = word[k];
+        placed.push(word);
+        return;
+      }
+    }
+  }
+
+  words.forEach(w => tryPlace(w));
+  const alpha = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  for (let r = 0; r < SIZE; r++)
+    for (let c = 0; c < SIZE; c++)
+      if (!grid[r][c]) grid[r][c] = alpha[Math.floor(Math.random() * 26)];
+
+  const gridHtml = grid.map(row => row.join(' ')).join('<br>');
+  const wordList = placed.map(w => `<span class="ws-word-chip">${w}</span>`).join('');
+  return { html: `<div class="ws-grid">${gridHtml}</div><div class="ws-words-list">${wordList}</div>` };
+}
+
+// ============================================================
+// MAIN GENERATOR
+// ============================================================
+function generateWorksheet() {
+  if (!canGenerate()) {
+    showUpgrade();
+    return;
+  }
+
+  const rawVocab = document.getElementById('vocabInput').value;
+  const title = document.getElementById('wsTitle').value || 'Vocabulary Worksheet';
+  const className = document.getElementById('wsClass').value || '';
+  const doMatching = document.getElementById('chkMatching').checked;
+  const doFib = document.getElementById('chkFib').checked;
+  const doWordSearch = document.getElementById('chkWordSearch').checked;
+  const doAnswerKey = document.getElementById('chkAnswerKey').checked;
+
+  const pairs = parseVocab(rawVocab);
+  if (pairs.length < 3) {
+    alert('Please enter at least 3 vocabulary words with definitions.\n\nFormat: Word - Definition\nExample: Photosynthesis - the process plants use to make food');
+    return;
+  }
+
+  recordUsage();
+
+  const today = new Date().toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  let html = `
+    <div class="ws-generate-title">${escHtml(title)}</div>
+    <div class="ws-generate-meta">
+      <span>${escHtml(className)}</span>
+      <span>Name: ________________&nbsp;&nbsp;&nbsp;Date: ______________</span>
+    </div>`;
+
+  let allAnswers = {};
+  let exNum = 1;
+
+  if (doMatching) {
+    const m = buildMatching(pairs);
+    html += `<div class="ws-section-gap">
+      <div class="ws-ex-title">Exercise ${exNum++} — Match the word to its definition</div>
+      ${m.html}
+    </div>`;
+    allAnswers.matching = m.answerMap;
+  }
+
+  if (doFib) {
+    const f = buildFib(pairs);
+    html += `<div class="ws-section-gap">
+      <div class="ws-ex-title">Exercise ${exNum++} — Fill in the blank</div>
+      ${f.html}
+    </div>`;
+    allAnswers.fib = f.answers;
+  }
+
+  if (doWordSearch) {
+    const ws = buildWordSearch(pairs);
+    html += `<div class="ws-section-gap">
+      <div class="ws-ex-title">Exercise ${exNum++} — Word search (circle each word when you find it)</div>
+      ${ws.html}
+    </div>`;
+  }
+
+  if (doAnswerKey) {
+    html += `<div class="answer-key">
+      <div class="answer-key-title">Answer Key — ${escHtml(title)}</div>`;
+    if (allAnswers.matching) {
+      html += `<div style="font-size:13px;font-weight:600;margin-bottom:4px;">Matching:</div>
+        <div class="answer-row">`;
+      allAnswers.matching.forEach(a => {
+        html += `<span>${a.num} → ${a.letter}</span>`;
+      });
+      html += `</div>`;
+    }
+    if (allAnswers.fib) {
+      html += `<div style="font-size:13px;font-weight:600;margin:8px 0 4px;">Fill in the blank:</div>
+        <div class="answer-row">`;
+      allAnswers.fib.forEach(a => {
+        html += `<span>${a.num}. ${escHtml(a.word)}</span>`;
+      });
+      html += `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  document.getElementById('worksheetOutput').innerHTML = html;
+  document.getElementById('tool').style.display = 'none';
+  document.getElementById('output').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function newWorksheet() {
+  document.getElementById('output').style.display = 'none';
+  document.getElementById('tool').style.display = 'block';
+  window.scrollTo({ top: document.getElementById('tool').offsetTop - 20, behavior: 'smooth' });
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Init
+updateUsageBar();
+</script>
+</body>
+</html>
