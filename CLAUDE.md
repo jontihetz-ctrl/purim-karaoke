@@ -44,6 +44,7 @@ vps() {
 
 - **Vercel token**: `/root/.vercel/auth.json` on the VPS
 - **GitHub token**: stored on VPS
+- **ImprovMX API key** (email forwarding for @snapwords.net — hello@, jonti@, support@, billing@ → jontihetz@gmail.com): `/root/.improvmx/credentials` on the VPS (`. /root/.improvmx/credentials` then `curl -u "api:$IMPROVMX_API_KEY" https://api.improvmx.com/v3/domains/snapwords.net/logs`). Logs only keep ~1 day on the current plan.
 - To deploy snapwords: see **"SnapWords — always sync with GitHub first"** below. Never run `vercel --prod` on a folder that isn't up to date with `origin/main`.
 
 ---
