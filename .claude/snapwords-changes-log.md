@@ -77,3 +77,12 @@ Six-reviewer audit (student/teacher/public visuals, security, correctness, quali
 - **Email:** hello@snapwords.net forwards via ImprovMX (MX ok) but lands in Gmail spam. Owner TODO: add Namecheap TXT `@` = `v=spf1 include:spf.improvmx.com ~all`; Gmail filter "Never send to Spam" for to:hello@snapwords.net.
 - **Still pending (owner):** rotate leaked keys (Supabase service role, Resend, Vercel token, Pinterest); old beta wording in /terms and /refund-policy; owner digest counts Stripe subscribers (billing is Paddle) → always 0.
 - **2026-10-18 email fixed:** SPF TXT `v=spf1 include:spf.improvmx.com ~all` added at Namecheap (verified on Google + Cloudflare DNS). Test mail to hello@ via Resend → ImprovMX DELIVERED → landed in Gmail Inbox (Updates tab), not Spam. ImprovMX API key stored at `/root/.improvmx/credentials` on the VPS. Unsubscribed naomikahn7@gmail.com and kerenor01092020@gmail.com (rosullivan@stnessans.ie already opted out); library-promo now honours opt-outs (bf799f72).
+
+## 2026-10-18 — Review round 3 (fa663f6e) + migration 029
+- Security: shared Postgres rate limiter (migration 029 run by owner; verified limit trips, anon can't call it), isAdminEmail() in 17 files, timing-safe secret checks (deny when unset), no tokens in auth logs, /lab noindex, conservative CSP, type errors now fail the Vercel build.
+- Correctness: creature counts no longer cap at 1000; owner digest uses Paddle; crossword places every word (372/372 test words, was 217).
+- Polish: SEO pages fully restyled + real worlds list, navy favicon, paginated contributions tab, library fixes, Dino Land limbs without React re-renders (60fps normal, 24fps at 4x throttle — revisit in Worlds 2.0), contrast, screen-reader support, WordRace hydration.
+- Wording: terms/refund say beta ended 31 Aug 2026, keep beta users' lifetime promise; nudge email / OG badge / outreach + promo emails no longer promise free beta.
+- Removed deps: puppeteer, @stripe/stripe-js, stripe.
+- Verified: all games, picker, class/world pages, demo, creature flow desktop + phone, dashboard, every page sweep — no errors.
+- Still owner: rotate leaked keys (+ optional git history scrub).
