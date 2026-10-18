@@ -26,7 +26,7 @@ void ink(inout vec3 col, float d, vec3 c, vec2 q) {
 }
 struct Person {
   vec3 robe, trim, skin, beard, wrap;
-  float beardLen;       // 0 = short, 1 = long flowing (Noach)
+  float beardLen;       // 0 = short, 1 = long flowing (Noach), negative = no beard (a child)
   float facing;         // +1 right, -1 left
   vec2 armF;            // front arm: shoulder angle, elbow bend (radians, 0 = straight down)
   vec2 armB;            // back arm
@@ -106,7 +106,7 @@ void drawPerson(inout vec3 col, vec2 p, vec2 pos, float h, Person P) {
   VOL = 0.8; ink(col, face, P.skin, q); VOL = 0.0;
   col = mix(col, vec3(1.0, 0.5, 0.45) * LIGHT_TINT, smoothstep(0.035, 0.0, length(q - vec2(0.085, 0.75))) * 0.32);
   col = mix(col, vec3(1.0, 0.5, 0.45) * LIGHT_TINT, smoothstep(0.03, 0.0, length(q - vec2(-0.02, 0.75))) * 0.18);
-  if (P.female < 0.5) {
+  if (P.female < 0.5 && P.beardLen >= 0.0) {
   // beard: long & wavy for Noach, short and neat for younger men
   float bl = P.beardLen;
   vec2 bq = q - vec2(0.03, 0.7 - bl * 0.1);
@@ -182,3 +182,4 @@ Person sarai() { Person P = defaultPerson(); P.female = 1.0; P.robe = vec3(0.28,
   P.skin = vec3(0.93, 0.74, 0.6); P.beardLen = 0.0; P.blink = blinkAt(0.53); return P; }
 Person womanP(float id) { Person P = defaultPerson(); P.female = 1.0; float h = hash1(id * 5.1); P.robe = 0.4 + 0.35 * cos(6.28 * (h + vec3(0.0, 0.33, 0.67)));
   P.trim = vec3(0.9, 0.82, 0.6); P.wrap = mix(vec3(0.85, 0.75, 0.7), vec3(0.6, 0.5, 0.7), hash1(id * 2.3)); P.skin = mix(vec3(0.92, 0.72, 0.56), vec3(0.72, 0.52, 0.38), hash1(id * 3.7)); P.blink = blinkAt(h); return P; }
+Person kidP(float id) { Person P = townsperson(id + 300.0); P.beardLen = -1.0; P.wrap = 0.55 + 0.4 * cos(6.28 * (hash1(id * 4.3) + vec3(0.2, 0.5, 0.8))); return P; }   // a child (draw smaller)

@@ -8,7 +8,7 @@ EP = sys.argv[1]
 here = pathlib.Path(__file__).parent
 TL = json.load(open(here / 'build' / EP / 'timeline.json'))
 G = here / 'glsl'
-LIB = ''.join((G / f).read_text() + '\n' for f in ['lib.glsl', 'chars.glsl', 'animals.glsl', 'kit.glsl', 'scenes_common.glsl', 'scenes_bereishis.glsl', 'scenes_lechlecha.glsl'] if (G / f).exists())
+LIB = ''.join((G / f).read_text() + '\n' for f in ['lib.glsl', 'chars.glsl', 'animals.glsl', 'kit.glsl', 'life.glsl', 'scenes_common.glsl', 'scenes_bereishis.glsl', 'scenes_lechlecha.glsl'] if (G / f).exists())
 SCENE_FN = {0: 'sceneIntro', 1: 'sceneTitle', 11: 'sceneCard', 12: 'sceneOutro',
             15: 'sceneCreation', 16: 'sceneCreation2', 17: 'sceneAdam', 18: 'sceneShabbos', 19: 'sceneGan', 20: 'sceneNachash', 21: 'sceneExile', 22: 'sceneKayin', 23: 'sceneGenerations',
             24: 'sceneCall', 25: 'sceneJourney', 26: 'sceneMitzrayim', 27: 'sceneParting', 28: 'sceneWar', 29: 'sceneMalki', 30: 'sceneStars', 31: 'sceneName', 32: 'scenePromise'}
@@ -45,7 +45,7 @@ void main() {
   vec2 uv = gl_FragCoord.xy / uRes;
   if (uMode == 0) { // bright pass + downsample
     vec3 c = vec3(0); for (int i = 0; i < 4; i++) { vec2 o2 = vec2(i % 2, i / 2) - 0.5; c += src(uv + o2 * 1.5 / vec2(textureSize(uA, 0))); }
-    c *= 0.25; float l = max(c.r, max(c.g, c.b)); o = vec4(c * smoothstep(0.55, 1.6, l), 1); return; }
+    c *= 0.25; float l = max(c.r, max(c.g, c.b)); o = vec4(c * smoothstep(0.8, 2.0, l), 1); return; }
   if (uMode == 1) { // separable gaussian blur
     vec3 c = vec3(0); float w[5] = float[](0.227, 0.194, 0.121, 0.054, 0.016);
     c += texture(uA, uv).rgb * w[0];
@@ -54,14 +54,14 @@ void main() {
   // composite: slight chromatic aberration, bloom, ACES, grade, vignette, grain
   vec2 d = uv - 0.5; float r2 = dot(d, d);
   vec3 c = vec3(src(uv + d * 0.0035 * r2 * 4.0).r, src(uv).g, src(uv - d * 0.0035 * r2 * 4.0).b);
-  c += texture(uBloom, uv).rgb * 0.4;
+  c += texture(uBloom, uv).rgb * 0.5;
   c *= uExposure;
   c = aces(c);
   c = pow(c, vec3(0.95));
   float lum = dot(c, vec3(0.299, 0.587, 0.114));
   c = mix(c, c * vec3(0.96, 1.0, 1.04), smoothstep(0.45, 0.0, lum) * 0.2);
   c = mix(c, c * vec3(1.1, 1.0, 0.85), smoothstep(0.35, 1.0, lum) * 0.35);  // warm highlights
-  c = mix(vec3(lum), c, 1.12); c = smoothstep(0.0, 1.0, c) * 0.25 + c * 0.75; // punchier contrast
+  c = mix(vec3(lum), c, 1.32); c = smoothstep(0.0, 1.0, c) * 0.4 + c * 0.6; // punchier contrast
   c *= 1.0 - smoothstep(0.15, 0.75, r2) * 0.55;                              // vignette
   c += (h(gl_FragCoord.xy + fract(uT * 7.3) * 100.0) - 0.5) * 0.025;           // fine film grain
   o = vec4(c, 1);
@@ -92,7 +92,8 @@ function target(w, h) { const t = gl.createTexture(); gl.bindTexture(gl.TEXTURE_
 let progs = {}, post, A, B, B1, B2;
 function u(p, n) { return gl.getUniformLocation(p, n); }
 function drawScene(seg, t, tgt) { const p = progs[seg.scene]; gl.useProgram(p); gl.bindFramebuffer(gl.FRAMEBUFFER, tgt.f); gl.viewport(0, 0, tgt.w, tgt.h);
-  gl.uniform2f(u(p, 'uRes'), tgt.w, tgt.h); gl.uniform1f(u(p, 'uT'), t); gl.uniform1f(u(p, 'uLT'), t - seg.start); gl.uniform1f(u(p, 'uDur'), seg.end - seg.start); gl.drawArrays(gl.TRIANGLES, 0, 3); }
+  gl.uniform2f(u(p, 'uRes'), tgt.w, tgt.h); gl.uniform1f(u(p, 'uT'), t); gl.uniform1f(u(p, 'uLT'), t - seg.start); gl.uniform1f(u(p, 'uDur'), seg.end - seg.start);
+  const ls = seg.lines.map(l => l.start - seg.start).slice(0, 6); while (ls.length < 6) ls.push(seg.end - seg.start); gl.uniform1fv(u(p, 'uLS[0]'), new Float32Array(ls)); gl.drawArrays(gl.TRIANGLES, 0, 3); }
 function postPass(mode, tA, tB, mix, tgt, dir, bloom, expo, t) { gl.useProgram(post); gl.bindFramebuffer(gl.FRAMEBUFFER, tgt ? tgt.f : null); const w = tgt ? tgt.w : W, h = tgt ? tgt.h : H; gl.viewport(0, 0, w, h);
   gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, tA); gl.uniform1i(u(post, 'uA'), 0);
   gl.activeTexture(gl.TEXTURE1); gl.bindTexture(gl.TEXTURE_2D, tB || tA); gl.uniform1i(u(post, 'uB'), 1);

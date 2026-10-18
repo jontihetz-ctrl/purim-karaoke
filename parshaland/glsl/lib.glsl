@@ -5,6 +5,7 @@ uniform vec2 uRes;      // canvas size in pixels
 uniform float uT;       // film time (seconds)
 uniform float uLT;      // time since this scene began
 uniform float uDur;     // this scene's length
+uniform float uLS[6];   // start time of each narration line in this scene (padded with uDur)
 const mat2 M2 = mat2(0.8, 0.6, -0.6, 0.8);
 float hash(vec2 p) { p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
 float hash1(float n) { return fract(sin(n) * 43758.5453123); }
