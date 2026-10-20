@@ -12,7 +12,7 @@ At the start of every session, **always do this first**:
 ## VPS Access
 
 All commands on the VPS run via the claude-bridge HTTP API (no SSH needed).
-Credentials come from the environment variables `VPS_BRIDGE_URL` and `VPS_BRIDGE_SECRET` (set in the Claude Code cloud environment settings; the session-start hook checks them). **Never commit the secret** — this repo is public. `.claude/vps.env` is git-ignored and only a local fallback. Bridge hardening (2026-10-20): secret in root-only `/etc/claude-bridge.env`, constant-time check, 20-failure lockout per IP, 2 MB body cap; code `/root/claude-bridge.py`.
+Credentials come from the environment variables `VPS_BRIDGE_URL` and `VPS_BRIDGE_SECRET` (set in the Claude Code cloud environment settings; the session-start hook checks them). **Never commit the secret** — this repo is public. `.claude/vps.env` is git-ignored and only a local fallback. Bridge (2026-10-20): **HTTPS only** at `https://bridge.snapwords.net` — Caddy (`/usr/local/bin/caddy`, `/etc/caddy/Caddyfile`, Let's Encrypt auto-renew) on :443/:80 proxies to the bridge on 127.0.0.1:8080 (`claude-bridge-local.service`; old plain-HTTP `claude-bridge.service` disabled, :80 now just redirects). Secret in root-only `/etc/claude-bridge.env`, constant-time check, 20-failure lockout per caller IP (via X-Forwarded-For), 2 MB body cap; code `/root/claude-bridge.py`. SSH listens on 22 only.
 
 ```bash
 curl -s -X POST "$VPS_BRIDGE_URL" \
@@ -37,7 +37,7 @@ vps() {
 
 - Host: 159.223.187.231 (DigitalOcean, NYC)
 - OS: Ubuntu 24.04, 1 vCPU / 1GB RAM
-- Bridge: systemd service `claude-bridge` on port 80 — always on, survives reboots
+- Bridge: `https://bridge.snapwords.net` (Caddy → `claude-bridge-local` on 127.0.0.1:8080) — always on, survives reboots
 
 ## Tokens (stored on VPS, not here)
 
