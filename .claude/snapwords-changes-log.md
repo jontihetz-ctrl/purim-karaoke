@@ -98,3 +98,9 @@ Six-reviewer audit (student/teacher/public visuals, security, correctness, quali
 - Perf at 4x CPU throttle: Dino 41.5→48.7, City 38–42→59, Candy 24.5→58.4, critters 45–55→54–60 fps; Dragon's Lair unchanged ~29 fps with 30 dragons (follow-up).
 - Verified live: every world type loads with no errors on desktop + phone. Fixed City buildings oversizing in the tall phone frame (7f9c926c).
 - Follow-ups: Dragon's Lair perf with many dragons; no Bug Garden exists in any class yet (only harness-tested).
+
+## 2026-10-20 — Games 2.0, faster pages, HTTPS bridge
+- **Games 2.0 live (be1035d0):** every game takes on the class world — theme kit in `src/components/games/theme/` (baked still backdrops, per-world tile skins, reward bursts, mascot, combo meter, themed end screen) across Matching, Memory, Crossword, Word Finder, Spell It, Pronounce It, Word Fighter (canvas: world ships/targets/scenery), Word Race, name picker. Crossword celebrates on Check (owner's choice), typing replaces filled squares. Verified live: all game pages load themed, playthroughs desktop + phone.
+- **Server region (036be9dc):** `vercel.json` regions → `dub1` (Dublin), next to Supabase eu-west-1. Was iad1 with ~450 ms per DB call. Class page full content: Grade 4 2.2→1.2 s, historya 1.5→0.6 s, My Lessons 1.5→0.4 s (measured from US).
+- **Class page (6e96f939):** instant loading skeleton, parallel queries/paging, pre-counted word analytics (identical numbers).
+- **Bridge:** secret was publicly readable in this public repo → rotated twice, now HTTPS-only at https://bridge.snapwords.net (Caddy + Let's Encrypt), hardened bridge, vps.env untracked; credentials from Claude Code environment variables.
