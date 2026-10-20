@@ -92,3 +92,9 @@ Six-reviewer audit (student/teacher/public visuals, security, correctness, quali
 - Also: library-promo Resend client made lazy (preview builds have no RESEND_API_KEY) — d6445f52.
 - Next time: carry the style to Dino Land (also fix its 24 fps at 4x), City, Candy, Dragon's Lair, critter worlds. Optional: harden the VPS bridge (plain HTTP, root); key rotation checklist emailed to owner.
 - **2026-10-19 one-click unsubscribe (caf3385f):** all bulk emails send List-Unsubscribe + one-click headers (Gmail/Outlook "Unsubscribe" button) with a signed per-account link and a footer link; /api/unsubscribe accepts the one-click POST and preserves other metadata. Verified live (valid → 200, bad sig → 400). Unsubscribed Sheila.Fox@southeasttech.edu by request.
+
+## 2026-10-20 — Worlds 2.0 complete (cc012768 + 7f9c926c)
+- All worlds now illustrated: Dino Land (golden-hour valley, volcano), City (harbour town, day/night), Candy Kingdom (rainbow, chocolate river), Dragon's Lair (crystal cavern, mood lighting), and the 5 critter worlds (woodland, bug garden, space station, farm, arctic) on a shared scene kit. Approved by owner on preview.
+- Perf at 4x CPU throttle: Dino 41.5→48.7, City 38–42→59, Candy 24.5→58.4, critters 45–55→54–60 fps; Dragon's Lair unchanged ~29 fps with 30 dragons (follow-up).
+- Verified live: every world type loads with no errors on desktop + phone. Fixed City buildings oversizing in the tall phone frame (7f9c926c).
+- Follow-ups: Dragon's Lair perf with many dragons; no Bug Garden exists in any class yet (only harness-tested).
