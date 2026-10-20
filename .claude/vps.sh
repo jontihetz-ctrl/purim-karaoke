@@ -2,9 +2,11 @@
 # Usage: source .claude/vps.sh
 # Then: vps "your command here"
 
-set -a
-source "$(dirname "${BASH_SOURCE[0]}")/vps.env"
-set +a
+# Credentials come from the environment (VPS_BRIDGE_URL / VPS_BRIDGE_SECRET);
+# a local untracked vps.env is only a fallback.
+if [ -z "${VPS_BRIDGE_SECRET:-}" ] && [ -f "$(dirname "${BASH_SOURCE[0]}")/vps.env" ]; then
+  set -a; source "$(dirname "${BASH_SOURCE[0]}")/vps.env"; set +a
+fi
 
 vps() {
   curl -s -X POST "$VPS_BRIDGE_URL" \

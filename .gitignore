@@ -1,2 +1,5 @@
 node_modules/
 .env
+
+# VPS bridge credentials — set VPS_BRIDGE_URL / VPS_BRIDGE_SECRET as environment variables instead
+.claude/vps.env

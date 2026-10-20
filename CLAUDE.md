@@ -12,10 +12,9 @@ At the start of every session, **always do this first**:
 ## VPS Access
 
 All commands on the VPS run via the claude-bridge HTTP API (no SSH needed).
-Credentials are in `.claude/vps.env`.
+Credentials come from the environment variables `VPS_BRIDGE_URL` and `VPS_BRIDGE_SECRET` (set in the Claude Code cloud environment settings; the session-start hook checks them). **Never commit the secret** — this repo is public. `.claude/vps.env` is git-ignored and only a local fallback. Bridge hardening (2026-10-20): secret in root-only `/etc/claude-bridge.env`, constant-time check, 20-failure lockout per IP, 2 MB body cap; code `/root/claude-bridge.py`.
 
 ```bash
-source /home/user/purim-karaoke/.claude/vps.env
 curl -s -X POST "$VPS_BRIDGE_URL" \
   -H "X-Secret: $VPS_BRIDGE_SECRET" \
   -H "Content-Type: application/json" \
