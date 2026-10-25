@@ -13,7 +13,8 @@ for g in TL['segments']:
     for ln in g['lines']:
         v = load(B / 'voice' / f"{ln['key']}.wav"); i0 = int(ln['start'] * SR); n = min(len(v), N - i0)
         narr[i0:i0 + n] += v[:n]; vox[max(0, i0 - int(0.2 * SR)):i0 + n + int(0.35 * SR)] = 1.0
-k = int(0.25 * SR); vox = np.convolve(vox, np.ones(k) / k, mode='same')                     # smooth ducking envelope
+k = int(0.25 * SR); c = np.concatenate([[0.0], np.cumsum(vox, dtype=np.float64)]); i = np.arange(N) - k // 2   # smooth ducking envelope (fast moving average)
+vox = ((c[np.clip(i + k, 0, N)] - c[np.clip(i, 0, N)]) / k).astype(np.float32)
 music = load(B / 'music.wav') if (B / 'music.wav').exists() else np.zeros(N, np.float32)
 ms, _ = sf.read(B / 'music.wav'); ms = ms.astype(np.float32)[:N]; ms = np.pad(ms, ((0, N - len(ms)), (0, 0)))
 duck = 1.0 - 0.72 * vox                                                                      # about −11 dB under the voice
