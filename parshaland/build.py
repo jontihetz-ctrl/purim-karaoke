@@ -8,15 +8,17 @@ EP = sys.argv[1]
 here = pathlib.Path(__file__).parent
 TL = json.load(open(here / 'build' / EP / 'timeline.json'))
 G = here / 'glsl'
-LIB = ''.join((G / f).read_text() + '\n' for f in ['lib.glsl', 'chars.glsl', 'animals.glsl', 'kit.glsl', 'life.glsl', 'scenes_common.glsl', 'scenes_bereishis.glsl', 'scenes_lechlecha.glsl'] if (G / f).exists())
+LIB = ''.join((G / f).read_text() + '\n' for f in ['lib.glsl', 'chars.glsl', 'animals.glsl', 'kit.glsl', 'life.glsl', 'scenes_common.glsl', 'scenes_bereishis.glsl', 'scenes_lechlecha.glsl', 'scenes_vayera.glsl'] if (G / f).exists())
 SCENE_FN = {0: 'sceneIntro', 1: 'sceneTitle', 11: 'sceneCard', 12: 'sceneOutro',
             15: 'sceneCreation', 16: 'sceneCreation2', 17: 'sceneAdam', 18: 'sceneShabbos', 19: 'sceneGan', 20: 'sceneNachash', 21: 'sceneExile', 22: 'sceneKayin', 23: 'sceneGenerations',
-            24: 'sceneCall', 25: 'sceneJourney', 26: 'sceneMitzrayim', 27: 'sceneParting', 28: 'sceneWar', 29: 'sceneMalki', 30: 'sceneStars', 31: 'sceneName', 32: 'scenePromise'}
+            24: 'sceneCall', 25: 'sceneJourney', 26: 'sceneMitzrayim', 27: 'sceneParting', 28: 'sceneWar', 29: 'sceneMalki', 30: 'sceneStars', 31: 'sceneName', 32: 'scenePromise',
+            33: 'sceneVisit', 34: 'sceneGuests', 35: 'sceneLaugh', 36: 'scenePrayer', 37: 'sceneSedom', 38: 'sceneBirth', 39: 'sceneMoriah', 40: 'sceneAkeidah', 41: 'sceneBlessing'}
 # scenes with a slow cinematic push-in (not the cards, and not scenes whose overlay labels sit on scene positions)
-PUSH = {15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32}
+PUSH = {15, 16, 18, 19, 20, 21, 22, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41}
 # per-scene exposure
 EXPO = {0: 1.0, 1: 1.0, 11: 1.0, 12: 1.1, 15: 1.0, 16: 0.95, 17: 0.9, 18: 0.85, 19: 0.88, 20: 0.95, 21: 1.0, 22: 0.92, 23: 1.0,
-        24: 0.78, 25: 0.8, 26: 0.82, 27: 0.78, 28: 1.1, 29: 0.8, 30: 1.15, 31: 0.78, 32: 0.76}
+        24: 0.78, 25: 0.8, 26: 0.82, 27: 0.78, 28: 1.1, 29: 0.8, 30: 1.15, 31: 0.78, 32: 0.76,
+        33: 0.74, 34: 0.78, 35: 0.78, 36: 0.95, 37: 0.92, 38: 0.78, 39: 0.82, 40: 0.74, 41: 1.0}
 used = sorted({s['scene'] for s in TL['segments']})
 missing = [u for u in used if u not in SCENE_FN]
 if missing: raise SystemExit(f'no shader for scene ids {missing}')

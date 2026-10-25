@@ -57,6 +57,15 @@ function drawOverlay(t, i, g) {
     if (a > 0 && b < 1) txt('אַבְרָם', 1240, 250, `bold 130px ${SERIF}`, '#fff6dc', a * (1 - b), 'center', 'rgba(60,30,0,0.7)');
     if (b > 0) { txt('אַבְרָהָם', 1240, 250, `bold 130px ${SERIF}`, '#fff6dc', b, 'center', 'rgba(60,30,0,0.7)');
       const pulse = 0.6 + 0.4 * Math.sin(lt * 4); txt('ה', 1400, 120, `bold 90px ${SERIF}`, GOLD_L, b * pulse, 'center', 'rgba(120,60,0,0.8)'); } }
+  // Vayera: Avraham's prayer for Sedom — the numbers count down with his words (50, then 45 … 10, then the ? of "not even ten")
+  if (g.name === 'prayer' && g.lines.length >= 3) { const l1 = g.lines[1], l2 = g.lines[2]; let n = null, k = 0;
+    if (t >= l1.start + 0.3 * l1.dur && t < l2.start) { n = '50'; k = sm(l1.start + 0.3 * l1.dur, l1.start + 0.3 * l1.dur + 0.4, t); }
+    else if (t >= l2.start) { const NN = ['45', '40', '30', '20', '10']; const f = (t - l2.start) / (0.62 * l2.dur); const i = Math.min(4, Math.floor(f)); n = f < 5.4 ? NN[i] : '?'; k = 1; }
+    if (n) { const pop = 1 + 0.25 * Math.max(0, 1 - ((t - l2.start) / (0.62 * l2.dur) % 1) * 4) * (t >= l2.start ? 1 : 0);
+      o2.save(); o2.translate(1500, 300); o2.scale(pop, pop); txt(n, 0, 0, `bold 170px ${SERIF}`, GOLD_L, k * out, 'center', 'rgba(120,60,0,0.85)'); o2.restore(); } }
+  // Vayera: the baby's name, יִצְחָק, as it is said
+  if (g.name === 'birth' && g.lines.length >= 2) { const l1 = g.lines[1]; const k = sm(l1.start + 0.15, l1.start + 0.8, t) * (1 - sm(l1.start + l1.dur + 0.3, l1.start + l1.dur + 0.9, t));
+    if (k > 0) { const pulse = 1 + 0.04 * Math.sin(t * 4); o2.save(); o2.translate(560, 240); o2.scale(pulse, pulse); txt('יִצְחָק', 0, 0, `bold 140px ${SERIF}`, '#fff6dc', k, 'center', 'rgba(140,70,0,0.75)'); o2.restore(); } }
   // subtitles (kids read along)
   const ln = g.lines.find(l => t >= l.start - 0.1 && t < l.start + l.dur + 0.25);
   if (ln && g.name !== 'title') { const k = Math.min(sm(ln.start - 0.1, ln.start + 0.1, t), 1 - sm(ln.start + ln.dur + 0.05, ln.start + ln.dur + 0.25, t));

@@ -36,10 +36,11 @@ struct Person {
   float brow;           // eyebrow raise (surprise) 0..1
   int tool;             // 0 none 1 hammer 2 bucket 3 plank 4 staff 5 saw 6 brick
   float look;           // pupil offset (-1..1)
+  float sit;            // 1 = sitting (on the ground or a cushion), legs forward
   float female;         // 1 = a woman, dressed modestly: tichel covering all the hair, high neckline, long sleeves, floor-length dress, no beard
 };
 Person defaultPerson() { Person P; P.robe = vec3(0.6, 0.45, 0.3); P.trim = vec3(0.8, 0.65, 0.3); P.skin = vec3(0.92, 0.72, 0.56); P.beard = vec3(0.3, 0.2, 0.12);
-  P.wrap = vec3(0.9, 0.88, 0.82); P.beardLen = 0.3; P.facing = 1.0; P.armF = vec2(0.15, 0.3); P.armB = vec2(-0.1, 0.2); P.talk = 0.0; P.walk = 0.0; P.blink = 1.0; P.brow = 0.0; P.tool = 0; P.look = 0.3; P.female = 0.0; return P; }
+  P.wrap = vec3(0.9, 0.88, 0.82); P.beardLen = 0.3; P.facing = 1.0; P.armF = vec2(0.15, 0.3); P.armB = vec2(-0.1, 0.2); P.talk = 0.0; P.walk = 0.0; P.blink = 1.0; P.brow = 0.0; P.tool = 0; P.look = 0.3; P.female = 0.0; P.sit = 0.0; return P; }
 
 vec2 armPoint(vec2 sh, vec2 a, float upper, float lower, out vec2 elbow) {
   elbow = sh + vec2(sin(a.x), -cos(a.x)) * upper;
@@ -63,6 +64,7 @@ void drawPerson(inout vec3 col, vec2 p, vec2 pos, float h, Person P) {
   // soft contact shadow on the ground
   col *= 1.0 - 0.28 * smoothstep(1.0, 0.0, length(vec2(q.x / 0.28, (q.y + 0.005) / 0.035)));
   float bob = abs(sin(P.walk)) * 0.014 * step(0.001, abs(P.walk)); q.y -= bob;
+  float qy0 = q.y; q.y += P.sit * 0.22;                                         // sitting: the body sinks, the robe folds into a lap
   float sway = sin(P.walk) * 0.02;
   vec3 coat = P.robe, tunic = P.trim;
   vec2 shF = vec2(0.105, 0.56), shB = vec2(-0.115, 0.56);
@@ -73,8 +75,8 @@ void drawPerson(inout vec3 col, vec2 p, vec2 pos, float h, Person P) {
   VOL = 0.0; ink(col, sdE2(q - hB, vec2(0.03, 0.034)), P.skin * 0.88, q);
   // sandals peeking out under the hem
   float stepA = sin(P.walk) * 0.045;
-  ink(col, sdE2(q - vec2(0.075 + stepA, 0.018), vec2(0.055, 0.02)), vec3(0.42, 0.26, 0.14), q);
-  ink(col, sdE2(q - vec2(-0.055 - stepA, 0.018), vec2(0.055, 0.02)), vec3(0.36, 0.22, 0.12), q);
+  if (P.sit < 0.5) { ink(col, sdE2(q - vec2(0.075 + stepA, 0.018), vec2(0.055, 0.02)), vec3(0.42, 0.26, 0.14), q);
+  ink(col, sdE2(q - vec2(-0.055 - stepA, 0.018), vec2(0.055, 0.02)), vec3(0.36, 0.22, 0.12), q); }
   // flowing A-line robe (coat colour), wavy hem
   vec2 rq = q - vec2(sway * (0.62 - q.y), 0.0);
   float k = SAT((rq.y - 0.03) / 0.57); float wdt = mix(0.235, 0.15, pow(k, 0.8));
@@ -82,7 +84,11 @@ void drawPerson(inout vec3 col, vec2 p, vec2 pos, float h, Person P) {
   float robe = max(abs(rq.x - 0.01 * (1.0 - k)) - wdt, max(hemY - rq.y, rq.y - 0.6)) - 0.012;
   robe = smin(robe, sdE2(q - vec2(-0.005, 0.57), vec2(0.165, 0.065)), 0.05);
   float folds = 0.9 + 0.1 * sin(rq.x * 34.0 + 3.0 * sin(rq.y * 6.0)) * SAT(0.65 - rq.y);
-  VOL = 1.0; ink(col, robe, coat * folds, q); VOL = 0.0;
+  if (P.sit > 0.5) robe = max(robe, -qy0);
+  VOL = 1.0; ink(col, robe, coat * folds, q);
+  if (P.sit > 0.5) { vec2 lq = vec2(q.x, qy0); ink(col, sdE2(lq - vec2(0.3, 0.02), vec2(0.05, 0.02)), vec3(0.42, 0.26, 0.14), lq);
+    ink(col, max(sdE2(lq - vec2(0.12, 0.08), vec2(0.22, 0.085)), -lq.y), coat * 0.93, lq); }
+  VOL = 0.0;
   if (P.female < 0.5) {
   // the inner tunic shows in a V from the collar down to the belt (no vertical stripe below the belt)
   float vx = 0.03 + 0.0 * rq.y; float vW = mix(0.065, 0.0, SAT((0.59 - rq.y) / 0.25));
