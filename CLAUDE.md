@@ -44,6 +44,7 @@ vps() {
 - **Vercel token**: `/root/.vercel/auth.json` on the VPS
 - **GitHub token**: stored on VPS
 - **ImprovMX API key** (email forwarding for @snapwords.net — hello@, jonti@, support@, billing@ → jontihetz@gmail.com): `/root/.improvmx/credentials` on the VPS (`. /root/.improvmx/credentials` then `curl -u "api:$IMPROVMX_API_KEY" https://api.improvmx.com/v3/domains/snapwords.net/logs`). Logs only keep ~1 day on the current plan.
+- **Emailing SnapWords users/contacts — NEVER from the personal Gmail.** Any email to a teacher, customer or anyone who wrote to a @snapwords.net address must go through **Resend** from `jonti@snapwords.net` (`Jonti at SnapWords <jonti@snapwords.net>`, reply-to `jonti@snapwords.net`), using `RESEND_API_KEY` from the SnapWords `.env.local` on the VPS (POST `https://api.resend.com/emails`). The Gmail connector is only for reading incoming mail and for messages to Jonti himself.
 - To deploy snapwords: see **"SnapWords — always sync with GitHub first"** below. Never run `vercel --prod` on a folder that isn't up to date with `origin/main`.
 
 ---
