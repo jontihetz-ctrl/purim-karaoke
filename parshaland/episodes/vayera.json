@@ -1,0 +1,81 @@
+{
+  "id": "vayera",
+  "parsha": "Vayera",
+  "parshaHeb": "פרשת וירא",
+  "sefer": "Bereishis",
+  "range": "Bereishis 18:1 – 22:24",
+  "shabbos": "20 Cheshvan 5787 · October 31, 2026",
+  "channel": "PARSHALAND",
+  "segments": [
+    { "scene": "intro", "pad": 1.0, "narration": [] },
+    { "scene": "title", "pad": 1.0, "card": { "type": "title" },
+      "narration": ["This week's parsha is Parshas Vayera!"] },
+
+    { "scene": "visit", "mood": "wonder", "src": "Bereishis 18:1",
+      "narration": [
+        "Three days after his bris milah, Avraham was sitting at the door of his tent, by the trees of Mamre.",
+        "Hashem came to visit him, to teach us the mitzvah of visiting the sick.",
+        "It was a very hot day. Hashem made it hot so that no travelers would bother Avraham while he was healing. But Avraham was sad, because he loved having guests!"
+      ] },
+
+    { "scene": "guests", "mood": "joy", "src": "Bereishis 18:2–8",
+      "narration": [
+        "Then Avraham looked up, and saw three men standing near him. They were really malachim, but they looked like travelers.",
+        "Avraham ran to greet them, even though he was in pain! Please, come rest under the tree, and let me bring water to wash your feet.",
+        "He hurried to Sarah: quick, bake fresh bread! Then he ran to prepare the best meat, with butter and milk, and served his guests himself."
+      ] },
+
+    { "scene": "laugh", "mood": "hope", "src": "Bereishis 18:9–15",
+      "narration": [
+        "Where is Sarah your wife? asked the guests. In the tent, said Avraham.",
+        "This time next year, Sarah will have a son!",
+        "Sarah laughed to herself. I'm ninety years old, how could I have a baby? But Hashem said: is anything too hard for Hashem?"
+      ] },
+
+    { "scene": "prayer", "mood": "dark", "src": "Bereishis 18:16–33",
+      "narration": [
+        "Hashem told Avraham that the cities of Sedom and Amorah were very wicked, and would be destroyed.",
+        "Avraham begged Hashem: what if there are fifty tzaddikim there? Will You save the city for them? And Hashem said yes.",
+        "What about forty-five? Forty? Thirty? Twenty? Ten? Each time Hashem said yes. But there were not even ten."
+      ] },
+
+    { "scene": "sedom", "mood": "storm", "src": "Bereishis 19:1–26",
+      "narration": [
+        "Two of the malachim came to Sedom, where Lot lived. Lot had learned from Avraham to welcome guests, so he invited them in.",
+        "In the morning the malachim said: hurry, take your family and run! And don't look back!",
+        "Hashem rained fire and sulfur on Sedom and Amorah. Lot's wife looked back, and she became a pillar of salt."
+      ] },
+
+    { "scene": "birth", "mood": "joy", "src": "Bereishis 21:1–8",
+      "narration": [
+        "And then, just as Hashem promised, Sarah had a baby boy! Avraham was one hundred years old, and Sarah was ninety.",
+        "They named him Yitzchak, which means he will laugh, because everyone who heard the news laughed with joy.",
+        "When Yitzchak was eight days old, Avraham gave him a bris milah. And when he grew bigger, Avraham made a great feast."
+      ] },
+
+    { "scene": "moriah", "mood": "build", "src": "Bereishis 22:1–8",
+      "narration": [
+        "When Yitzchak was grown up, Hashem gave Avraham his biggest test of all.",
+        "Take your son, your only one, whom you love, Yitzchak, and go to Har HaMoriah, and bring him up there as a korban.",
+        "Avraham got up early in the morning, happy to do what Hashem wanted. After three days, they saw a cloud resting on the mountain.",
+        "Where is the sheep for the korban? asked Yitzchak. Hashem will show us, said Avraham. And the two of them walked on together."
+      ] },
+
+    { "scene": "akeidah", "mood": "wonder", "src": "Bereishis 22:9–14",
+      "narration": [
+        "Avraham built a mizbe'ach and placed Yitzchak on it. Yitzchak was ready too.",
+        "Suddenly, a malach of Hashem called out: Avraham! Avraham! Do not harm the boy! Now I know that you fear Hashem.",
+        "Avraham looked up and saw a ram, caught by its horns in a bush. He brought the ram as a korban instead of Yitzchak."
+      ] },
+
+    { "scene": "blessing", "mood": "joy", "src": "Bereishis 22:15–18",
+      "narration": [
+        "Hashem said: because you did this, I will bless you, and make your children as many as the stars in the sky and the sand on the seashore.",
+        "And through your children, the whole world will be blessed.",
+        "What happens next? That's a story for next week!"
+      ] },
+
+    { "scene": "outro", "mood": "hope", "pad": 3.0, "card": { "type": "outro" },
+      "narration": ["Good Shabbos!"] }
+  ]
+}
