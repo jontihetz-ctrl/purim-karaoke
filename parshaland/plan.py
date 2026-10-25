@@ -20,7 +20,7 @@ SCENES = {'intro': 0, 'title': 1, 'corrupt': 2, 'tzaddik': 3, 'building': 4, 'an
           'creation': 15, 'creation2': 16, 'adam': 17, 'shabbos': 18, 'gan': 19, 'nachash': 20, 'exile': 21, 'kayin': 22, 'generations': 23,
           'call': 24, 'journey': 25, 'mitzrayim': 26, 'parting': 27, 'war': 28, 'malki': 29, 'stars': 30, 'name': 31, 'promise': 32,
           'visit': 33, 'guests': 34, 'laugh': 35, 'prayer': 36, 'sedom': 37, 'birth': 38, 'moriah': 39, 'akeidah': 40, 'blessing': 41}
-LEAD, GAP, TAIL = 0.9, 0.55, 1.1          # seconds before first line, between lines, after last line
+LEAD, GAP, TAIL = 0.9, 0.8, 1.2          # seconds before first line, between lines, after last line
 MIN = {'intro': 7.0, 'title': 6.5, 'outro': 7.0}
 t = 0.0; segs = []
 for si, s in enumerate(ep['segments']):
