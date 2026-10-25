@@ -86,6 +86,37 @@ void lizard(inout vec3 col, vec2 p, vec2 pos, float s, float facing) {
 // sunbaked ground
 vec3 hotGround(vec2 p) { return mix(vec3(0.92, 0.74, 0.46), vec3(0.8, 0.6, 0.36), fbm(p * vec2(3.0, 12.0))) * (0.92 + 0.1 * noise(p * 120.0)); }
 
+// Avraham's tent, open on all four sides so guests could come in from any direction (Rashi): a striped goat-hair roof on four poles,
+// every wall rolled up, a rug and cushions inside; seen at an angle so the open front and side (and the open back beyond) all show
+float sdQuad(vec2 q, vec2 a, vec2 b, vec2 c, vec2 d) {   // convex, counter-clockwise
+  vec2 v[4]; v[0] = a; v[1] = b; v[2] = c; v[3] = d; float m = -1e5;
+  for (int i = 0; i < 4; i++) { vec2 e = v[(i + 1) % 4] - v[i]; vec2 n = normalize(vec2(e.y, -e.x)); m = max(m, dot(q - v[i], n)); }
+  return m; }
+void openTent(inout vec3 col, vec2 p, vec2 pos, float s, vec3 cloth, float glow) {
+  vec2 q = (p - pos) / s; PX = 1.5 / (uRes.y * s); if (q.x < -1.15 || q.x > 1.2 || q.y < -0.1 || q.y > 1.45) return;
+  vec2 FL = vec2(-0.95, 0.0), FR = vec2(0.35, 0.0), BR = vec2(0.95, 0.16), BL = vec2(-0.35, 0.16); float H = 0.9;
+  col *= 1.0 - 0.25 * smoothstep(0.02, -0.06, sdQuad(q, FL - vec2(0.1, 0.03), FR + vec2(0.1, -0.03), BR + vec2(0.1, 0.0), BL - vec2(0.1, 0.0)));
+  // the rug and cushions inside, a warm light under the roof
+  float rug = sdQuad(q, FL + vec2(0.08, 0.02), FR + vec2(-0.04, 0.02), BR + vec2(-0.08, -0.01), BL + vec2(0.06, -0.01));
+  vec3 rc = vec3(0.7, 0.18, 0.2) * (0.85 + 0.15 * step(0.5, fract(q.x * 6.0 + q.y * 3.0))); rc = mix(rc, vec3(0.95, 0.75, 0.3), smoothstep(0.012, 0.0, abs(rug + 0.025)));
+  col = mix(col, rc * LIGHT_TINT, smoothstep(PX, -PX, rug));
+  for (int i = 0; i < 3; i++) { vec2 cc = mix(BL, BR, 0.2 + float(i) * 0.3) + vec2(0.0, 0.035); ink(col, sdE2(q - cc, vec2(0.1, 0.05)), (0.55 + 0.4 * cos(6.28 * (float(i) * 0.3 + vec3(0.0, 0.33, 0.67)))), q); }
+  col += vec3(1.0, 0.75, 0.4) * glow * 0.18 * exp(-length((q - vec2(0.0, 0.35)) * vec2(0.8, 1.2)) * 2.0);
+  // the back poles (seen through the open front and side)
+  for (int i = 0; i < 2; i++) { vec2 b = i == 0 ? BL : BR; ink(col, sdBox2(q - b - vec2(0.0, H * 0.5), vec2(0.018, H * 0.5)), vec3(0.4, 0.27, 0.16), q); }
+  // the roof: a front slope and a side slope up to the ridge, striped, with a scalloped fringe and the rolled-up walls along the edges
+  vec2 RF = vec2(-0.62, 1.24), RB = vec2(0.66, 1.32); vec2 tFL = FL + vec2(0.0, H), tFR = FR + vec2(0.0, H), tBR = BR + vec2(0.0, H);
+  float front = sdQuad(q, tFL, tFR, RB, RF); float side = sdQuad(q, tFR, tBR, RB, RB + vec2(-0.001, 0.0));
+  float stripes = 0.85 + 0.15 * step(0.5, fract(q.x * 7.0 - q.y * 2.0));
+  ink(col, side, cloth * 0.78 * stripes, q); ink(col, front, cloth * stripes, q);
+  for (int e = 0; e < 2; e++) { vec2 a = e == 0 ? tFL : tFR, b = e == 0 ? tFR : tBR; vec2 ab = b - a; float h = SAT(dot(q - a, ab) / dot(ab, ab)); vec2 c = a + ab * h;
+    float roll = length(q - c - vec2(0.0, -0.04)) - 0.045; ink(col, roll, cloth * 0.7 * (0.9 + 0.1 * sin(h * 60.0)), q);                 // the rolled-up wall
+    float sc = length(vec2(fract(h * (e == 0 ? 12.0 : 6.0)) - 0.5, (q.y - c.y + 0.1) * 6.0)) - 0.42; col = mix(col, vec3(0.95, 0.78, 0.3) * LIGHT_TINT, smoothstep(0.05, -0.05, max(sc, max(q.y - c.y + 0.075, c.y - 0.12 - q.y)))); }
+  // the front poles with ropes and pegs
+  for (int i = 0; i < 2; i++) { vec2 b = i == 0 ? FL : FR; ink(col, sdBox2(q - b - vec2(0.0, H * 0.5), vec2(0.024, H * 0.5)), vec3(0.48, 0.32, 0.18), q);
+    ink(col, sdCap2(q, b + vec2(0.0, H), b + vec2(i == 0 ? -0.18 : 0.22, -0.02), 0.008), vec3(0.6, 0.5, 0.35), q); }
+  ink(col, sdCap2(q, tBR, BR + vec2(0.2, -0.0), 0.008), vec3(0.6, 0.5, 0.35), q); }
+
 // 33 — the hottest day: Avraham sits at his tent door by the oaks of Mamre, three days after his bris; Hashem visits (light); the road stays empty
 vec3 sceneVisit(vec2 p, float lt) {
   float k = SAT(lt / max(uDur, 1.0)); float visit = at(k, LS(1), 0.06); float hot = at(k, LS(2), 0.08);
@@ -112,7 +143,7 @@ vec3 sceneVisit(vec2 p, float lt) {
   col *= 1.0 - 0.3 * smoothstep(0.35, 0.0, length((pg - vec2(-0.62, -0.26)) * vec2(0.8, 3.0)));
   oak(col, pg, vec2(-0.72, -0.24), 0.5, vec3(0.32, 0.5, 0.2), sun.x);
   LIGHT_TINT = mix(vec3(1.0, 0.95, 0.85), vec3(1.0, 0.88, 0.72), hot); RIM = 1.0; RIM_COL = vec3(1.0, 0.85, 0.55);
-  tent(col, pg, vec2(-0.28, -0.27), 0.24, vec3(0.55, 0.38, 0.3), 0.15);
+  openTent(col, pg, vec2(-0.42, -0.27), 0.38, vec3(0.55, 0.38, 0.3), 0.15);
   // Hashem's visit: warm light coming down on Avraham, sparkles, gentle rings
   vec2 apos = vec2(-0.02, -0.31);
   float bw = 0.05 + 0.05 * SAT(0.6 - pg.y); col += vec3(1.0, 0.95, 0.8) * smoothstep(bw, 0.0, abs(pg.x - apos.x)) * smoothstep(-0.45, 0.5, pg.y) * visit * (0.6 - 0.2 * hot);
@@ -151,7 +182,7 @@ vec3 sceneGuests(vec2 p, float lt) {
   col *= 1.0 - 0.3 * smoothstep(0.4, 0.0, length((pg - vec2(-0.25, -0.3)) * vec2(0.7, 3.0)));
   oak(col, pg, vec2(-0.3, -0.24), 0.52, vec3(0.32, 0.52, 0.2), sun.x);
   LIGHT_TINT = vec3(1.0, 0.96, 0.88); RIM = 0.9; RIM_COL = vec3(1.0, 0.85, 0.55);
-  tent(col, pg, vec2(-0.85, -0.27), 0.22, vec3(0.55, 0.38, 0.3), 0.15);
+  openTent(col, pg, vec2(-0.8, -0.27), 0.34, vec3(0.55, 0.38, 0.3), 0.15);
   // Sarah at the oven, baking (third line)
   oven(col, pg, vec2(-1.12, -0.3), 0.1);
   Person S = sarah(); S.facing = -1.0; S.armF = vec2(1.3 + 0.25 * sin(uT * 4.0) * feast, 0.6); S.armB = vec2(0.9, 0.7); S.look = -0.4; drawPerson(col, pg, vec2(-0.98, -0.32), 0.38, S);
@@ -202,7 +233,7 @@ vec3 sceneLaugh(vec2 p, float lt) {
   col *= 1.0 - 0.3 * smoothstep(0.4, 0.0, length((pg - vec2(-0.55, -0.3)) * vec2(0.7, 3.0)));
   oak(col, pg, vec2(-0.6, -0.24), 0.52, vec3(0.32, 0.52, 0.2), sun.x);
   LIGHT_TINT = vec3(1.0, 0.96, 0.9); RIM = 0.9; RIM_COL = vec3(1.0, 0.9, 0.65);
-  vec2 tc = vec2(0.5, -0.27); tent(col, pg, tc, 0.26, vec3(0.55, 0.38, 0.3), 0.35);
+  vec2 tc = vec2(0.5, -0.27); openTent(col, pg, tc, 0.38, vec3(0.55, 0.38, 0.3), 0.35);
   for (int i = 0; i < 3; i++) { Person T = traveler(i); T.facing = 1.0; T.sit = 1.0; T.armF = vec2(0.9, 0.9); T.look = 0.5; if (i == 1) T.talk = (1.0 - promise) * 0.5 + promise * (1.0 - laugh) * 0.7; drawPerson(col, pg, vec2(-0.78 + float(i) * 0.13, -0.32), 0.4, T); }
   Person A = avraham(); A.facing = 1.0; A.armF = k < l1 ? vec2(1.5, 0.0) : vec2(0.6, 0.4); A.talk = k < l1 && k > 0.15 ? 0.6 : 0.0; A.look = 0.6; A.brow = promise * 0.6;
   drawPerson(col, pg, vec2(0.0, -0.33), 0.42, A);
@@ -322,7 +353,7 @@ vec3 sceneBirth(vec2 p, float lt) {
   if (pg.y < -0.18) col = grass(pg, vec3(0.42, 0.62, 0.22), vec3(0.6, 0.74, 0.3));
   oak(col, pg, vec2(-0.95, -0.24), 0.48, vec3(0.3, 0.55, 0.2), sun.x);
   LIGHT_TINT = vec3(1.0, 0.97, 0.9); RIM = 0.9; RIM_COL = vec3(1.0, 0.9, 0.65);
-  vec2 tc = vec2(-0.45, -0.27); tent(col, pg, tc, 0.24, vec3(0.55, 0.38, 0.3), 0.25);
+  vec2 tc = vec2(-0.5, -0.27); openTent(col, pg, tc, 0.34, vec3(0.55, 0.38, 0.3), 0.25);
   bunting(col, pg, vec2(-0.95, 0.1), vec2(-0.45, -0.06), 0.03); bunting(col, pg, vec2(-0.45, -0.06), vec2(0.4, 0.06), 0.06); bunting(col, pg, vec2(0.4, 0.06), vec2(1.1, 0.0), 0.05);
   for (int i = 0; i < 16; i++) { float fi = float(i); flower(col, pg, vec2(-1.0 + fi * 0.14 + 0.05 * hash1(fi), -0.45 - 0.05 * hash1(fi * 3.0)), 0.055, 0.65 + 0.35 * cos(6.28 * (hash1(fi * 5.0) + vec3(0.0, 0.33, 0.67)))); }
   // the feast table (third line), to the right
@@ -382,7 +413,7 @@ vec3 sceneMoriah(vec2 p, float lt) {
   if (pg.y < slope) col = mix(hotGround(pg), grass(pg, vec3(0.42, 0.55, 0.22), vec3(0.58, 0.66, 0.28)), 0.4) * mix(0.35, 1.0, dayAmt);
   LIGHT_TINT = mix(vec3(0.55, 0.55, 0.8), vec3(1.0, 0.95, 0.88), dayAmt); RIM = 0.9; RIM_COL = vec3(1.0, 0.85, 0.6);
   // Hashem's words (second line): a beam of light on Avraham at his tent
-  if (trip <= 0.0) { tent(col, pg, vec2(-0.7, -0.27), 0.22, vec3(0.55, 0.38, 0.3), 0.4);
+  if (trip <= 0.0) { openTent(col, pg, vec2(-0.72, -0.27), 0.34, vec3(0.55, 0.38, 0.3), 0.4);
     vec2 ap = vec2(-0.15, -0.33); col += vec3(1.0, 0.95, 0.8) * word * 0.5 * smoothstep(0.1, 0.0, abs(pg.x - ap.x) - 0.03 * (0.6 - pg.y)) * smoothstep(-0.3, 0.6, pg.y);
     col += sparkles(pg, uT, 0.3, 0.012, vec3(1.0, 0.92, 0.65)) * word * smoothstep(0.25, 0.0, abs(pg.x - ap.x));
     drawDonkey(col, pg, vec2(0.35, -0.335), 0.18, 0.0, -1.0, vec3(0.6, 0.4, 0.25)); woodBundle(col, pg, vec2(0.33, -0.21), 0.05);
