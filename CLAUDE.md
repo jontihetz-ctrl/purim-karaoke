@@ -89,6 +89,8 @@ curl -s -X POST "$VPS_BRIDGE_URL" -H "X-Secret: $VPS_BRIDGE_SECRET" \
   | python3 -c "import sys,json; d=json.load(sys.stdin); print(d['stdout'])"
 ```
 
+**SnapWords Android app (2026-10-27):** `mobile/` in the snapwords repo is a Capacitor 8 shell (`net.snapwords.app`) that loads `https://snapwords.net/app`, so site deploys update the app instantly. Site side: `src/lib/nativeApp.ts`, `src/components/AppBridge.tsx`, `/app` start screen, Google sign-in via `/auth/app-google` → `/auth/callback` → `/auth/app-handoff` (Chrome Custom Tab, session handed back with a package-addressed intent). In the app, `html.sw-app` hides prices/upgrade buttons (`.app-hide`) — store billing rules. **Upload signing key + passwords: VPS `/root/snapwords-android/` (root-only; never commit).** Build: Android SDK at `/opt/android-sdk` in the cloud container (install cmdline-tools + platforms;android-36), copy `keystore.properties` into `mobile/android/`, then `npx cap sync android && ./gradlew --max-workers=1 bundleRelease assembleRelease` (Maven Central may 429 — just retry). Not yet on Google Play: needs a Play Console **Organization** account (South African company, D-U-N-S number).
+
 **World unlock system (creature/item types per world):**
 - 🐠 Fish Tank: fish(1) → crab(2) → octopus(3) → turtle(4) → jellyfish(5) → shark(6)
 - 🏙️ City Builder: tower(1) → park(2) → hot air balloon(3) → monument(4)
